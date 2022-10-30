@@ -1,0 +1,20 @@
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+
+packages
+dist
+build
+public
+
+# Ignore all yml files:
+*.yml
+# Ignore all md files:
+*.md
+# Ignore all html files:
+*.html
+# Ignore all css files:
+*.css
+# Ignore all json files:
+*.json
