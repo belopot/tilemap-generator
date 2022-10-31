@@ -28,5 +28,8 @@ Install all dependencies for node
 
     yarn format
 
+## Algorithm
+    http://www.roguebasin.com/index.php?title=Basic_BSP_Dungeon_generation
+
 ## Assets
     https://pixel-poem.itch.io/dungeon-assetpuck
