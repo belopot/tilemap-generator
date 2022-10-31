@@ -9,7 +9,6 @@ import {PrimaryRoutes} from 'dataset/routes';
 import {device} from 'theme/device';
 import {useStore} from 'state/store';
 import NavMenuButton from 'components/NavMenuButton';
-import {MiddleContainer} from 'components/Containers';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -20,66 +19,60 @@ export default function Navbar() {
 
   return (
     <Holder>
-      <MiddleContainer>
-        <FlexHolder>
-          {isPadScreen ? (
-            <>
-              <NavMenuButton />
-              <AnimatePresence>
-                {menuVisible && (
-                  <NavMobile
-                    transition={{duration: 0.4}}
-                    initial={{x: '-100%'}}
-                    animate={{x: 0}}
-                    exit={{x: '-100%'}}
-                  >
-                    <CloseButton
-                      icon="pi pi-times"
-                      className="p-button-rounded p-button-text p-button-icon-only"
-                      onClick={() => {
-                        setMenuVisible(false);
-                      }}
-                    />
-                    {PrimaryRoutes.map(route => {
-                      return (
-                        <NavItemMobile
-                          key={`mobile-nav-item-${route.path}`}
-                          selected={route.path === location.pathname}
-                          onClick={() => {
-                            navigate(route.path);
-                            setMenuVisible(false);
-                          }}
-                        >
-                          {route.title}
-                        </NavItemMobile>
-                      );
-                    })}
-                  </NavMobile>
-                )}
-              </AnimatePresence>
-            </>
-          ) : (
-            <Nav>
-              {PrimaryRoutes.map(route => (
-                <NavItemDesktop
-                  key={`desktop-nav-item-${route.path}`}
-                  path={route.path}
-                  title={route.title}
-                />
-              ))}
-            </Nav>
-          )}
-        </FlexHolder>
-      </MiddleContainer>
+      <FlexHolder>
+        {isPadScreen ? (
+          <>
+            <NavMenuButton />
+            <AnimatePresence>
+              {menuVisible && (
+                <NavMobile
+                  transition={{duration: 0.4}}
+                  initial={{x: '-100%'}}
+                  animate={{x: 0}}
+                  exit={{x: '-100%'}}
+                >
+                  <CloseButton
+                    icon="pi pi-times"
+                    className="p-button-rounded p-button-text p-button-icon-only"
+                    onClick={() => {
+                      setMenuVisible(false);
+                    }}
+                  />
+                  {PrimaryRoutes.map(route => {
+                    return (
+                      <NavItemMobile
+                        key={`mobile-nav-item-${route.path}`}
+                        selected={route.path === location.pathname}
+                        onClick={() => {
+                          navigate(route.path);
+                          setMenuVisible(false);
+                        }}
+                      >
+                        {route.title}
+                      </NavItemMobile>
+                    );
+                  })}
+                </NavMobile>
+              )}
+            </AnimatePresence>
+          </>
+        ) : (
+          <Nav>
+            {PrimaryRoutes.map(route => (
+              <NavItemDesktop
+                key={`desktop-nav-item-${route.path}`}
+                path={route.path}
+                title={route.title}
+              />
+            ))}
+          </Nav>
+        )}
+      </FlexHolder>
     </Holder>
   );
 }
 
 const Holder = styled.header`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 9999;
   width: inherit;
   background-color: #212121;
 `;
@@ -90,7 +83,7 @@ const FlexHolder = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 2.5em 0;
+  padding: 1.5em 0;
   @media ${device.pad} {
     flex-direction: row-reverse;
     justify-content: flex-end;
@@ -109,6 +102,7 @@ const Nav = styled.ul`
   display: flex;
   align-items: center;
 `;
+
 const NavItem = styled.li`
   color: ${props => (props.active ? '#fff' : '#cccccc')};
   font-weight: 900;

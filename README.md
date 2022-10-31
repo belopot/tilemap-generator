@@ -27,3 +27,6 @@ Install all dependencies for node
 ## Fixing code format
 
     yarn format
+
+## Assets
+    https://pixel-poem.itch.io/dungeon-assetpuck

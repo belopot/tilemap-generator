@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import {QueryClientProvider, QueryClient} from '@tanstack/react-query';
-import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
+// import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import {ToastContainer} from 'react-toastify';
 
 import {PrimaryRoutes} from 'dataset/routes';
@@ -25,7 +25,7 @@ export default function App() {
           </Routes>
           <ToastContainer theme="colored" />
         </BrowserRouter>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </ThemeProvider>
   );
