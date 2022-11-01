@@ -20,7 +20,7 @@ export function generate(args) {
   const tree = createTree(args);
   const tiles = createTilesLayer(tree, args);
   const props = createPropsLayer(tree, tiles, args);
-  const monsters = [];
+  const monsters = createMonstersLayer(tree, args);
 
   const endAt = Date.now();
   console.log(`Dungeon generated in ${endAt - startAt}ms`);
@@ -376,6 +376,39 @@ function carveTorches(tiles, props) {
       }
     }
   }
+
+  return result;
+}
+
+//
+// Monsters
+//
+function createMonstersLayer(tree, args) {
+  let monsters = createTilemap(args.mapWidth, args.mapHeight, 0);
+
+  monsters = carveMonsters(tree, monsters);
+
+  return monsters;
+}
+
+function carveMonsters(node, monsters) {
+  const result = duplicateTilemap(monsters);
+
+  node.leaves.forEach(container => {
+    const room = container.room;
+    if (!room) {
+      return;
+    }
+
+    const monstersLayer = room.template.layers.monsters;
+    for (let y = 0; y < room.template.height; y++) {
+      for (let x = 0; x < room.template.width; x++) {
+        const posY = room.y + y;
+        const posX = room.x + x;
+        result[posY][posX] = monstersLayer[y][x];
+      }
+    }
+  });
 
   return result;
 }

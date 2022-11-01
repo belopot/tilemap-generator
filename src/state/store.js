@@ -28,5 +28,5 @@ export const useStore = create((set, get) => ({
   tileWidth: 32,
   setTileWidth: v => set({tileWidth: v}),
   debug: false,
-  setIsDebug: v => set({debug: v}),
+  setDebug: v => set({debug: v}),
 }));

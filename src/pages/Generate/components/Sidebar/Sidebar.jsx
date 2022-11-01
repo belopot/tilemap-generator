@@ -31,7 +31,7 @@ export default function Sidebar({onGenerate, onDownload}) {
   const tileWidth = useStore(state => state.tileWidth);
   const setTileWidth = useStore(state => state.setTileWidth);
   const debug = useStore(state => state.debug);
-  const setIsDebug = useStore(state => state.setIsDebug);
+  const setDebug = useStore(state => state.setDebug);
 
   return (
     <Holder className="p-fluid grid formgrid">
@@ -123,7 +123,7 @@ export default function Sidebar({onGenerate, onDownload}) {
         <Checkbox
           inputId="debug"
           checked={debug}
-          onChange={e => setIsDebug(e.checked)}
+          onChange={e => setDebug(e.checked)}
         />
         <label htmlFor="debug">Debug</label>
       </div>

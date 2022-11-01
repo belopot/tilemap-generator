@@ -179,6 +179,30 @@ export const PropTypes = [
 ];
 
 //
+// Monsters
+//
+export const MonsterType = {
+  Bandit: 1,
+  CentaurFemale: 2,
+  CentaurMale: 3,
+  MushroomLarge: 4,
+  MushroomSmall: 5,
+  Skeleton: 6,
+  Troll: 7,
+  Wolf: 8,
+};
+export const MonsterTypes = [
+  'Bandit',
+  'CentaurFemale',
+  'CentaurMale',
+  'MushroomLarge',
+  'MushroomSmall',
+  'Skeleton',
+  'Troll',
+  'Wolf',
+];
+
+//
 // Tilemap
 //
 export const TileLayers = ['tiles', 'props', 'monsters'];
