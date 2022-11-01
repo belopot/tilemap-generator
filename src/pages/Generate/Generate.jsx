@@ -104,8 +104,6 @@ export default function Generate() {
     onDebug();
   }, [debug]);
 
-  console.log(canvasWidth, canvasHeight);
-
   return (
     <PageTransition>
       <Holder>
