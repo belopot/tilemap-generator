@@ -1,4 +1,11 @@
-import {Container, Corridor, Room, TileDirection, TreeNode} from './types';
+import {
+  Container,
+  Corridor,
+  PropType,
+  Room,
+  TileDirection,
+  TreeNode,
+} from './types';
 import {createTilemap, duplicateTilemap, random, randomChoice} from './utils';
 import seedrandom from 'seedrandom';
 
@@ -12,7 +19,7 @@ export function generate(args) {
 
   const tree = createTree(args);
   const tiles = createTilesLayer(tree, args);
-  const props = [];
+  const props = createPropsLayer(tree, tiles, args);
   const monsters = [];
 
   const endAt = Date.now();
@@ -308,6 +315,64 @@ export function computeTilesMask(tiles) {
       // Compute holes
       if (result[y][x] < 0) {
         result[y][x] = computeHole(x, y, result);
+      }
+    }
+  }
+
+  return result;
+}
+
+//
+// Props
+//
+function createPropsLayer(tree, tiles, args) {
+  let props = createTilemap(args.mapWidth, args.mapHeight, 0);
+
+  props = carveProps(tree, props);
+  props = carveTorches(tiles, props);
+
+  return props;
+}
+
+function carveProps(node, props) {
+  const result = duplicateTilemap(props);
+
+  node.leaves.forEach(container => {
+    const room = container.room;
+    if (!room) {
+      return;
+    }
+
+    const propsLayer = room.template.layers.props;
+    for (let y = 0; y < room.template.height; y++) {
+      for (let x = 0; x < room.template.width; x++) {
+        const posY = room.y + y;
+        const posX = room.x + x;
+        result[posY][posX] = propsLayer[y][x];
+      }
+    }
+  });
+
+  return result;
+}
+
+function carveTorches(tiles, props) {
+  const result = duplicateTilemap(props);
+  for (let y = 0; y < result.length; y++) {
+    for (let x = 0; x < result[y].length; x++) {
+      const tileId = tiles[y][x];
+
+      const leftCorner =
+        maskToTileIdMap[
+          TileDirection.North | TileDirection.West | TileDirection.NorthWest
+        ];
+      const rightCorner =
+        maskToTileIdMap[
+          TileDirection.North | TileDirection.East | TileDirection.NorthEast
+        ];
+
+      if (tileId === leftCorner || tileId === rightCorner) {
+        result[y][x] = PropType.Torch;
       }
     }
   }

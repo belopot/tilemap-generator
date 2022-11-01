@@ -28,7 +28,7 @@ export default function Generate() {
   const [canvasWidth, setCanvasWidth] = useState(100);
   const [canvasHeight, setCanvasHeight] = useState(100);
 
-  const draw = args => {
+  const onDraw = args => {
     try {
       const dungeon = generate({
         ...args,
@@ -36,7 +36,7 @@ export default function Generate() {
       });
       dungeonRef.current = dungeon;
 
-      canvasDrawerRef.current.draw(dungeon, {
+      canvasDrawerRef.current.drawAll(dungeon, {
         debug: args.debug,
         unitWidthInPixels: args.tileWidth,
       });
@@ -67,7 +67,7 @@ export default function Generate() {
       debug,
     };
 
-    draw(args);
+    onDraw(args);
   };
 
   const onDownload = () => {
@@ -92,7 +92,7 @@ export default function Generate() {
         debug,
       };
 
-      draw(args);
+      onDraw(args);
     }
   };
 
