@@ -44,11 +44,11 @@ const textures = {
   // Spawns
   door: PIXI.Texture.from('assets/props/door.png'),
   // Monsters
-  bandit: PIXI.Texture.from('assets/monsters/bandit.png'),
+  ghast: PIXI.Texture.from('assets/monsters/ghast.png'),
   'centaur-female': PIXI.Texture.from('assets/monsters/centaur-female.png'),
   'centaur-male': PIXI.Texture.from('assets/monsters/centaur-male.png'),
-  'mushroom-large': PIXI.Texture.from('assets/monsters/mushroom-large.png'),
-  'mushroom-small': PIXI.Texture.from('assets/monsters/mushroom-small.png'),
+  firepumpkin: PIXI.Texture.from('assets/monsters/firepumpkin.png'),
+  firesprite: PIXI.Texture.from('assets/monsters/firesprite.png'),
   skeleton: PIXI.Texture.from('assets/monsters/skeleton.png'),
   troll: PIXI.Texture.from('assets/monsters/troll.png'),
   wolf: PIXI.Texture.from('assets/monsters/wolf.png'),
@@ -136,11 +136,11 @@ export const propsSprites = {
 };
 
 export const monstersSprites = {
-  [`${MonsterType.Bandit}`]: textures['bandit'],
+  [`${MonsterType.Ghast}`]: textures['ghast'],
   [`${MonsterType.CentaurFemale}`]: textures['centaur-female'],
   [`${MonsterType.CentaurMale}`]: textures['centaur-male'],
-  [`${MonsterType.MushroomLarge}`]: textures['mushroom-large'],
-  [`${MonsterType.MushroomSmall}`]: textures['mushroom-small'],
+  [`${MonsterType.Firepumpkin}`]: textures['firepumpkin'],
+  [`${MonsterType.Firesprite}`]: textures['firesprite'],
   [`${MonsterType.Skeleton}`]: textures['skeleton'],
   [`${MonsterType.Troll}`]: textures['troll'],
   [`${MonsterType.Wolf}`]: textures['wolf'],

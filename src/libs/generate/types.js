@@ -182,21 +182,21 @@ export const PropTypes = [
 // Monsters
 //
 export const MonsterType = {
-  Bandit: 1,
+  Ghast: 1,
   CentaurFemale: 2,
   CentaurMale: 3,
-  MushroomLarge: 4,
-  MushroomSmall: 5,
+  Firepumpkin: 4,
+  Firesprite: 5,
   Skeleton: 6,
   Troll: 7,
   Wolf: 8,
 };
 export const MonsterTypes = [
-  'Bandit',
+  'Ghast',
   'CentaurFemale',
   'CentaurMale',
-  'MushroomLarge',
-  'MushroomSmall',
+  'Firepumpkin',
+  'Firesprite',
   'Skeleton',
   'Troll',
   'Wolf',
