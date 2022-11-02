@@ -144,5 +144,5 @@ const CanvasContainer = styled.div`
   flex: 1 0 auto;
   height: 100%;
   overflow: auto;
-  background-color: #25131a;
+  background-color: #000000;
 `;
