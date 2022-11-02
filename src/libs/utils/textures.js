@@ -26,7 +26,7 @@ const textures = {
   'crate-wood': PIXI.Texture.from('assets/props/crate-wood.png'),
   flag: PIXI.Texture.from('assets/props/flag.png'),
   'handcuff-1': PIXI.Texture.from('assets/props/handcuff-1.png'),
-  'handcuff-2': PIXI.Texture.from('assets/props/handcuff-2.png'),
+  piece: PIXI.Texture.from('assets/props/piece.png'),
   lamp: PIXI.Texture.from('assets/props/lamp.png'),
   skull: PIXI.Texture.from('assets/props/skull.png'),
   'stones-large': PIXI.Texture.from('assets/props/stones-large.png'),
@@ -36,13 +36,13 @@ const textures = {
   'web-right': PIXI.Texture.from('assets/props/web-right.png'),
   // Items
   'health-large': PIXI.Texture.from('assets/props/health-large.png'),
-  'health-small': PIXI.Texture.from('assets/props/health-small.png'),
+  pillar: PIXI.Texture.from('assets/props/pillar.png'),
   'key-gold': PIXI.Texture.from('assets/props/key-gold.png'),
   'key-silver': PIXI.Texture.from('assets/props/key-silver.png'),
   'mana-large': PIXI.Texture.from('assets/props/mana-large.png'),
   'mana-small': PIXI.Texture.from('assets/props/mana-small.png'),
   // Spawns
-  ladder: PIXI.Texture.from('assets/props/ladder.png'),
+  door: PIXI.Texture.from('assets/props/door.png'),
   // Monsters
   bandit: PIXI.Texture.from('assets/monsters/bandit.png'),
   'centaur-female': PIXI.Texture.from('assets/monsters/centaur-female.png'),
@@ -116,7 +116,7 @@ export const propsSprites = {
   [`${PropType.CrateSilver}`]: textures['crate-silver'],
   [`${PropType.CrateWood}`]: textures['crate-wood'],
   [`${PropType.Handcuff1}`]: textures['handcuff-1'],
-  [`${PropType.Handcuff2}`]: textures['handcuff-2'],
+  [`${PropType.Piece}`]: textures['piece'],
   [`${PropType.Lamp}`]: textures['lamp'],
   [`${PropType.Skull}`]: textures['skull'],
   [`${PropType.StonesLarge}`]: textures['stones-large'],
@@ -126,13 +126,13 @@ export const propsSprites = {
   [`${PropType.WebRight}`]: textures['web-right'],
   // Items
   [`${PropType.HealthLarge}`]: textures['health-large'],
-  [`${PropType.HealthSmall}`]: textures['health-small'],
+  [`${PropType.Pillar}`]: textures['pillar'],
   [`${PropType.KeyGold}`]: textures['key-gold'],
   [`${PropType.KeySilver}`]: textures['key-silver'],
   [`${PropType.ManaLarge}`]: textures['mana-large'],
   [`${PropType.ManaSmall}`]: textures['mana-small'],
   // Spawns
-  [`${PropType.Ladder}`]: textures['ladder'],
+  [`${PropType.Door}`]: textures['door'],
 };
 
 export const monstersSprites = {
