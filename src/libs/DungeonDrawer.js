@@ -91,7 +91,7 @@ export class DungeonDrawer {
         const texture = sprites[id];
         if (texture) {
           const sprite = new PIXI.Sprite(texture);
-          sprite.scale.set(options.unitWidthInPixels / texture.width);
+          // sprite.scale.set(options.unitWidthInPixels / texture.width);
           sprite.position.set(x * this.unitInPixels, y * this.unitInPixels);
           this.tilemapContainer.addChild(sprite);
         } else {
