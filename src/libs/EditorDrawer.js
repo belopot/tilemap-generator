@@ -93,6 +93,8 @@ export class EditorDrawer {
     const {tiles, props, monsters} = layers;
 
     this.drawTiles(tiles, options.selectedLayer === 'tiles');
+    this.drawProps(props, options.selectedLayer === 'props');
+    this.drawMonsters(monsters, options.selectedLayer === 'monsters');
 
     if (options.debug) {
       this.drawGrid(tiles);
@@ -123,6 +125,46 @@ export class EditorDrawer {
           rectangle.position.set(x * TILE_SIZE, y * TILE_SIZE);
           this.tilesContainer.addChild(rectangle);
         }
+      }
+    }
+  };
+
+  drawProps = (tiles, selected) => {
+    this.propsContainer.removeChildren();
+    this.propsContainer.alpha = selected ? 1.0 : 0.5;
+
+    for (let y = 0; y < tiles.length; y++) {
+      for (let x = 0; x < tiles[y].length; x++) {
+        const tileId = tiles[y][x];
+        if (tileId === 0) {
+          continue;
+        }
+
+        const texture = Textures.propsSprites[tileId];
+        const sprite = new PIXI.Sprite(texture);
+        sprite.scale.set(TILE_SIZE / texture.width);
+        sprite.position.set(x * TILE_SIZE, y * TILE_SIZE);
+        this.propsContainer.addChild(sprite);
+      }
+    }
+  };
+
+  drawMonsters = (tiles, selected) => {
+    this.monstersContainer.removeChildren();
+    this.monstersContainer.alpha = selected ? 1.0 : 0.5;
+
+    for (let y = 0; y < tiles.length; y++) {
+      for (let x = 0; x < tiles[y].length; x++) {
+        const tileId = tiles[y][x];
+        if (tileId === 0) {
+          continue;
+        }
+
+        const texture = Textures.monstersSprites[tileId];
+        const sprite = new PIXI.Sprite(texture);
+        sprite.scale.set(TILE_SIZE / texture.width);
+        sprite.position.set(x * TILE_SIZE, y * TILE_SIZE);
+        this.monstersContainer.addChild(sprite);
       }
     }
   };
