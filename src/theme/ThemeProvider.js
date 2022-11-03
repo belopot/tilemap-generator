@@ -1,4 +1,3 @@
-import React from 'react';
 import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
   createGlobalStyle,
