@@ -1,3 +1,4 @@
+import React from 'react';
 import Generate from 'pages/Generate';
 import Edit from 'pages/Edit';
 
