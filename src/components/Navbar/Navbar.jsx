@@ -73,20 +73,22 @@ export default function Navbar() {
 }
 
 const Holder = styled.header`
-  width: inherit;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
   background-color: #212121;
+  width: 100%;
 `;
 
 const FlexHolder = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 1.5em 0;
+  padding: 1.5em 2em 1.5em 1.5em;
   @media ${device.pad} {
-    flex-direction: row-reverse;
-    justify-content: flex-end;
     gap: 1em;
   }
 `;
@@ -146,7 +148,7 @@ const NavMobile = styled(motion.nav)`
   z-index: 1;
   top: 0;
   left: 0;
-  right: 30%;
+  right: 0;
   bottom: 0;
   padding: 2em 1em 2em 0;
   background-color: #132b44;

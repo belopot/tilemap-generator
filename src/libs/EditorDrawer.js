@@ -50,7 +50,7 @@ export class EditorDrawer {
     // Cursor
     this.cursorPosition = new PIXI.Point(0, 0);
     this.cursorSprite = new PIXI.Graphics();
-    this.cursorSprite.beginFill(0x0000ff, 0.5);
+    this.cursorSprite.beginFill(0xffff00, 0.4);
     this.cursorSprite.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
     this.cursorSprite.endFill();
     this.cursorContainer = new PIXI.Container();

@@ -1,12 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import styled from 'styled-components';
-import PageTransition from 'components/PageTransition';
-import Sidebar from './components/Sidebar';
-import {DungeonDrawer} from 'libs/DungeonDrawer';
 import {nanoid} from 'nanoid';
+
 import {useStore} from 'state/store';
+import {DungeonDrawer} from 'libs/DungeonDrawer';
 import {generate} from 'libs/generate';
 import {Data, Download} from 'libs/utils';
+import PageTransition from 'components/PageTransition';
+import {
+  ContentContainer,
+  PageContainer,
+  SidebarContainer,
+} from 'components/Containers';
+import Sidebar from './components/Sidebar';
 
 export default function Generate() {
   const mapWidth = useStore(state => state.mapWidth);
@@ -25,8 +30,8 @@ export default function Generate() {
   const dungeonRef = useRef();
   const seedRef = useRef();
 
-  const [canvasWidth, setCanvasWidth] = useState(100);
-  const [canvasHeight, setCanvasHeight] = useState(100);
+  const [canvasWidth, setCanvasWidth] = useState(0);
+  const [canvasHeight, setCanvasHeight] = useState(0);
 
   const onDraw = args => {
     try {
@@ -106,11 +111,11 @@ export default function Generate() {
 
   return (
     <PageTransition>
-      <Holder>
+      <PageContainer>
         <SidebarContainer>
           <Sidebar onGenerate={onGenerate} onDownload={onDownload} />
         </SidebarContainer>
-        <CanvasContainer>
+        <ContentContainer>
           <div
             ref={canvasRef}
             style={{
@@ -118,31 +123,8 @@ export default function Generate() {
               height: `${canvasHeight}px`,
             }}
           ></div>
-        </CanvasContainer>
-      </Holder>
+        </ContentContainer>
+      </PageContainer>
     </PageTransition>
   );
 }
-
-const Holder = styled.div`
-  width: 100%;
-  height: 100%;
-  color: black;
-  display: flex;
-`;
-
-const SidebarContainer = styled.div`
-  min-width: 15em;
-  width: 15em;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 1.5em;
-`;
-
-const CanvasContainer = styled.div`
-  flex: 1 0 auto;
-  height: 100%;
-  overflow: auto;
-  background-color: #25131a;
-`;

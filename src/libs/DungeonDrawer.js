@@ -14,7 +14,7 @@ export class DungeonDrawer {
     this.app = new PIXI.Application({
       width: container.getBoundingClientRect().width,
       height: container.getBoundingClientRect().height,
-      backgroundColor: 0x200b13,
+      backgroundColor: 0x808080,
       resizeTo: window,
     });
     this.app.renderer.autoResize = true;

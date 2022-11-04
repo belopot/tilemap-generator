@@ -61,9 +61,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: #212121;
+    background-color: #8a8a8a;
     border-radius: 10px;
-    border: 2px solid #f1f1f1;
+    border: 4px solid #f1f1f1;
   }
 
   a {
@@ -74,16 +74,12 @@ const GlobalStyle = createGlobalStyle`
 const MobileContainer = styled(Div100vh)`
   width: 100vw;
   font-size: 0.9em;
-  display: flex;
-  flex-direction: column;
 `;
 
 const DesktopContainer = styled.div`
   width: 100vw;
   height: 100vh;
   font-size: 1em;
-  display: flex;
-  flex-direction: column;
   @media ${device.laptop} {
     font-size: 1.2vw;
   }

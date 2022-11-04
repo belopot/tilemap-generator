@@ -8,7 +8,8 @@ export default function PageTransition(props) {
 }
 
 const RouteContainer = styled(motion.div)`
-  flex: 1 0 auto;
+  width: 100%;
+  height: 100%;
 `;
 
 const AnimationSettings = {

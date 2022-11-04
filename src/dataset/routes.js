@@ -5,12 +5,12 @@ import Edit from 'pages/Edit';
 export const PrimaryRoutes = [
   {
     path: '/',
-    title: 'Generate',
+    title: 'Generate dungeon',
     component: <Generate />,
   },
   {
     path: '/edit',
-    title: 'Edit',
+    title: 'Edit rooms',
     component: <Edit />,
   },
 ];

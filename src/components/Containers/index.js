@@ -11,3 +11,30 @@ export const MiddleContainer = styled.div`
     width: 90%;
   }
 `;
+
+export const PageContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  color: black;
+  padding-top: 4em;
+  @media ${device.pad} {
+    padding-top: 6em;
+  }
+`;
+
+export const SidebarContainer = styled.div`
+  min-width: 15em;
+  width: 15em;
+  overflow-y: auto;
+  padding: 1em;
+`;
+
+export const ContentContainer = styled.div`
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: auto;
+  display: flex;
+  background-color: #808080;
+`;

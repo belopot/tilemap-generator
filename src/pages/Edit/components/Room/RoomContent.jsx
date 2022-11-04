@@ -1,0 +1,85 @@
+import React, {useRef, useEffect} from 'react';
+import {MonsterType, PropType, TileType} from 'libs/generate/types';
+import {EditorDrawer} from 'libs/EditorDrawer';
+import {useRooms} from 'hooks/rooms';
+
+/**
+ * The selected room tiles editor.
+ */
+export function RoomContent(props) {
+  const {room, onUpdate} = props;
+  const canvasRef = useRef();
+  const canvasDrawer = useRef();
+  const {selectedLayer, selectedTile, debug} = useRooms();
+
+  const onTileClick = (x, y) => {
+    const layer = room.layers[selectedLayer];
+    if (x >= room.width || y >= room.height) {
+      return;
+    }
+
+    const tileId = layer[y][x];
+    const newTileId = getTileIdFromName(selectedLayer, selectedTile);
+    onUpdate(
+      selectedLayer,
+      x,
+      y,
+      tileId !== 0 && tileId === newTileId ? 0 : newTileId,
+    );
+  };
+
+  // Initialize the canvas drawer
+  useEffect(() => {
+    if (!canvasDrawer.current) {
+      canvasDrawer.current = new EditorDrawer(canvasRef.current);
+    }
+
+    // canvasDrawer.current.onTileClick = onTileClick;
+  }, [canvasRef, room, selectedLayer, selectedTile]);
+
+  // Update drawer when room changes
+  useEffect(() => {
+    canvasDrawer.current.drawLayers(room.layers, {
+      selectedLayer,
+      debug,
+    });
+  }, [room, selectedLayer, debug]);
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        top: 0,
+        right: 0,
+        overflow: 'scroll',
+      }}
+    >
+      <div
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          top: 0,
+          right: 0,
+        }}
+      />
+    </div>
+  );
+}
+
+/**
+ * Return a tile's id given a layer and its name.
+ */
+function getTileIdFromName(layer, tileName) {
+  switch (layer) {
+    case 'tiles':
+      return TileType[tileName];
+    case 'props':
+      return PropType[tileName];
+    case 'monsters':
+      return MonsterType[tileName];
+  }
+}
