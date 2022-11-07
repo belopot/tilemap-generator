@@ -1,4 +1,5 @@
 import React, {useRef, useEffect} from 'react';
+import styled from 'styled-components';
 import {MonsterType, PropType, TileType} from 'libs/generate/types';
 import {EditorDrawer} from 'libs/EditorDrawer';
 import {useRooms} from 'hooks/rooms';
@@ -34,7 +35,7 @@ export function RoomContent(props) {
       canvasDrawer.current = new EditorDrawer(canvasRef.current);
     }
 
-    // canvasDrawer.current.onTileClick = onTileClick;
+    canvasDrawer.current.onTileClick = onTileClick;
   }, [canvasRef, room, selectedLayer, selectedTile]);
 
   // Update drawer when room changes
@@ -46,29 +47,20 @@ export function RoomContent(props) {
   }, [room, selectedLayer, debug]);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        top: 0,
-        right: 0,
-        overflow: 'scroll',
-      }}
-    >
-      <div
-        ref={canvasRef}
-        style={{
-          position: 'absolute',
-          left: 0,
-          bottom: 0,
-          top: 0,
-          right: 0,
-        }}
-      />
-    </div>
+    <Holder>
+      <div ref={canvasRef} />
+    </Holder>
   );
 }
+
+const Holder = styled.div`
+  position: absolute;
+  left: 20em;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+`;
 
 /**
  * Return a tile's id given a layer and its name.
