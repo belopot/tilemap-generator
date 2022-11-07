@@ -126,6 +126,7 @@ export function CollectionsProvider(props) {
     setRooms(loadedRooms);
     setSelectedRoomId(null);
     setRoomsFilter('all');
+    Data.saveRooms(loadedRooms);
   };
 
   // When updating the selected layer, update the selected tile accordingly
