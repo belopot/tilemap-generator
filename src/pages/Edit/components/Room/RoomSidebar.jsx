@@ -166,17 +166,12 @@ export function RoomSidebar(props) {
 }
 
 const Holder = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  width: 20em;
+  width: 15em;
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   overflow-y: auto;
-  background-color: white;
 `;
 
 /**

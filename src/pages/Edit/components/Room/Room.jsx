@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React from 'react';
+import styled from 'styled-components';
+
 import {useRooms} from 'hooks/rooms';
 import {RoomContent} from './RoomContent';
 import {RoomEmpty} from './RoomEmpty';
@@ -12,9 +14,6 @@ export default function Room() {
   const {rooms, selectedRoomId, updateRoom} = useRooms();
 
   const room = rooms.find(item => item.id === selectedRoomId);
-  if (!room) {
-    return <RoomEmpty />;
-  }
 
   /** When a room's details are updated */
   const onDetailsUpdate = (params, oldRoomId) => {
@@ -56,9 +55,23 @@ export default function Room() {
   };
 
   return (
-    <>
-      <RoomSidebar room={room} onUpdate={onDetailsUpdate} />
-      <RoomContent room={room} onUpdate={onTileUpdate} />
-    </>
+    <Holder>
+      {room ? (
+        <>
+          <RoomSidebar room={room} onUpdate={onDetailsUpdate} />
+          <RoomContent room={room} onUpdate={onTileUpdate} />
+        </>
+      ) : (
+        <RoomEmpty />
+      )}
+    </Holder>
   );
 }
+
+const Holder = styled.div`
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: #eff3f8;
+`;

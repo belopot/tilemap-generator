@@ -1,5 +1,6 @@
 import React, {useRef, useEffect} from 'react';
 import styled from 'styled-components';
+
 import {MonsterType, PropType, TileType} from 'libs/generate/types';
 import {EditorDrawer} from 'libs/EditorDrawer';
 import {useRooms} from 'hooks/rooms';
@@ -54,10 +55,8 @@ export function RoomContent(props) {
 }
 
 const Holder = styled.div`
-  position: absolute;
-  left: 20em;
-  top: 0;
-  width: 100%;
+  position: relative;
+  flex: 1;
   height: 100%;
   overflow: auto;
 `;

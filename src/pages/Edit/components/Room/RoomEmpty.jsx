@@ -1,23 +1,14 @@
-import * as React from 'react';
+import React from 'react';
+import styled from 'styled-components';
 
-/**
- * A placeholder when no room is selected.
- */
 export function RoomEmpty() {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: 250,
-        bottom: 0,
-        top: 0,
-        right: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      Select an existing room or create a new one.
-    </div>
-  );
+  return <Holder>Select an existing room or create a new one.</Holder>;
 }
+
+const Holder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
