@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {InputText} from 'primereact/inputtext';
 import {InputNumber} from 'primereact/inputnumber';
