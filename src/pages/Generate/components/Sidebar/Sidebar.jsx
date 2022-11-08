@@ -54,7 +54,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="mt-4 field col-12">
         <label htmlFor="map_width">Map width</label>
         <InputNumber
-          inputId="map_width"
+          id="map_width"
           className="w-full p-inputtext-sm"
           value={mapWidth}
           onValueChange={e => setMapWidth(e.value)}
@@ -63,7 +63,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="map_height">Map height</label>
         <InputNumber
-          inputId="map_height"
+          id="map_height"
           className="w-full p-inputtext-sm"
           value={mapHeight}
           onValueChange={e => setMapHeight(e.value)}
@@ -72,7 +72,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="map_gutter">Map gutter</label>
         <InputNumber
-          inputId="map_gutter"
+          id="map_gutter"
           className="w-full p-inputtext-sm"
           value={mapGutterWidth}
           onValueChange={e => setMapGutterWidth(e.value)}
@@ -81,7 +81,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="iterations">Iterations</label>
         <InputNumber
-          inputId="iterations"
+          id="iterations"
           className="w-full p-inputtext-sm"
           value={iterations}
           onValueChange={e => setIterations(e.value)}
@@ -90,7 +90,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="con_split_retries">Container split retries</label>
         <InputNumber
-          inputId="con_split_retries"
+          id="con_split_retries"
           className="w-full p-inputtext-sm"
           value={containerSplitRetries}
           onValueChange={e => setContainerSplitRetries(e.value)}
@@ -99,7 +99,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="con_size_ratio">Container size ratio</label>
         <InputNumber
-          inputId="con_size_ratio"
+          id="con_size_ratio"
           className="w-full p-inputtext-sm"
           value={containerMinimumRatio}
           onValueChange={e => setContainerMinimumRatio(e.value)}
@@ -111,7 +111,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="con_min_size">Container min size</label>
         <InputNumber
-          inputId="con_min_size"
+          id="con_min_size"
           className="w-full p-inputtext-sm"
           value={containerMinimumSize}
           onValueChange={e => setContainerMinimumSize(e.value)}
@@ -120,7 +120,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="corridor_width">Corridor width</label>
         <InputNumber
-          inputId="corridor_width"
+          id="corridor_width"
           className="w-full p-inputtext-sm"
           value={corridorWidth}
           onValueChange={e => setCorridorWidth(e.value)}
@@ -129,7 +129,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       <div className="field col-12">
         <label htmlFor="tile_width">Tile width</label>
         <InputNumber
-          inputId="tile_width"
+          id="tile_width"
           className="w-full p-inputtext-sm"
           value={tileWidth}
           onValueChange={e => setTileWidth(e.value)}
@@ -137,7 +137,7 @@ export default function Sidebar({onGenerate, onDownload}) {
       </div>
       <div className="field-checkbox col-12">
         <Checkbox
-          inputId="debug"
+          id="debug"
           checked={debug}
           onChange={e => setDebug(e.checked)}
         />
