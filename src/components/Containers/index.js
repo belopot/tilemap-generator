@@ -26,6 +26,7 @@ export const PageContainer = styled.div`
 export const SidebarContainer = styled.div`
   min-width: 15em;
   width: 15em;
+  overflow: hidden;
   overflow-y: auto;
   padding: 1em;
 `;

@@ -1,5 +1,7 @@
 import React from 'react';
 import {useRooms} from 'hooks/rooms';
+import FileInput from 'components/FileInput';
+import {Button} from 'primereact/button';
 
 export default function FileManagement() {
   const {saveRooms, loadRooms} = useRooms();
@@ -17,14 +19,17 @@ export default function FileManagement() {
   };
 
   return (
-    <div className="p-fluid grid formgrid">
+    <div className="formgrid grid">
       <div className="field col-12">
-        <p>Load rooms</p>
-        <input type="file" accept="application/json" onChange={onFileChange} />
+        <FileInput onChange={onFileChange} placeholder="Load json" />
       </div>
       <div className="field col-12">
-        <p>Save rooms</p>
-        <input type="button" value="Save file" onClick={saveRooms} />
+        <Button
+          className="w-full"
+          label="Export to json"
+          aria-label="Export to json"
+          onClick={saveRooms}
+        />
       </div>
     </div>
   );
