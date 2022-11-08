@@ -1,5 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import styled from 'styled-components';
+import {InputText} from 'primereact/inputtext';
+import {InputNumber} from 'primereact/inputnumber';
+import {Checkbox} from 'primereact/Checkbox';
+import {Divider} from 'primereact/divider';
+
 import {
   MonsterTypes,
   PropTypes,
@@ -58,108 +63,92 @@ export function RoomSidebar(props) {
 
   return (
     <Holder>
-      {/* Params */}
-      <div
-        style={{
-          padding: 16,
-        }}
-      >
-        <p>Params</p>
-
+      <div className="formgrid grid">
         {/* Id */}
-        <p>Id:</p>
-        <input
-          style={{width: '100%'}}
-          type="text"
-          value={id}
-          onChange={event => setId(event.target.value)}
-        />
-
-        {/* Type */}
-        <p>Type:</p>
-        <select
-          style={{width: '100%'}}
-          value={type}
-          onChange={event => setType(event.target.value)}
-        >
-          {RoomTypes.map(roomType => (
-            <option key={roomType} value={roomType}>
-              {roomType}
-            </option>
-          ))}
-        </select>
-
-        {/* Width */}
-        <p>Width:</p>
-        <input
-          style={{width: '100%'}}
-          type="number"
-          value={width}
-          onChange={event => setWidth(Number.parseInt(event.target.value))}
-        />
-
-        {/* Height */}
-        <p>Height:</p>
-        <input
-          style={{width: '100%'}}
-          type="number"
-          value={height}
-          onChange={event => setHeight(Number.parseInt(event.target.value))}
-        />
-      </div>
-
-      {/* Layers */}
-      <div
-        style={{
-          padding: 16,
-        }}
-      >
-        <p>Layer</p>
-
-        {/* Layer */}
-        <p>Selected layer:</p>
-        <select
-          value={selectedLayer}
-          onChange={event => selectLayer(event.target.value)}
-        >
-          {TileLayers.map(item => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-
-        {/* Tile */}
-        <p>Selected tile:</p>
-        <select
-          value={selectedTile}
-          onChange={event => selectTile(event.target.value)}
-        >
-          {getTilesForLayer(selectedLayer).map(item => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Debug */}
-      <div
-        style={{
-          padding: 16,
-        }}
-      >
-        <p>Debug</p>
-
-        <label>
-          <input
-            type="checkbox"
-            style={{marginRight: 8}}
-            checked={debug}
-            onChange={event => setDebug(event.target.checked)}
+        <div className="field col-12">
+          <label htmlFor="">Id:</label>
+          <InputText
+            className="w-full p-inputtext-sm"
+            value={id}
+            onChange={e => setId(e.target.value)}
           />
-          Show grid?
-        </label>
+        </div>
+        {/* Type */}
+        <div className="field col-12">
+          <label htmlFor="">Type:</label>
+          <select
+            className="w-full"
+            value={type}
+            onChange={event => setType(event.target.value)}
+          >
+            {RoomTypes.map(roomType => (
+              <option key={roomType} value={roomType}>
+                {roomType}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* Width */}
+        <div className="field col-12">
+          <label htmlFor="width">Width</label>
+          <InputNumber
+            id="width"
+            className="w-full p-inputtext-sm"
+            value={width}
+            onValueChange={e => setWidth(e.value)}
+          />
+        </div>
+        {/* Height */}
+        <div className="field col-12">
+          <label htmlFor="height">Height</label>
+          <InputNumber
+            id="height"
+            className="w-full p-inputtext-sm"
+            value={height}
+            onValueChange={e => setHeight(e.value)}
+          />
+        </div>
+        <Divider />
+        {/* Selected layer */}
+        <div className="field col-12">
+          <label htmlFor="">Selected layer</label>
+          <select
+            className="w-full"
+            value={selectedLayer}
+            onChange={event => selectLayer(event.target.value)}
+          >
+            {TileLayers.map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* Selected tile */}
+        <div className="field col-12">
+          <label htmlFor="">Selected tile</label>
+          <select
+            className="w-full"
+            value={selectedTile}
+            onChange={event => selectTile(event.target.value)}
+          >
+            {getTilesForLayer(selectedLayer).map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+        <Divider />
+        {/* Debug */}
+        <div className="field-checkbox col-12">
+          <Checkbox
+            id="debug"
+            checked={debug}
+            onChange={e => setDebug(e.checked)}
+          />
+          <label htmlFor="debug">Debug</label>
+        </div>
       </div>
     </Holder>
   );
@@ -168,10 +157,9 @@ export function RoomSidebar(props) {
 const Holder = styled.div`
   width: 15em;
   height: 100%;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   overflow-y: auto;
+  padding: 1em;
 `;
 
 /**
