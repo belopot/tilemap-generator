@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import {Button} from 'primereact/button';
 
 export default function RoomListItem(props) {
   const {index, room, selected, onClick, onDelete} = props;
@@ -13,23 +14,18 @@ export default function RoomListItem(props) {
   return (
     <Holder
       bg={hovered || selected ? `rgba(0,0,0,0.2)` : 'transparent'}
-      title={room.id}
       onClick={() => onClick(room.id)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <p>{room.id}</p>
-      {/* When hovered, display a delete button */}
+      <span>{room.id}</span>
       {hovered && (
-        <div
-          style={{
-            position: 'absolute',
-            right: 8,
-          }}
+        <DeleteButton
+          icon="pi pi-trash"
+          className="p-button-rounded p-button-text p-button-sm"
+          aria-label="Delete"
           onClick={handleDelete}
-        >
-          🗑️
-        </div>
+        />
       )}
     </Holder>
   );
@@ -39,9 +35,18 @@ const Holder = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background-color: ${props => props.bg};
-  cursor: pointer;
   transition: all 0.2s ease-out;
-  padding: 0.7em 1em;
+  padding: 0.8em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+`;
+
+const DeleteButton = styled(Button)`
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  z-index: 1;
+  transform: translate(0, -50%);
 `;

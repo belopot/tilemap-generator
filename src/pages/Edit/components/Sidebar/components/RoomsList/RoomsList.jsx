@@ -9,8 +9,7 @@ export default function RoomsList() {
   return (
     <div>
       <RoomsListHeader />
-      <div className="flex flex-column">
-        <p className="mt-5">Rooms</p>
+      <div className="flex flex-column pt-2">
         {rooms.map((room, index) => (
           <RoomListItem
             key={room.id}
