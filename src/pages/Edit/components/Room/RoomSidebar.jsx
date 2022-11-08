@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {InputText} from 'primereact/inputtext';
 import {InputNumber} from 'primereact/inputnumber';
-import {Checkbox} from 'primereact/Checkbox';
+import {Checkbox} from 'primereact/checkbox';
 import {Divider} from 'primereact/divider';
 
 import {
