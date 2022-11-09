@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
-import {computeTilesMask} from './generate/dungeon';
-import {Textures} from './utils';
+import {computeTilesMask} from '../generate/dungeon';
+import {Textures} from '../utils';
 
 const TILE_SIZE = 32;
 
-export class EditorDrawer {
+export class EditorPixiDrawer {
   app;
   tilesContainer;
   propsContainer;

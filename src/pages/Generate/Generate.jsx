@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {nanoid} from 'nanoid';
 
 import {useStore} from 'state/store';
-import {DungeonDrawer} from 'libs/DungeonDrawer';
+import {DungeonPixiDrawer} from 'libs/drawers/DungeonPixiDrawer';
 import {generate} from 'libs/generate';
 import {Data, Download} from 'libs/utils';
 import PageTransition from 'components/PageTransition';
@@ -102,7 +102,7 @@ export default function Generate() {
   };
 
   useEffect(() => {
-    canvasDrawerRef.current = new DungeonDrawer(canvasRef.current);
+    canvasDrawerRef.current = new DungeonPixiDrawer(canvasRef.current);
   }, []);
 
   useEffect(() => {
