@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
-import {Textures} from './utils';
+import {Textures} from '../utils';
 
-export class DungeonDrawer {
+export class DungeonPixiDrawer {
   app;
   tilemapContainer;
   shapesContainer;

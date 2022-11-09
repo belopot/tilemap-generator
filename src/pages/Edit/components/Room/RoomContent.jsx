@@ -2,7 +2,7 @@ import React, {useRef, useEffect} from 'react';
 import styled from 'styled-components';
 
 import {MonsterType, PropType, TileType} from 'libs/generate/types';
-import {EditorDrawer} from 'libs/EditorDrawer';
+import {EditorPixiDrawer} from 'libs/drawers/EditorPixiDrawer';
 import {useRooms} from 'hooks/rooms';
 
 /**
@@ -33,7 +33,7 @@ export function RoomContent(props) {
   // Initialize the canvas drawer
   useEffect(() => {
     if (!canvasDrawer.current) {
-      canvasDrawer.current = new EditorDrawer(canvasRef.current);
+      canvasDrawer.current = new EditorPixiDrawer(canvasRef.current);
     }
 
     canvasDrawer.current.onTileClick = onTileClick;
