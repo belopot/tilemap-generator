@@ -36,7 +36,7 @@ export function CollectionsProvider(props) {
   const [selectedRoomId, setSelectedRoomId] = useState(null);
   const [selectedLayer, setSelectedLayer] = useState('tiles');
   const [selectedTile, setSelectedTile] = useState('');
-  const [debug, setDebug] = useState(false);
+  const [debug, setDebug] = useState(true);
 
   /** Add a room */
   const addRoom = () => {

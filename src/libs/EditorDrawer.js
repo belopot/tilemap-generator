@@ -180,7 +180,7 @@ export class EditorDrawer {
     for (let y = 0; y < tiles.length; y++) {
       for (let x = 0; x < tiles[y].length; x++) {
         const rectangle = new PIXI.Graphics();
-        rectangle.lineStyle(1, 0x00ff00, 0.5);
+        rectangle.lineStyle(1, 0x00ff00, 0.1);
         rectangle.drawRect(0, 0, TILE_SIZE, TILE_SIZE);
         rectangle.position.set(x * TILE_SIZE, y * TILE_SIZE);
         this.debugContainer.addChild(rectangle);
