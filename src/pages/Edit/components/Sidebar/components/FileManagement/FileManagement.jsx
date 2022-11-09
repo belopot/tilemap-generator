@@ -21,7 +21,7 @@ export default function FileManagement() {
   return (
     <div className="formgrid grid">
       <div className="field col-12">
-        <FileInput onChange={onFileChange} placeholder="Load json" />
+        <FileInput onChange={onFileChange} placeholder="Load rooms" />
       </div>
       <div className="field col-12">
         <Button

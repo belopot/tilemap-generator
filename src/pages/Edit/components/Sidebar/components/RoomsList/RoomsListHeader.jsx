@@ -20,8 +20,8 @@ export default function RoomsListHeader() {
     <Holder>
       <Button
         className="w-full"
-        label="Add room"
-        aria-label="Add room"
+        label="Add a new room"
+        aria-label="Add a new room"
         onClick={addRoom}
       />
       <Dropdown
