@@ -4,6 +4,7 @@ import {InputText} from 'primereact/inputtext';
 import {InputNumber} from 'primereact/inputnumber';
 import {Checkbox} from 'primereact/checkbox';
 import {Divider} from 'primereact/divider';
+import {Dropdown} from 'primereact/dropdown';
 
 import {
   MonsterTypes,
@@ -68,7 +69,7 @@ export function RoomSidebar(props) {
         <div className="field col-12">
           <label htmlFor="">Id:</label>
           <InputText
-            className="w-full p-inputtext-sm"
+            className="w-full"
             value={id}
             onChange={e => setId(e.target.value)}
           />
@@ -76,68 +77,60 @@ export function RoomSidebar(props) {
         {/* Type */}
         <div className="field col-12">
           <label htmlFor="">Type:</label>
-          <select
+          <Dropdown
             className="w-full"
             value={type}
-            onChange={event => setType(event.target.value)}
-          >
-            {RoomTypes.map(roomType => (
-              <option key={roomType} value={roomType}>
-                {roomType}
-              </option>
-            ))}
-          </select>
+            options={RoomTypes}
+            onChange={e => {
+              setType(e.value);
+            }}
+            placeholder="Select a type"
+          />
         </div>
         {/* Width */}
         <div className="field col-12">
-          <label htmlFor="width">Width</label>
+          <label htmlFor="">Width</label>
           <InputNumber
-            id="width"
-            className="w-full p-inputtext-sm"
+            className="w-full"
             value={width}
             onValueChange={e => setWidth(e.value)}
           />
         </div>
         {/* Height */}
         <div className="field col-12">
-          <label htmlFor="height">Height</label>
+          <label htmlFor="">Height</label>
           <InputNumber
-            id="height"
-            className="w-full p-inputtext-sm"
+            className="w-full"
             value={height}
             onValueChange={e => setHeight(e.value)}
           />
         </div>
         <Divider />
-        {/* Selected layer */}
+        {/* Layer */}
         <div className="field col-12">
-          <label htmlFor="">Selected layer</label>
-          <select
+          <label htmlFor="">Layer</label>
+          <Dropdown
             className="w-full"
             value={selectedLayer}
-            onChange={event => selectLayer(event.target.value)}
-          >
-            {TileLayers.map(item => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+            options={TileLayers}
+            onChange={e => {
+              selectLayer(e.value);
+            }}
+            placeholder="Select a layer"
+          />
         </div>
-        {/* Selected tile */}
+        {/* Tile */}
         <div className="field col-12">
-          <label htmlFor="">Selected tile</label>
-          <select
+          <label htmlFor="">Tile</label>
+          <Dropdown
             className="w-full"
             value={selectedTile}
-            onChange={event => selectTile(event.target.value)}
-          >
-            {getTilesForLayer(selectedLayer).map(item => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+            options={getTilesForLayer(selectedLayer)}
+            onChange={e => {
+              selectTile(e.value);
+            }}
+            placeholder="Select a tile"
+          />
         </div>
         <Divider />
         {/* Debug */}
@@ -155,7 +148,7 @@ export function RoomSidebar(props) {
 }
 
 const Holder = styled.div`
-  width: 15em;
+  width: 18em;
   height: 100%;
   overflow: hidden;
   overflow-y: auto;

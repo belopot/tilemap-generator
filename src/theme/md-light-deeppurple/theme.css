@@ -8817,3 +8817,6 @@
 
 
 /* Customizations to the designer theme should be defined here */
+.p-dropdown {
+  border: 1px solid rgba(0, 0, 0, 0.38);
+}
