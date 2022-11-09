@@ -1,4 +1,4 @@
-import RoomsJSON from './default.json';
+import RoomsJSON from './rooms.json';
 
 /**
  * Save a list of rooms to the local storage.
