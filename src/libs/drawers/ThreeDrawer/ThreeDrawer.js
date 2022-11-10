@@ -28,6 +28,7 @@ import {
   PlaneGeometry,
   Group,
   BoxGeometry,
+  GridHelper,
 } from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
@@ -127,6 +128,10 @@ export default class ThreeDrawer {
     this.axesHelper = new AxesHelper(1);
     this.axesHelper.position.y = 0.01;
     this.scene.add(this.axesHelper);
+
+    this.gridHelper = new GridHelper(100, 10);
+    this.gridHelper.position.y = 0.01;
+    this.scene.add(this.gridHelper);
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera
