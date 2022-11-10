@@ -442,6 +442,13 @@ export default class ThreeDrawer {
       options,
     );
 
+    FitCameraToSelection(
+      this.camera,
+      [this.tileGroup],
+      1,
+      this.cameraController,
+    );
+
     this.requestRenderIfNotRequested();
   }
 
