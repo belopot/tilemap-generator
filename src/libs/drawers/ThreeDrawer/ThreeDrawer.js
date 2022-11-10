@@ -457,6 +457,7 @@ export default class ThreeDrawer {
             1,
             1,
           );
+          geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({map: texture});
           const sprite = new Mesh(geometry, material);
           sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
@@ -468,6 +469,7 @@ export default class ThreeDrawer {
             1,
             1,
           );
+          geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0xff0000});
           const sprite = new Mesh(geometry, material);
           sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
