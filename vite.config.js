@@ -1,5 +1,6 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
+import glsl from 'vite-plugin-glsl';
 import jsconfigPaths from 'vite-jsconfig-paths';
 import fs from 'fs/promises';
 
@@ -13,6 +14,7 @@ export default defineConfig({
     include: /src\/.*\.jsx?$/,
     exclude: [],
   },
+  assetsInclude: ['**/*.glb', '**/*.hdr'],
   optimizeDeps: {
     esbuildOptions: {
       plugins: [
@@ -28,5 +30,5 @@ export default defineConfig({
       ],
     },
   },
-  plugins: [react(), jsconfigPaths()],
+  plugins: [glsl(), react(), jsconfigPaths()],
 });

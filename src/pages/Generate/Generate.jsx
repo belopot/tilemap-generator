@@ -1,16 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
+import styled from 'styled-components';
 import {nanoid} from 'nanoid';
+import {useMeasure} from 'react-use';
 
 import {useStore} from 'state/store';
-import {DungeonPixiDrawer} from 'libs/drawers/DungeonPixiDrawer';
 import {generate} from 'libs/generate';
 import {Data, Download} from 'libs/utils';
+import ThreeEngine from 'libs/three/ThreeEngine';
 import PageTransition from 'components/PageTransition';
 import {
   ContentContainer,
   PageContainer,
   SidebarContainer,
 } from 'components/Containers';
+import Loader from 'components/Loader';
 import Sidebar from './components/Sidebar';
 
 export default function Generate() {
@@ -24,14 +27,21 @@ export default function Generate() {
   const corridorWidth = useStore(state => state.corridorWidth);
   const tileWidth = useStore(state => state.tileWidth);
   const debug = useStore(state => state.debug);
+  const loaderVisible = useStore(state => state.loaderVisible);
+  const setLoaderVisible = useStore(state => state.setLoaderVisible);
 
-  const canvasRef = useRef();
-  const canvasDrawerRef = useRef();
+  const canvasHolderRef = useRef();
   const dungeonRef = useRef();
   const seedRef = useRef();
+  const threeEngineRef = useRef();
 
-  const [canvasWidth, setCanvasWidth] = useState(0);
-  const [canvasHeight, setCanvasHeight] = useState(0);
+  const [holderRef, holderMeasure] = useMeasure();
+
+  //Three Engine's Store Interface to only set store state
+  const storeInterface = {
+    loaderVisible,
+    setLoaderVisible,
+  };
 
   const onDraw = args => {
     try {
@@ -41,16 +51,13 @@ export default function Generate() {
       });
       dungeonRef.current = dungeon;
 
-      canvasDrawerRef.current.drawAll(dungeon, {
-        debug: args.debug,
-        unitWidthInPixels: args.tileWidth,
-      });
-
-      setCanvasWidth(args.mapWidth * args.tileWidth);
-      setCanvasHeight(args.mapHeight * args.tileWidth);
+      // canvasDrawerRef.current.drawAll(dungeon, {
+      //   debug: args.debug,
+      //   unitWidthInPixels: args.tileWidth,
+      // });
     } catch (error) {
       console.error(error.message);
-      canvasDrawerRef.current.clear();
+      // canvasDrawerRef.current.clear();
     }
   };
 
@@ -102,8 +109,27 @@ export default function Generate() {
   };
 
   useEffect(() => {
-    canvasDrawerRef.current = new DungeonPixiDrawer(canvasRef.current);
+    //Create three engine
+    threeEngineRef.current = new ThreeEngine(
+      canvasHolderRef.current,
+      storeInterface,
+    );
+
+    //Dispose the engine
+    return () => {
+      if (threeEngineRef.current) {
+        threeEngineRef.current.dispose();
+      }
+    };
   }, []);
+
+  //Resize
+  useEffect(() => {
+    if (!threeEngineRef.current) {
+      return;
+    }
+    threeEngineRef.current.requestRenderIfNotRequested();
+  }, [holderMeasure]);
 
   useEffect(() => {
     onDebug();
@@ -111,20 +137,25 @@ export default function Generate() {
 
   return (
     <PageTransition>
-      <PageContainer>
+      <PageContainer ref={holderRef}>
         <SidebarContainer>
           <Sidebar onGenerate={onGenerate} onDownload={onDownload} />
         </SidebarContainer>
         <ContentContainer>
-          <div
-            ref={canvasRef}
-            style={{
-              width: `${canvasWidth}px`,
-              height: `${canvasHeight}px`,
-            }}
-          ></div>
+          <Loader visible={loaderVisible} label="Loading assets" />
+          <CanvasHolder ref={canvasHolderRef} />
         </ContentContainer>
       </PageContainer>
     </PageTransition>
   );
 }
+
+const CanvasHolder = styled.div`
+  width: 100%;
+  height: 100%;
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #2d2d2d;
+  }
+`;

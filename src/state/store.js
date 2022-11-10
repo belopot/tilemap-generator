@@ -29,4 +29,7 @@ export const useStore = create((set, get) => ({
   setTileWidth: v => set({tileWidth: v}),
   debug: true,
   setDebug: v => set({debug: v}),
+  //
+  loaderVisible: false,
+  setLoaderVisible: v => set({loaderVisible: v}),
 }));
