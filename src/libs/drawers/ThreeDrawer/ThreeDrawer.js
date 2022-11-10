@@ -21,13 +21,13 @@ import {
   TextureLoader,
   Vector2,
   WebGLRenderer,
-  BoxBufferGeometry,
   NoToneMapping,
   LinearToneMapping,
   ReinhardToneMapping,
   CineonToneMapping,
   PlaneGeometry,
   Group,
+  BoxGeometry,
 } from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
@@ -101,9 +101,9 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Root model
-    this.tileGroup = new Object3D();
+    this.tileGroup = new Group();
     this.scene.add(this.tileGroup);
-    this.shapeGroup = new Object3D();
+    this.shapeGroup = new Group();
     this.scene.add(this.shapeGroup);
 
     /////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ export default class ThreeDrawer {
     /////////////////////////////////////////////////////////////////////////////
     //Primitives
     this.unitBox = new Mesh(
-      new BoxBufferGeometry(1, 1, 1),
+      new BoxGeometry(1, 1, 1),
       new MeshStandardMaterial({color: 0xffffff}),
     );
     this.unitBox.visible = false;
