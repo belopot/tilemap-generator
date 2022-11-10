@@ -26,6 +26,8 @@ import {
   LinearToneMapping,
   ReinhardToneMapping,
   CineonToneMapping,
+  PlaneGeometry,
+  Group,
 } from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
@@ -35,13 +37,13 @@ import {RGBELoader} from 'three/examples/jsm/loaders/RGBELoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 
-import {textures} from 'libs/utils/textures';
-
+import {Textures} from 'libs/utils';
 import {ENVIRONMENT_DATA} from './Environments';
 import Lights from './Lights';
 import {FitCameraToSelection, ShadowPlane} from './Helpers';
 import Composer from './Composer';
 import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
+import {TEXTURE_ASSET} from 'libs/utils/assets';
 
 export default class ThreeDrawer {
   /**
@@ -63,6 +65,7 @@ export default class ThreeDrawer {
     this.assets = {};
     this.mouseDownPosition = new Vector2();
     this.mouseUpPosition = new Vector2();
+    this.unitInPixels = 32;
 
     //Loading manager
     this.loadingManager = new LoadingManager();
@@ -91,8 +94,10 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Root model
-    this.rootModel = new Object3D();
-    this.scene.add(this.rootModel);
+    this.tileGroup = new Object3D();
+    this.scene.add(this.tileGroup);
+    this.shapeGroup = new Object3D();
+    this.scene.add(this.shapeGroup);
 
     /////////////////////////////////////////////////////////////////////////////
     //Lights
@@ -204,10 +209,10 @@ export default class ThreeDrawer {
   }
 
   dispose() {
+    this.clear();
     this.renderer.dispose();
     this.cameraController.dispose();
     this.assets = {};
-    this.rootModel.children = [];
 
     this.cameraController.removeEventListener(
       'change',
@@ -328,16 +333,13 @@ export default class ThreeDrawer {
     }
   }
 
-  clearScene() {
-    this.rootModel.children.forEach(node => {
-      node.children.forEach(child => {
-        child?.geometry?.dispose();
-        child?.material?.dispose();
-        node.remove(child);
-      });
-      this.rootModel.remove(node);
+  clear() {
+    this.tileGroup.children.forEach(node => {
+      node?.geometry?.dispose();
+      node?.material?.dispose();
+      this.tileGroup.remove(node);
     });
-    this.rootModel.children = [];
+    this.tileGroup.children = [];
   }
 
   /**
@@ -418,13 +420,60 @@ export default class ThreeDrawer {
    * Load all textures
    */
   loadAllTextures() {
-    Object.keys(textures).forEach(key => {
-      textures[key].texture = this.textureLoader.load(
-        `${textures[key].path}${key}${textures[key].ext}`,
+    Object.keys(TEXTURE_ASSET).forEach(key => {
+      TEXTURE_ASSET[key].texture = this.textureLoader.load(
+        `${TEXTURE_ASSET[key].path}${key}${TEXTURE_ASSET[key].ext}`,
       );
     });
-    //
-    console.log('loaded textures');
-    console.log(textures);
   }
+
+  /**
+   * @param {Object} dungeon
+   * @param {Object} options
+   */
+  drawAll(dungeon, options) {
+    this.clear();
+
+    this.unitInPixels = options.unitWidthInPixels / 64;
+
+    this.drawTiles(
+      dungeon.layers.tiles,
+      Textures.tilesTextures(TEXTURE_ASSET),
+      options,
+    );
+
+    this.requestRenderIfNotRequested();
+  }
+
+  drawTiles = (tilemap, sprites, options) => {
+    for (let y = 0; y < tilemap.length; y++) {
+      for (let x = 0; x < tilemap[y].length; x++) {
+        const id = tilemap[y][x];
+        const texture = sprites[id];
+        if (texture) {
+          const geometry = new PlaneGeometry(
+            this.unitInPixels,
+            this.unitInPixels,
+            1,
+            1,
+          );
+          const material = new MeshStandardMaterial({map: texture});
+          const sprite = new Mesh(geometry, material);
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          this.tileGroup.add(sprite);
+        } else {
+          const geometry = new PlaneGeometry(
+            this.unitInPixels,
+            this.unitInPixels,
+            1,
+            1,
+          );
+          const material = new MeshStandardMaterial({color: 0xff0000});
+          const sprite = new Mesh(geometry, material);
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          this.tileGroup.add(sprite);
+        }
+      }
+    }
+  };
 }

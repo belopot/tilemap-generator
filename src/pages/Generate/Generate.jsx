@@ -53,13 +53,13 @@ export default function Generate() {
       });
       dungeonRef.current = dungeon;
 
-      // canvasDrawerRef.current.drawAll(dungeon, {
-      //   debug: args.debug,
-      //   unitWidthInPixels: args.tileWidth,
-      // });
+      threeDrawerRef.current.drawAll(dungeon, {
+        debug: args.debug,
+        unitWidthInPixels: args.tileWidth,
+      });
     } catch (error) {
       console.error(error.message);
-      // canvasDrawerRef.current.clear();
+      threeDrawerRef.current.clear();
     }
   };
 

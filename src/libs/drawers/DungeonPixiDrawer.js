@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import {Textures} from '../utils';
+import {Sprites} from '../utils';
 
 export class DungeonPixiDrawer {
   app;
@@ -42,11 +42,11 @@ export class DungeonPixiDrawer {
     this.clear();
     this.unitInPixels = options.unitWidthInPixels;
 
-    this.drawTiles(dungeon.layers.tiles, Textures.tilesSprites, options);
-    this.drawProps(dungeon.layers.props, Textures.propsSprites, options);
+    this.drawTiles(dungeon.layers.tiles, Sprites.tilesSprites, options);
+    this.drawProps(dungeon.layers.props, Sprites.propsSprites, options);
     this.drawMonsters(
       dungeon.layers.monsters,
-      Textures.monstersSprites,
+      Sprites.monstersSprites,
       options,
     );
 
