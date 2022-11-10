@@ -100,11 +100,13 @@ export default class ThreeDrawer {
     // this.scene.fog = new Fog(0xa0a0a0, SPACE_SIZE * 0.9, SPACE_SIZE)
 
     /////////////////////////////////////////////////////////////////////////////
-    //Root model
+    //Groups
     this.tileGroup = new Group();
     this.scene.add(this.tileGroup);
-    this.shapeGroup = new Group();
-    this.scene.add(this.shapeGroup);
+    this.propGroup = new Group();
+    this.scene.add(this.propGroup);
+    this.monsterGroup = new Group();
+    this.scene.add(this.monsterGroup);
 
     /////////////////////////////////////////////////////////////////////////////
     //Lights
@@ -341,15 +343,6 @@ export default class ThreeDrawer {
     }
   }
 
-  clear() {
-    this.tileGroup.children.forEach(node => {
-      node?.geometry?.dispose();
-      node?.material?.dispose();
-      this.tileGroup.remove(node);
-    });
-    this.tileGroup.children = [];
-  }
-
   /**
    * @param {Number} index
    * @param {Boolean} enabled
@@ -435,6 +428,32 @@ export default class ThreeDrawer {
     });
   }
 
+  clear() {
+    //Clear tiles
+    this.tileGroup.children.forEach(node => {
+      node?.geometry?.dispose();
+      node?.material?.dispose();
+      this.tileGroup.remove(node);
+    });
+    this.tileGroup.children = [];
+
+    //Clear props
+    this.propGroup.children.forEach(node => {
+      node?.geometry?.dispose();
+      node?.material?.dispose();
+      this.propGroup.remove(node);
+    });
+    this.propGroup.children = [];
+
+    //Clear monsters
+    this.monsterGroup.children.forEach(node => {
+      node?.geometry?.dispose();
+      node?.material?.dispose();
+      this.monsterGroup.remove(node);
+    });
+    this.monsterGroup.children = [];
+  }
+
   /**
    * @param {Object} dungeon
    * @param {Object} options
@@ -444,13 +463,18 @@ export default class ThreeDrawer {
 
     this.unitInPixels = options.unitWidthInPixels / 64;
 
-    console.log(dungeon);
-
     this.drawTiles(
       dungeon.width,
       dungeon.height,
       dungeon.layers.tiles,
       Textures.tilesTextures(TEXTURE_ASSET),
+    );
+
+    this.drawProps(
+      dungeon.width,
+      dungeon.height,
+      dungeon.layers.props,
+      Textures.propsTextures(TEXTURE_ASSET),
     );
 
     // FitCameraToSelection(
@@ -500,6 +524,55 @@ export default class ThreeDrawer {
             (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
           );
           this.tileGroup.add(sprite);
+        }
+      }
+    }
+  };
+
+  drawProps = (width, height, tilemap, sprites) => {
+    for (let y = 0; y < tilemap.length; y++) {
+      for (let x = 0; x < tilemap[y].length; x++) {
+        const id = tilemap[y][x];
+        if (id === 0) {
+          continue;
+        }
+
+        const texture = sprites[id];
+        if (texture) {
+          const geometry = new PlaneGeometry(
+            this.unitInPixels,
+            this.unitInPixels,
+            1,
+            1,
+          );
+          geometry.rotateX(-Math.PI / 2);
+          const material = new MeshStandardMaterial({
+            map: texture,
+            transparent: true,
+          });
+          const sprite = new Mesh(geometry, material);
+          sprite.position.set(
+            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
+            0,
+            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
+          );
+          this.propGroup.add(sprite);
+        } else {
+          const geometry = new PlaneGeometry(
+            this.unitInPixels,
+            this.unitInPixels,
+            1,
+            1,
+          );
+          geometry.rotateX(-Math.PI / 2);
+          const material = new MeshStandardMaterial({color: 0x00ff00});
+          const sprite = new Mesh(geometry, material);
+          sprite.position.set(
+            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
+            0,
+            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
+          );
+          this.propGroup.add(sprite);
         }
       }
     }
