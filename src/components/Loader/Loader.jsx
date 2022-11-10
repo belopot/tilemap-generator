@@ -1,12 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion"
-import styled from "styled-components"
-import Spiner from "components/Spiner"
+import {AnimatePresence, motion} from 'framer-motion';
+import styled from 'styled-components';
+import Spiner from 'components/Spiner';
 
 export default function Loader({
   visible,
   className,
   size = 60,
-  label = "",
+  label = '',
   ...props
 }) {
   return (
@@ -15,18 +15,18 @@ export default function Loader({
         <Holder
           {...props}
           className={className}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          exit={{opacity: 0}}
         >
           <Container>
             <Spiner size={size} />
           </Container>
-          {label !== "" && <Label>{label}</Label>}
+          {label !== '' && <Label>{label}</Label>}
         </Holder>
       )}
     </AnimatePresence>
-  )
+  );
 }
 
 const Holder = styled(motion.div)`
@@ -43,7 +43,7 @@ const Holder = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const Container = styled.div`
   width: 5em;
@@ -51,9 +51,9 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const Label = styled.p`
   color: #aaaaaa;
   text-align: center;
-`
+`;

@@ -6,7 +6,7 @@ import {useMeasure} from 'react-use';
 import {useStore} from 'state/store';
 import {generate} from 'libs/generate';
 import {Data, Download} from 'libs/utils';
-import ThreeEngine from 'libs/three/ThreeEngine';
+import ThreeDrawer from 'libs/drawers/ThreeDrawer';
 import PageTransition from 'components/PageTransition';
 import {
   ContentContainer,
@@ -110,7 +110,7 @@ export default function Generate() {
 
   useEffect(() => {
     //Create three engine
-    threeEngineRef.current = new ThreeEngine(
+    threeEngineRef.current = new ThreeDrawer(
       canvasHolderRef.current,
       storeInterface,
     );

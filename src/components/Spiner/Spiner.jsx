@@ -1,7 +1,7 @@
-import styled, { keyframes } from "styled-components"
-import theme from "theme/theme"
+import styled, {keyframes} from 'styled-components';
+import theme from 'theme/theme';
 
-export default function Spiner({ size = 50, color = theme.colors.primary }) {
+export default function Spiner({size = 50, color = theme.colors.primary}) {
   return (
     <Holder size={size}>
       <Spin viewBox="0 0 50 50">
@@ -15,7 +15,7 @@ export default function Spiner({ size = 50, color = theme.colors.primary }) {
         ></Path>
       </Spin>
     </Holder>
-  )
+  );
 }
 
 const Holder = styled.div`
@@ -25,16 +25,16 @@ const Holder = styled.div`
   align-items: center;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
-`
+`;
 const rotate = keyframes`
   100% {
       transform: rotate(360deg);
   }
-`
+`;
 const Spin = styled.svg`
   animation: ${rotate} 2s linear infinite;
   z-index: 2;
-`
+`;
 const dash = keyframes`
   0% {
     stroke-dasharray: 1, 150;
@@ -48,9 +48,9 @@ const dash = keyframes`
     stroke-dasharray: 90, 150;
     stroke-dashoffset: -124;
   }
-`
+`;
 const Path = styled.circle`
   stroke: ${props => props.color};
   stroke-linecap: round;
   animation: ${dash} 1.5s ease-in-out infinite;
-`
+`;

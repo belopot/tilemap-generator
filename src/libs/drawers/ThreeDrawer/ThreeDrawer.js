@@ -35,14 +35,15 @@ import {RGBELoader} from 'three/examples/jsm/loaders/RGBELoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 
+import {textures} from 'libs/utils/textures';
+
 import {ENVIRONMENT_DATA} from './Environments';
 import Lights from './Lights';
 import {FitCameraToSelection, ShadowPlane} from './Helpers';
 import Composer from './Composer';
 import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
-import {textures} from 'libs/utils/textures';
 
-export default class ThreeEngine {
+export default class ThreeDrawer {
   /**
    * @param {HTMLDivElement} canvasHolder
    * @param {Object} storeInterface
