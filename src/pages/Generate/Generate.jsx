@@ -33,11 +33,13 @@ export default function Generate() {
   const canvasHolderRef = useRef();
   const dungeonRef = useRef();
   const seedRef = useRef();
-  const threeEngineRef = useRef();
+  const threeDrawerRef = useRef();
 
   const [holderRef, holderMeasure] = useMeasure();
 
-  //Three Engine's Store Interface to only set store state
+  //
+  // Three drawer's Store Interface to only set store state
+  //
   const storeInterface = {
     loaderVisible,
     setLoaderVisible,
@@ -108,29 +110,35 @@ export default function Generate() {
     }
   };
 
+  //
+  // Create and dispose three drawer
+  //
   useEffect(() => {
-    //Create three engine
-    threeEngineRef.current = new ThreeDrawer(
+    threeDrawerRef.current = new ThreeDrawer(
       canvasHolderRef.current,
       storeInterface,
     );
 
-    //Dispose the engine
     return () => {
-      if (threeEngineRef.current) {
-        threeEngineRef.current.dispose();
+      if (threeDrawerRef.current) {
+        threeDrawerRef.current.dispose();
       }
     };
   }, []);
 
-  //Resize
+  //
+  // Resize
+  //
   useEffect(() => {
-    if (!threeEngineRef.current) {
+    if (!threeDrawerRef.current) {
       return;
     }
-    threeEngineRef.current.requestRenderIfNotRequested();
+    threeDrawerRef.current.requestRenderIfNotRequested();
   }, [holderMeasure]);
 
+  //
+  // Debug
+  //
   useEffect(() => {
     onDebug();
   }, [debug]);
