@@ -115,18 +115,19 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Helpers
-    this.axesHelper = new AxesHelper(5);
+    this.axesHelper = new AxesHelper(1);
+    this.axesHelper.position.y = 0.01;
     this.scene.add(this.axesHelper);
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera
     this.camera = new PerspectiveCamera(
-      35,
+      45,
       this.canvasWidth / this.canvasHeight,
       0.01,
-      SPACE_SIZE * 100,
+      SPACE_SIZE * 1000,
     );
-    this.camera.position.set(-SPACE_SIZE * 0.2, SPACE_SIZE, SPACE_SIZE);
+    this.camera.position.set(0, SPACE_SIZE, 0);
     this.camera.lookAt(0, 0, 0);
 
     /////////////////////////////////////////////////////////////////////////////
@@ -172,18 +173,17 @@ export default class ThreeDrawer {
       this.camera,
       this.renderer.domElement,
     );
-    this.cameraController.minAzimuthAngle = -180;
-    this.cameraController.maxAzimuthAngle = 180;
+    // this.cameraController.minAzimuthAngle = -180;
+    // this.cameraController.maxAzimuthAngle = 180;
     this.cameraController.dampingFactor = 0.05;
-    this.cameraController.enableDamping = false;
     this.cameraController.screenSpacePanning = true;
     // this.cameraController.minDistance = 1
     // this.cameraController.maxDistance = 500
     // this.cameraController.minZoom = 1
     // this.cameraController.maxZoom = 500
-    this.cameraController.minPolarAngle = 1;
-    this.cameraController.maxPolarAngle = Math.PI / 1.5;
-    this.cameraController.enableDamping = true;
+    // this.cameraController.minPolarAngle = 1;
+    // this.cameraController.maxPolarAngle = Math.PI / 1.5;
+    this.cameraController.enableDamping = false;
     this.cameraController.enableZoom = true;
     // this.cameraController.enablePan = false
     this.cameraController.addEventListener(
@@ -436,23 +436,26 @@ export default class ThreeDrawer {
 
     this.unitInPixels = options.unitWidthInPixels / 64;
 
+    console.log(dungeon);
+
     this.drawTiles(
+      dungeon.width,
+      dungeon.height,
       dungeon.layers.tiles,
       Textures.tilesTextures(TEXTURE_ASSET),
-      options,
     );
 
-    FitCameraToSelection(
-      this.camera,
-      [this.tileGroup],
-      1,
-      this.cameraController,
-    );
+    // FitCameraToSelection(
+    //   this.camera,
+    //   [this.tileGroup],
+    //   1,
+    //   this.cameraController,
+    // );
 
     this.requestRenderIfNotRequested();
   }
 
-  drawTiles = (tilemap, sprites, options) => {
+  drawTiles = (width, height, tilemap, sprites) => {
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
@@ -467,7 +470,11 @@ export default class ThreeDrawer {
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({map: texture});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(
+            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
+            0,
+            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
+          );
           this.tileGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
@@ -479,7 +486,11 @@ export default class ThreeDrawer {
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0xff0000});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(
+            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
+            0,
+            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
+          );
           this.tileGroup.add(sprite);
         }
       }
