@@ -125,7 +125,7 @@ class Composer extends EffectComposer {
       smaaEffect,
       // edgesTextureEffect,
       // weightsTextureEffect,
-      ssaoEffect,
+      // ssaoEffect,
       // vignetteEffect,
       // brightnessContrastEffect,
       // hueSaturationEffect,
