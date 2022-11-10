@@ -29,6 +29,7 @@ import {
   PlaneGeometry,
   Group,
 } from 'three';
+import Stats from 'three/addons/libs/stats.module.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader';
@@ -85,6 +86,12 @@ export default class ThreeDrawer {
         this.storeInterface.setLoaderVisible(false);
       }, [1500]);
     };
+
+    //
+    // Stats
+    //
+    this.stats = new Stats();
+    canvasHolder.appendChild(this.stats.dom);
 
     /////////////////////////////////////////////////////////////////////////////
     //Scene
@@ -320,6 +327,7 @@ export default class ThreeDrawer {
     this.renderRequested = false;
     this.resizeRendererToDisplaySize();
     this.cameraController.update();
+    this.stats.update();
     this.renderer.render(this.scene, this.camera);
     if (this.composer) {
       this.composer.render(this.clock.getDelta());

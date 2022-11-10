@@ -159,11 +159,15 @@ export default function Generate() {
 }
 
 const CanvasHolder = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
-  canvas {
+  > canvas {
     width: 100% !important;
     height: 100% !important;
     background-color: #2d2d2d;
+  }
+  > div {
+    position: absolute !important;
   }
 `;
