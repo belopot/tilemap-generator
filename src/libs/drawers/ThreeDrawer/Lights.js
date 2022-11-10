@@ -22,7 +22,7 @@ class Lights extends THREE.Group {
     this.ambientLight2 = light2;
 
     //Sun
-    const sunLight = new THREE.DirectionalLight(0x8e867c, 6);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
     sunLight.position.set(0, SPACE_SIZE, 0);
     sunLight.castShadow = false;
     // sunLight.shadow.mapSize.width = 512;
