@@ -129,9 +129,9 @@ export default class ThreeDrawer {
     this.axesHelper.position.y = 0.01;
     this.scene.add(this.axesHelper);
 
-    this.gridHelper = new GridHelper(100, 10);
-    this.gridHelper.position.y = 0.01;
-    this.scene.add(this.gridHelper);
+    // this.gridHelper = new GridHelper(100, 10);
+    // this.gridHelper.position.y = 0.01;
+    // this.scene.add(this.gridHelper);
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera
@@ -468,38 +468,26 @@ export default class ThreeDrawer {
 
     this.unitInPixels = options.unitWidthInPixels / 64;
 
-    this.drawTiles(
-      dungeon.width,
-      dungeon.height,
-      dungeon.layers.tiles,
-      Textures.tilesTextures(TEXTURE_ASSET),
-    );
+    this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
 
-    this.drawProps(
-      dungeon.width,
-      dungeon.height,
-      dungeon.layers.props,
-      Textures.propsTextures(TEXTURE_ASSET),
-    );
+    this.drawProps(dungeon.layers.props, Textures.propsTextures(TEXTURE_ASSET));
 
     this.drawMonsters(
-      dungeon.width,
-      dungeon.height,
       dungeon.layers.monsters,
       Textures.monstersTextures(TEXTURE_ASSET),
     );
 
-    // FitCameraToSelection(
-    //   this.camera,
-    //   [this.tileGroup],
-    //   1,
-    //   this.cameraController,
-    // );
+    FitCameraToSelection(
+      this.camera,
+      [this.tileGroup],
+      1,
+      this.cameraController,
+    );
 
     this.requestRenderIfNotRequested();
   }
 
-  drawTiles = (width, height, tilemap, sprites) => {
+  drawTiles = (tilemap, sprites) => {
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
@@ -514,11 +502,7 @@ export default class ThreeDrawer {
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({map: texture});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(
-            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
-            0,
-            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
-          );
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.tileGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
@@ -530,18 +514,14 @@ export default class ThreeDrawer {
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0xff0000});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(
-            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
-            0,
-            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
-          );
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.tileGroup.add(sprite);
         }
       }
     }
   };
 
-  drawProps = (width, height, tilemap, sprites) => {
+  drawProps = (tilemap, sprites) => {
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
@@ -563,11 +543,7 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(
-            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
-            0,
-            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
-          );
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.propGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
@@ -579,18 +555,14 @@ export default class ThreeDrawer {
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0x00ff00});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(
-            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
-            0,
-            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
-          );
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.propGroup.add(sprite);
         }
       }
     }
   };
 
-  drawMonsters = (width, height, tilemap, sprites) => {
+  drawMonsters = (tilemap, sprites) => {
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
@@ -612,11 +584,7 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(
-            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
-            0,
-            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
-          );
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.monsterGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
@@ -628,11 +596,7 @@ export default class ThreeDrawer {
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0x0000ff});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(
-            (-width * this.unitInPixels) / 2 + x * this.unitInPixels,
-            0,
-            (-height * this.unitInPixels) / 2 + y * this.unitInPixels,
-          );
+          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.monsterGroup.add(sprite);
         }
       }
