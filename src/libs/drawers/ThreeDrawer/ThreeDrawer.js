@@ -129,8 +129,7 @@ export default class ThreeDrawer {
     this.axesHelper.position.y = 0.01;
     this.scene.add(this.axesHelper);
 
-    // this.gridHelper = new GridHelper(100, 10);
-    // this.gridHelper.position.y = 0.01;
+    // this.gridHelper = new GridHelper(1, 1);
     // this.scene.add(this.gridHelper);
 
     /////////////////////////////////////////////////////////////////////////////
@@ -464,19 +463,21 @@ export default class ThreeDrawer {
    * @param {Object} options
    */
   drawAll(dungeon, options) {
-    this.clear();
-
+    // Params
     this.unitInPixels = options.unitWidthInPixels / 64;
 
+    // Clear
+    this.clear();
+
+    // Draw
     this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
-
     this.drawProps(dungeon.layers.props, Textures.propsTextures(TEXTURE_ASSET));
-
     this.drawMonsters(
       dungeon.layers.monsters,
       Textures.monstersTextures(TEXTURE_ASSET),
     );
 
+    // Fit camera
     FitCameraToSelection(
       this.camera,
       [this.tileGroup],
@@ -484,6 +485,7 @@ export default class ThreeDrawer {
       this.cameraController,
     );
 
+    //
     this.requestRenderIfNotRequested();
   }
 
