@@ -90,6 +90,26 @@ export default function Generate() {
     }
   };
 
+  const onLoad = event => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.addEventListener('load', event => {
+      const rawJSON = event.target.result;
+      const parsedJSON = JSON.parse(rawJSON);
+
+      threeDrawerRef.current.drawAll(parsedJSON, {
+        debug: debug,
+        unitWidthInPixels: tileWidth,
+      });
+    });
+    reader.readAsText(file);
+  };
+
+  const onClear = () => {
+    threeDrawerRef.current.clear();
+  };
+
   const onDebug = () => {
     if (dungeonRef.current) {
       const args = {
@@ -147,7 +167,12 @@ export default function Generate() {
     <PageTransition>
       <PageContainer ref={holderRef}>
         <SidebarContainer>
-          <Sidebar onGenerate={onGenerate} onDownload={onDownload} />
+          <Sidebar
+            onGenerate={onGenerate}
+            onDownload={onDownload}
+            onLoad={onLoad}
+            onClear={onClear}
+          />
         </SidebarContainer>
         <ContentContainer>
           <Loader visible={loaderVisible} label="Loading assets" />

@@ -4,8 +4,9 @@ import {InputNumber} from 'primereact/inputnumber';
 import {useStore} from 'state/store';
 import {Checkbox} from 'primereact/checkbox';
 import {Button} from 'primereact/button';
+import FileInput from 'components/FileInput';
 
-export default function Sidebar({onGenerate, onDownload}) {
+export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
   const mapWidth = useStore(state => state.mapWidth);
   const setMapWidth = useStore(state => state.setMapWidth);
   const mapHeight = useStore(state => state.mapHeight);
@@ -41,6 +42,17 @@ export default function Sidebar({onGenerate, onDownload}) {
           label="Generate"
           aria-label="Generate"
           onClick={onGenerate}
+        />
+      </div>
+      <div className="field col-12">
+        <FileInput className="w-full" onChange={onLoad} placeholder="Load" />
+      </div>
+      <div className="field col-12">
+        <Button
+          className="w-full"
+          label="Clear"
+          aria-label="Clear"
+          onClick={onClear}
         />
       </div>
       <div className="field col-12">

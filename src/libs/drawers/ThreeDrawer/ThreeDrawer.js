@@ -433,7 +433,7 @@ export default class ThreeDrawer {
   }
 
   clear() {
-    //Clear tiles
+    // Clear tiles
     this.tileGroup.children.forEach(node => {
       node?.geometry?.dispose();
       node?.material?.dispose();
@@ -441,7 +441,7 @@ export default class ThreeDrawer {
     });
     this.tileGroup.children = [];
 
-    //Clear props
+    // Clear props
     this.propGroup.children.forEach(node => {
       node?.geometry?.dispose();
       node?.material?.dispose();
@@ -449,13 +449,16 @@ export default class ThreeDrawer {
     });
     this.propGroup.children = [];
 
-    //Clear monsters
+    // Clear monsters
     this.monsterGroup.children.forEach(node => {
       node?.geometry?.dispose();
       node?.material?.dispose();
       this.monsterGroup.remove(node);
     });
     this.monsterGroup.children = [];
+
+    // Render scene
+    this.requestRenderIfNotRequested();
   }
 
   /**
@@ -485,7 +488,7 @@ export default class ThreeDrawer {
       this.cameraController,
     );
 
-    //
+    // Render scene
     this.requestRenderIfNotRequested();
   }
 
