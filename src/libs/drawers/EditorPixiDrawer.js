@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import {computeTilesMask} from '../generate/dungeon';
-import {Textures} from '../utils';
+import {Sprites} from '../utils';
 
 const TILE_SIZE = 32;
 
@@ -111,7 +111,7 @@ export class EditorPixiDrawer {
     for (let y = 0; y < tiles.length; y++) {
       for (let x = 0; x < tiles[y].length; x++) {
         const tileId = tiles[y][x];
-        const texture = Textures.tilesSprites[tileId];
+        const texture = Sprites.tilesSprites[tileId];
         if (texture) {
           const sprite = new PIXI.Sprite(texture);
           sprite.scale.set(TILE_SIZE / texture.width);
@@ -140,7 +140,7 @@ export class EditorPixiDrawer {
           continue;
         }
 
-        const texture = Textures.propsSprites[tileId];
+        const texture = Sprites.propsSprites[tileId];
         const sprite = new PIXI.Sprite(texture);
         sprite.scale.set(TILE_SIZE / texture.width);
         sprite.position.set(x * TILE_SIZE, y * TILE_SIZE);
@@ -160,7 +160,7 @@ export class EditorPixiDrawer {
           continue;
         }
 
-        const texture = Textures.monstersSprites[tileId];
+        const texture = Sprites.monstersSprites[tileId];
         const sprite = new PIXI.Sprite(texture);
         sprite.scale.set(TILE_SIZE / texture.width);
         sprite.position.set(x * TILE_SIZE, y * TILE_SIZE);

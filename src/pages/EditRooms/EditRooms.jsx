@@ -10,7 +10,7 @@ import {
 import Room from './components/Room';
 import Sidebar from './components/Sidebar';
 
-export default function Edit() {
+export default function EditRooms() {
   return (
     <PageTransition>
       <PageContainer>

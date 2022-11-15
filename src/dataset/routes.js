@@ -1,16 +1,22 @@
 import React from 'react';
-import Generate from 'pages/Generate';
-import Edit from 'pages/Edit';
+import GenerateDungeon from 'pages/GenerateDungeon';
+import EditRooms from 'pages/EditRooms';
+import EditDungeon from 'pages/EditDungeon';
 
 export const PrimaryRoutes = [
   {
     path: '/',
     title: 'Generate dungeon',
-    component: <Generate />,
+    component: <GenerateDungeon />,
   },
   {
-    path: '/edit',
+    path: '/edit-dungeon',
+    title: 'Edit dungeon',
+    component: <EditDungeon />,
+  },
+  {
+    path: '/edit-rooms',
     title: 'Edit rooms',
-    component: <Edit />,
+    component: <EditRooms />,
   },
 ];
