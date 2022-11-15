@@ -16,7 +16,7 @@ import {
 import Loader from 'components/Loader';
 import Sidebar from './components/Sidebar';
 
-export default function Generate() {
+export default function GenerateDungeon() {
   const mapWidth = useStore(state => state.mapWidth);
   const mapHeight = useStore(state => state.mapHeight);
   const mapGutterWidth = useStore(state => state.mapGutterWidth);
