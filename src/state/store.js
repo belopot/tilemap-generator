@@ -9,13 +9,13 @@ export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
   // Generate
   /// ////////////////////////////////////////////////////////
-  mapWidth: 48,
+  mapWidth: 60,
   setMapWidth: v => set({mapWidth: v}),
-  mapHeight: 32,
+  mapHeight: 60,
   setMapHeight: v => set({mapHeight: v}),
-  mapGutterWidth: 1,
+  mapGutterWidth: 0,
   setMapGutterWidth: v => set({mapGutterWidth: v}),
-  iterations: 4,
+  iterations: 9,
   setIterations: v => set({iterations: v}),
   containerSplitRetries: 30,
   setContainerSplitRetries: v => set({containerSplitRetries: v}),
@@ -23,7 +23,7 @@ export const useStore = create((set, get) => ({
   setContainerMinimumRatio: v => set({containerMinimumRatio: v}),
   containerMinimumSize: 4,
   setContainerMinimumSize: v => set({containerMinimumSize: v}),
-  corridorWidth: 2,
+  corridorWidth: 4,
   setCorridorWidth: v => set({corridorWidth: v}),
   tileWidth: 32,
   setTileWidth: v => set({tileWidth: v}),
