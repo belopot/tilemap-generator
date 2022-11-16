@@ -122,7 +122,7 @@ class Composer extends EffectComposer {
     const effectPass = new EffectPass(
       camera,
       // bloomEffect,
-      smaaEffect,
+      // smaaEffect,
       // edgesTextureEffect,
       // weightsTextureEffect,
       // ssaoEffect,

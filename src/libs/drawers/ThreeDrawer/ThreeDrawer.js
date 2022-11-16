@@ -129,8 +129,9 @@ export default class ThreeDrawer {
     this.axesHelper.position.y = 0.01;
     this.scene.add(this.axesHelper);
 
-    // this.gridHelper = new GridHelper(1, 1);
-    // this.scene.add(this.gridHelper);
+    this.gridHelper = new GridHelper(1000, 100);
+    this.gridHelper.position.y = -0.5;
+    this.scene.add(this.gridHelper);
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera
