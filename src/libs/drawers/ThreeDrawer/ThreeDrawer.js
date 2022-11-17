@@ -99,7 +99,7 @@ export default class ThreeDrawer {
     /////////////////////////////////////////////////////////////////////////////
     //Scene
     this.scene = new Scene();
-    // this.scene.background = new Color("#131313")
+    this.scene.background = new Color(0x000000);
     // this.scene.fog = new Fog(0xa0a0a0, SPACE_SIZE * 0.9, SPACE_SIZE)
 
     /////////////////////////////////////////////////////////////////////////////
@@ -522,7 +522,10 @@ export default class ThreeDrawer {
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({map: texture});
+          const material = new MeshStandardMaterial({
+            map: texture,
+            transparent: true,
+          });
           const sprite = new Mesh(geometry, material);
           sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.tileGroup.add(sprite);
