@@ -46,6 +46,7 @@ import {FitCameraToSelection, ShadowPlane} from './Helpers';
 import Composer from './Composer';
 import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
+import {PlayerControls} from './PlayerControls';
 
 export default class ThreeDrawer {
   /**
@@ -220,6 +221,14 @@ export default class ThreeDrawer {
 
     //
     this.loadAllTextures();
+
+    // Player
+    this.player = new Mesh(
+      new BoxGeometry(1, 0.2, 0.5),
+      new MeshStandardMaterial({color: 0xffff00, wireframe: false}),
+    );
+    this.scene.add(this.player);
+    this.playerControls = new PlayerControls(this.player);
   }
 
   dispose() {
@@ -304,13 +313,17 @@ export default class ThreeDrawer {
    * Event handler for key down event
    * @param {Object} event
    */
-  onKeyDown(event) {}
+  onKeyDown(event) {
+    this.requestRenderIfNotRequested();
+  }
 
   /**
    * Event handler for key up event
    * @param {Object} event
    */
-  onKeyUp(event) {}
+  onKeyUp(event) {
+    this.requestRenderIfNotRequested();
+  }
 
   resizeRendererToDisplaySize() {
     const canvasWidth = this.renderer.domElement.offsetWidth;
@@ -334,6 +347,7 @@ export default class ThreeDrawer {
     this.renderRequested = false;
     this.resizeRendererToDisplaySize();
     this.cameraController.update();
+    this.playerControls.update();
     this.stats.update();
     this.renderer.render(this.scene, this.camera);
     if (this.composer) {
