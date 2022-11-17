@@ -9,11 +9,11 @@ export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
   // Generate
   /// ////////////////////////////////////////////////////////
-  mapWidth: 60,
+  mapWidth: 53,
   setMapWidth: v => set({mapWidth: v}),
-  mapHeight: 60,
+  mapHeight: 35,
   setMapHeight: v => set({mapHeight: v}),
-  mapGutterWidth: 0,
+  mapGutterWidth: 2,
   setMapGutterWidth: v => set({mapGutterWidth: v}),
   iterations: 9,
   setIterations: v => set({iterations: v}),

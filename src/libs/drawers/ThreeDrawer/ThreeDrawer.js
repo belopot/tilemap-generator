@@ -125,13 +125,13 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Helpers
-    this.axesHelper = new AxesHelper(1);
-    this.axesHelper.position.y = 0.01;
-    this.scene.add(this.axesHelper);
+    // this.axesHelper = new AxesHelper(1);
+    // this.axesHelper.position.y = 0.01;
+    // this.scene.add(this.axesHelper);
 
-    this.gridHelper = new GridHelper(1000, 100);
-    this.gridHelper.position.y = -0.5;
-    this.scene.add(this.gridHelper);
+    // this.gridHelper = new GridHelper(1000, 100);
+    // this.gridHelper.position.y = -0.5;
+    // this.scene.add(this.gridHelper);
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera
