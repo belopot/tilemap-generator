@@ -29,6 +29,7 @@ import {
   Group,
   BoxGeometry,
   GridHelper,
+  MeshBasicMaterial,
 } from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
@@ -224,8 +225,8 @@ export default class ThreeDrawer {
 
     // Player
     this.player = new Mesh(
-      new BoxGeometry(1, 0.2, 0.5),
-      new MeshStandardMaterial({color: 0xffff00, wireframe: false}),
+      new BoxGeometry(0.4, 0.5, 0.4),
+      new MeshBasicMaterial({color: 0xffff00, wireframe: false}),
     );
     this.scene.add(this.player);
     this.playerControls = new PlayerControls(this.player);
