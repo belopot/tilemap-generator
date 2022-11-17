@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import {nanoid} from 'nanoid';
 import {useMeasure} from 'react-use';
@@ -7,6 +7,7 @@ import {useStore} from 'state/store';
 import {generate} from 'libs/generate';
 import {Data, Download} from 'libs/utils';
 import ThreeDrawer from 'libs/drawers/ThreeDrawer';
+import {DungeonPixiDrawer} from 'libs/drawers/DungeonPixiDrawer';
 import PageTransition from 'components/PageTransition';
 import {
   ContentContainer,
@@ -34,8 +35,11 @@ export default function GenerateDungeon() {
   const dungeonRef = useRef();
   const seedRef = useRef();
   const threeDrawerRef = useRef();
+  const pixiDrawerRef = useRef();
 
   const [holderRef, holderMeasure] = useMeasure();
+
+  const [isThree, setIsThree] = useState(true);
 
   //
   // Three drawer's Store Interface to only set store state
@@ -53,13 +57,24 @@ export default function GenerateDungeon() {
       });
       dungeonRef.current = dungeon;
 
-      threeDrawerRef.current.drawAll(dungeon, {
-        debug: args.debug,
-        unitWidthInPixels: args.tileWidth,
-      });
+      if (isThree) {
+        threeDrawerRef.current.drawAll(dungeon, {
+          debug: args.debug,
+          unitWidthInPixels: args.tileWidth,
+        });
+      } else {
+        pixiDrawerRef.current.drawAll(dungeon, {
+          debug: args.debug,
+          unitWidthInPixels: args.tileWidth,
+        });
+      }
     } catch (error) {
       console.error(error.message);
-      threeDrawerRef.current.clear();
+      if (isThree) {
+        threeDrawerRef.current.clear();
+      } else {
+        pixiDrawerRef.current.clear();
+      }
     }
   };
 
@@ -98,16 +113,27 @@ export default function GenerateDungeon() {
       const rawJSON = event.target.result;
       const parsedJSON = JSON.parse(rawJSON);
 
-      threeDrawerRef.current.drawAll(parsedJSON, {
-        debug: debug,
-        unitWidthInPixels: tileWidth,
-      });
+      if (isThree) {
+        threeDrawerRef.current.drawAll(parsedJSON, {
+          debug: debug,
+          unitWidthInPixels: tileWidth,
+        });
+      } else {
+        pixiDrawerRef.current.drawAll(parsedJSON, {
+          debug: debug,
+          unitWidthInPixels: tileWidth,
+        });
+      }
     });
     reader.readAsText(file);
   };
 
   const onClear = () => {
-    threeDrawerRef.current.clear();
+    if (isThree) {
+      threeDrawerRef.current.clear();
+    } else {
+      pixiDrawerRef.current.clear();
+    }
   };
 
   const onDebug = () => {
@@ -134,10 +160,14 @@ export default function GenerateDungeon() {
   // Create and dispose three drawer
   //
   useEffect(() => {
-    threeDrawerRef.current = new ThreeDrawer(
-      canvasHolderRef.current,
-      storeInterface,
-    );
+    if (isThree) {
+      threeDrawerRef.current = new ThreeDrawer(
+        canvasHolderRef.current,
+        storeInterface,
+      );
+    } else {
+      pixiDrawerRef.current = new DungeonPixiDrawer(canvasHolderRef.current);
+    }
 
     return () => {
       if (threeDrawerRef.current) {
@@ -175,8 +205,20 @@ export default function GenerateDungeon() {
           />
         </SidebarContainer>
         <ContentContainer>
-          <Loader visible={loaderVisible} label="Loading assets" />
-          <CanvasHolder ref={canvasHolderRef} />
+          {isThree ? (
+            <>
+              <Loader visible={loaderVisible} label="Loading assets" />
+              <CanvasHolder ref={canvasHolderRef} />
+            </>
+          ) : (
+            <div
+              ref={canvasHolderRef}
+              style={{
+                width: `${mapWidth * tileWidth}px`,
+                height: `${mapHeight * tileWidth}px`,
+              }}
+            ></div>
+          )}
         </ContentContainer>
       </PageContainer>
     </PageTransition>
