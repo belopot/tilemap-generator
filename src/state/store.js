@@ -9,7 +9,7 @@ export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
   // Generate
   /// ////////////////////////////////////////////////////////
-  mapWidth: 53,
+  mapWidth: 50,
   setMapWidth: v => set({mapWidth: v}),
   mapHeight: 35,
   setMapHeight: v => set({mapHeight: v}),
