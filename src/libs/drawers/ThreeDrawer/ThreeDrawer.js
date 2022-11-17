@@ -201,6 +201,7 @@ export default class ThreeDrawer {
     // this.cameraController.maxPolarAngle = Math.PI / 1.5;
     this.cameraController.enableDamping = false;
     this.cameraController.enableZoom = true;
+    this.cameraController.enableRotate = false;
     // this.cameraController.enablePan = false
     this.cameraController.addEventListener(
       'change',
@@ -500,7 +501,7 @@ export default class ThreeDrawer {
     FitCameraToSelection(
       this.camera,
       [this.tileGroup],
-      1,
+      0.6,
       this.cameraController,
     );
 
