@@ -501,7 +501,7 @@ export default class ThreeDrawer {
     FitCameraToSelection(
       this.camera,
       [this.tileGroup],
-      0.6,
+      0.65,
       this.cameraController,
     );
 
