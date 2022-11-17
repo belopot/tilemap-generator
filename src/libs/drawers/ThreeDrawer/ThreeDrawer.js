@@ -492,16 +492,16 @@ export default class ThreeDrawer {
     // Draw
     this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
     this.drawProps(dungeon.layers.props, Textures.propsTextures(TEXTURE_ASSET));
-    this.drawMonsters(
-      dungeon.layers.monsters,
-      Textures.monstersTextures(TEXTURE_ASSET),
-    );
+    // this.drawMonsters(
+    //   dungeon.layers.monsters,
+    //   Textures.monstersTextures(TEXTURE_ASSET),
+    // );
 
     // Fit camera
     FitCameraToSelection(
       this.camera,
       [this.tileGroup],
-      0.65,
+      0.75,
       this.cameraController,
     );
 

@@ -152,6 +152,7 @@ export const PropType = {
   Torch: 12,
   WebLeft: 13,
   WebRight: 14,
+  Arrow: 23,
 };
 export const PropTypes = [
   'Bone',
@@ -176,6 +177,7 @@ export const PropTypes = [
   'Torch',
   'WebLeft',
   'WebRight',
+  'Arrow',
 ];
 
 //

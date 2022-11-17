@@ -82,6 +82,7 @@ export const propsTextures = texture_asset => {
     [`${PropType.ManaSmall}`]: texture_asset.mana_small.texture,
     // Spawns
     [`${PropType.Ladder}`]: texture_asset.ladder.texture,
+    [`${PropType.Arrow}`]: texture_asset.arrow.texture,
   };
 };
 

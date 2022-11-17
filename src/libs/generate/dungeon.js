@@ -330,14 +330,15 @@ function createPropsLayer(tree, tiles, args) {
 
   props = carveProps(tree, props);
   props = carveTorches(tiles, props);
+  props = carveEntrance(tree, props);
 
   return props;
 }
 
-function carveProps(node, props) {
+function carveProps(tree, props) {
   const result = duplicateTilemap(props);
 
-  node.leaves.forEach(container => {
+  tree.leaves.forEach(container => {
     const room = container.room;
     if (!room) {
       return;
@@ -377,6 +378,49 @@ function carveTorches(tiles, props) {
     }
   }
 
+  return result;
+}
+
+function carveEntrance(tree, props) {
+  const result = duplicateTilemap(props);
+
+  //Find room on left top
+  const leftTopRoom = findLeftTopRoom(tree);
+
+  //Find corridor on left top
+  const leftTopCorridor = findLeftTopCorridor(tree);
+
+  console.log(leftTopCorridor);
+  //Add entrance on left wall
+  for (let y = 0; y < leftTopRoom.template.height; y++) {
+    const posY = leftTopRoom.y + y;
+    const posX = leftTopRoom.x - 1;
+    result[posY][posX] = PropType.Arrow;
+  }
+
+  return result;
+}
+
+function findLeftTopRoom(tree) {
+  let result = null;
+  for (let i = 0; i < tree.leaves.length; i++) {
+    const container = tree.leaves[i];
+    const room = container.room;
+    if (room) {
+      if (result) {
+        if (room.x < result.x && room.y < result.y) {
+          result = room;
+        }
+      } else {
+        result = room;
+      }
+    }
+  }
+  return result;
+}
+
+function findLeftTopCorridor(tree) {
+  const result = null;
   return result;
 }
 

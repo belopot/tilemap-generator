@@ -239,6 +239,13 @@ export const TEXTURE_ASSET = {
     texture: null,
     sprite: null,
   },
+  arrow: {
+    name: 'arrow',
+    path: 'assets/props/',
+    ext: '.png',
+    texture: null,
+    sprite: null,
+  },
   // Monsters
   bandit: {
     name: 'bandit',
