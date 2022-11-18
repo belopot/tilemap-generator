@@ -442,16 +442,18 @@ function findRoomsThatAreAtTheEdge(tree) {
     let isInEdge = false;
     let direction = '';
 
-    if (x - leastX < 5) {
+    const maxDiff = 5;
+
+    if (x - leastX < maxDiff) {
       isInEdge = true;
       direction = 'left';
-    } else if (maxX - x < 5) {
+    } else if (maxX - x < maxDiff) {
       isInEdge = true;
       direction = 'right';
-    } else if (y - leastY < 5) {
+    } else if (y - leastY < maxDiff) {
       isInEdge = true;
       direction = 'up';
-    } else if (maxY - y < 5) {
+    } else if (maxY - y < maxDiff) {
       isInEdge = true;
       direction = 'down';
     }
