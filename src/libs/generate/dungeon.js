@@ -330,13 +330,74 @@ function createPropsLayer(tree, tiles, args) {
 
   props = carveProps(tree, props);
   props = carveTorches(tiles, props);
-  props = carveEntrance(tree, props);
-  props = curveOutdoor(tree, props);
 
   const rooms = findRoomsThatAreAtTheEdge(tree);
   console.log('rooms:', rooms);
+  props = addDoorsToEdgeRooms(rooms, props);
 
   return props;
+}
+
+function addDoorsToEdgeRooms(rooms, props) {
+  const result = duplicateTilemap(props);
+
+  for (let i = 0; i < rooms.length; i++) {
+    const room = rooms[i].room;
+    const direction = rooms[i].direction;
+
+    if (direction === 'right') {
+      const randomRoom = room;
+
+      let tile = randomNumber(1, randomRoom.template.height - 2);
+
+      for (let y = tile; y < tile + 1; y++) {
+        const posY = randomRoom.y + y;
+        const posX = randomRoom.x + randomRoom.template.width;
+
+        if (result[posY] && result[posY][posX] === 0) {
+          result[posY][posX] = PropType.Arrow;
+        }
+      }
+    } else if (direction === 'down') {
+      const randomRoom = room;
+      let tile = randomNumber(1, randomRoom.template.width - 2);
+
+      for (let x = tile; x < tile + 1; x++) {
+        const posY = randomRoom.y + randomRoom.template.height;
+        const posX = randomRoom.x + x;
+
+        if (result[posY] && result[posY][posX] === 0) {
+          result[posY][posX] = PropType.Arrow;
+        }
+      }
+    } else if (direction === 'up') {
+      const randomRoom = room;
+      let tile = randomNumber(1, randomRoom.template.width - 2);
+
+      for (let x = tile; x < tile + 1; x++) {
+        const posY = randomRoom.y - 1;
+        const posX = randomRoom.x + x + 1;
+
+        if (result[posY] && result[posY][posX] === 0) {
+          result[posY][posX] = PropType.Arrow;
+        }
+      }
+    } else if (direction === 'left') {
+      const randomRoom = room;
+      let tile = randomNumber(1, randomRoom.template.height - 2);
+      for (let y = tile; y < tile + 1; y++) {
+        const posY = randomRoom.y + y;
+        const posX = randomRoom.x - 1;
+        result[posY][posX] = PropType.Arrow;
+      }
+    }
+  }
+
+  return result;
+}
+
+function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function findRoomsThatAreAtTheEdge(tree) {
@@ -379,14 +440,25 @@ function findRoomsThatAreAtTheEdge(tree) {
     const y = room.y;
 
     let isInEdge = false;
+    let direction = '';
 
-    if (x - leastX < 5 || y - leastY < 5 || maxX - x < 5 || maxY - y < 5) {
+    if (x - leastX < 5) {
       isInEdge = true;
+      direction = 'left';
+    } else if (maxX - x < 5) {
+      isInEdge = true;
+      direction = 'right';
+    } else if (y - leastY < 5) {
+      isInEdge = true;
+      direction = 'up';
+    } else if (maxY - y < 5) {
+      isInEdge = true;
+      direction = 'down';
     }
 
     if (isInEdge) {
       if (!rooms.includes(room)) {
-        rooms.push(room);
+        rooms.push({room: room, direction: direction});
       }
     }
   });
@@ -435,96 +507,6 @@ function carveTorches(tiles, props) {
         result[y][x] = PropType.Torch;
       }
     }
-  }
-
-  return result;
-}
-
-function curveOutdoor(tree, props) {
-  const result = duplicateTilemap(props);
-
-  const addRightDoor = true; // rnd.next() > 0.5;
-  const addTopDoor = true; // rnd.next() > 0.5;
-  const addBottomDoor = true; // rnd.next() > 0.5;
-
-  if (addRightDoor) {
-    const randomRoom = getOuterRoomRandomlyRight(tree);
-    console.log(randomRoom);
-    let start = randomRoom.template.height > 2 ? 2 : randomRoom.template.height;
-    let max =
-      randomRoom.template.height - 2 > 0
-        ? randomRoom.template.height - 2
-        : randomRoom.template.height;
-
-    for (let y = start; y < max; y++) {
-      const posY = randomRoom.y + y;
-      const posX = randomRoom.x + randomRoom.template.width;
-
-      if (result[posY] && result[posY][posX] === 0) {
-        result[posY][posX] = PropType.Arrow;
-      }
-    }
-  }
-  if (addTopDoor) {
-    const randomRoom = getOuterRoomRandomlyTop(tree);
-    console.log(randomRoom);
-    let start = randomRoom.template.width > 2 ? 2 : randomRoom.template.width;
-    let max =
-      randomRoom.template.width - 2 > 0
-        ? randomRoom.template.width - 2
-        : randomRoom.template.width;
-
-    for (let x = start; x < max; x++) {
-      const posY = randomRoom.y + randomRoom.template.height;
-      const posX = randomRoom.x + x;
-
-      if (result[posY] && result[posY][posX] === 0) {
-        result[posY][posX] = PropType.Arrow;
-      }
-    }
-  }
-  if (addBottomDoor) {
-    const randomRoom = getOuterRoomRandomlyBottom(tree);
-    console.log(randomRoom);
-    let start = randomRoom.template.width > 2 ? 2 : randomRoom.template.width;
-    let max =
-      randomRoom.template.width - 2 > 0
-        ? randomRoom.template.width - 2
-        : randomRoom.template.width;
-
-    for (let x = start; x < max; x++) {
-      const posY = randomRoom.y - 1;
-      const posX = randomRoom.x + x + 1;
-
-      if (result[posY] && result[posY][posX] === 0) {
-        result[posY][posX] = PropType.Arrow;
-      }
-    }
-  }
-
-  return result;
-}
-
-function carveEntrance(tree, props) {
-  const result = duplicateTilemap(props);
-
-  //Find room on left top
-  const leftTopRoom = findLeftTopRoom(tree);
-
-  //Find corridor on left top
-  const leftTopCorridor = findLeftTopCorridor(tree);
-
-  console.log(leftTopCorridor);
-  //Add entrance on left wall
-  let start = leftTopRoom.template.height > 2 ? 2 : leftTopRoom.template.height;
-  let max =
-    leftTopRoom.template.width - 2 > 0
-      ? leftTopRoom.template.width - 2
-      : leftTopRoom.template.width;
-  for (let y = start; y < max; y++) {
-    const posY = leftTopRoom.y + y;
-    const posX = leftTopRoom.x - 1;
-    result[posY][posX] = PropType.Arrow;
   }
 
   return result;
