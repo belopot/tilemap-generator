@@ -385,9 +385,6 @@ function carveTorches(tiles, props) {
 function curveOutdoor(tree, props) {
   const result = duplicateTilemap(props);
 
-  //get random between 1 and 2
-  const num = Math.floor(Math.random() * 2) + 1;
-
   const randomRoom = getOuterRoomRandomly(tree);
   console.log(randomRoom);
   let start = randomRoom.template.height > 2 ? 2 : randomRoom.template.height;
@@ -398,7 +395,6 @@ function curveOutdoor(tree, props) {
 
   for (let y = start; y < max; y++) {
     const posY = randomRoom.y + y;
-    //last row
     const posX = randomRoom.x + randomRoom.template.width;
     result[posY][posX] = PropType.Arrow;
   }
