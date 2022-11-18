@@ -342,20 +342,53 @@ function createPropsLayer(tree, tiles, args) {
 function findRoomsThatAreAtTheEdge(tree) {
   const rooms = [];
 
-  tree.leaves.forEach(container => {
-    if (!container.room) {
+  let leastX = 500;
+  let leastY = 500;
+  let maxX = -500;
+  let maxY = -500;
+  for (let i = 0; i < tree.leaves.length; i++) {
+    const container = tree.leaves[i];
+    const r = container.room;
+
+    if (r) {
+      if (leastX > r.x) {
+        leastX = r.x;
+      }
+
+      if (leastY > r.y) {
+        leastY = r.y;
+      }
+
+      if (maxX < r.x) {
+        maxX = r.x;
+      }
+
+      if (maxY < r.y) {
+        maxY = r.y;
+      }
+    }
+  }
+
+  tree.leaves.map(container => {
+    const room = container.room;
+    if (!room) {
       return;
     }
 
-    if (container.left) {
-      return;
+    const x = room.x;
+    const y = room.y;
+
+    let isInEdge = false;
+
+    if (x - leastX < 5 || y - leastY < 5 || maxX - x < 5 || maxY - y < 5) {
+      isInEdge = true;
     }
 
-    if (container.right) {
-      return;
+    if (isInEdge) {
+      if (!rooms.includes(room)) {
+        rooms.push(room);
+      }
     }
-
-    rooms.push(container.room);
   });
 
   return rooms;
@@ -461,7 +494,7 @@ function curveOutdoor(tree, props) {
 
     for (let x = start; x < max; x++) {
       const posY = randomRoom.y - 1;
-      const posX = randomRoom.x + x;
+      const posX = randomRoom.x + x + 1;
 
       if (result[posY] && result[posY][posX] === 0) {
         result[posY][posX] = PropType.Arrow;
@@ -483,7 +516,12 @@ function carveEntrance(tree, props) {
 
   console.log(leftTopCorridor);
   //Add entrance on left wall
-  for (let y = 0; y < leftTopRoom.template.height; y++) {
+  let start = leftTopRoom.template.height > 2 ? 2 : leftTopRoom.template.height;
+  let max =
+    leftTopRoom.template.width - 2 > 0
+      ? leftTopRoom.template.width - 2
+      : leftTopRoom.template.width;
+  for (let y = start; y < max; y++) {
     const posY = leftTopRoom.y + y;
     const posX = leftTopRoom.x - 1;
     result[posY][posX] = PropType.Arrow;
@@ -551,7 +589,7 @@ function findLeftTopRoom(tree) {
     const room = container.room;
     if (room) {
       if (result) {
-        if (room.x < result.x && room.y < result.y) {
+        if (room.x < result.x) {
           result = room;
         }
       } else {
