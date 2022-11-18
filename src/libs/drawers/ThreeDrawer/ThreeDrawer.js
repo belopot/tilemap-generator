@@ -315,16 +315,16 @@ export default class ThreeDrawer {
    */
   onKeyDown(event) {
     if (event.key === 'a' || event.key === 'ArrowLeft') {
-      this.player.position.x -= 0.1;
+      this.player.position.x -= this.unitInPixels;
     }
     if (event.key === 'd' || event.key === 'ArrowRight') {
-      this.player.position.x += 0.1;
+      this.player.position.x += this.unitInPixels;
     }
     if (event.key === 'w' || event.key === 'ArrowUp') {
-      this.player.position.z -= 0.1;
+      this.player.position.z -= this.unitInPixels;
     }
     if (event.key === 's' || event.key === 'ArrowDown') {
-      this.player.position.z += 0.1;
+      this.player.position.z += this.unitInPixels;
     }
     this.requestRenderIfNotRequested();
   }
