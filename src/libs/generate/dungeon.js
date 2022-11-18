@@ -333,7 +333,32 @@ function createPropsLayer(tree, tiles, args) {
   props = carveEntrance(tree, props);
   props = curveOutdoor(tree, props);
 
+  const rooms = findRoomsThatAreAtTheEdge(tree);
+  console.log('rooms:', rooms);
+
   return props;
+}
+
+function findRoomsThatAreAtTheEdge(tree) {
+  const rooms = [];
+
+  tree.leaves.forEach(container => {
+    if (!container.room) {
+      return;
+    }
+
+    if (container.left) {
+      return;
+    }
+
+    if (container.right) {
+      return;
+    }
+
+    rooms.push(container.room);
+  });
+
+  return rooms;
 }
 
 function carveProps(tree, props) {
@@ -401,7 +426,10 @@ function curveOutdoor(tree, props) {
     for (let y = start; y < max; y++) {
       const posY = randomRoom.y + y;
       const posX = randomRoom.x + randomRoom.template.width;
-      result[posY][posX] = PropType.Arrow;
+
+      if (result[posY] && result[posY][posX] === 0) {
+        result[posY][posX] = PropType.Arrow;
+      }
     }
   }
   if (addTopDoor) {
@@ -414,9 +442,12 @@ function curveOutdoor(tree, props) {
         : randomRoom.template.width;
 
     for (let x = start; x < max; x++) {
-      const posY = randomRoom.y + randomRoom.template.width;
+      const posY = randomRoom.y + randomRoom.template.height;
       const posX = randomRoom.x + x;
-      result[posY][posX] = PropType.Arrow;
+
+      if (result[posY] && result[posY][posX] === 0) {
+        result[posY][posX] = PropType.Arrow;
+      }
     }
   }
   if (addBottomDoor) {
@@ -431,7 +462,10 @@ function curveOutdoor(tree, props) {
     for (let x = start; x < max; x++) {
       const posY = randomRoom.y - 1;
       const posX = randomRoom.x + x;
-      result[posY][posX] = PropType.Arrow;
+
+      if (result[posY] && result[posY][posX] === 0) {
+        result[posY][posX] = PropType.Arrow;
+      }
     }
   }
 
