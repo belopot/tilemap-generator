@@ -389,7 +389,6 @@ function carveTorches(tiles, props) {
 
 function carveDoors(tree, props) {
   const rooms = findRoomsThatAreAtTheEdge(tree);
-  console.log('rooms:', rooms);
   const result = addDoorsToEdgeRooms(rooms, props);
   return result;
 }
@@ -400,52 +399,52 @@ function addDoorsToEdgeRooms(rooms, props) {
   for (let i = 0; i < rooms.length; i++) {
     const room = rooms[i].room;
     const direction = rooms[i].direction;
+    let center = 0;
 
-    if (direction === 'right') {
-      const randomRoom = room;
-      const tile = Math.floor(randomRoom.height / 2);
+    switch (direction) {
+      case 'right':
+        center = Math.round(room.height / 2);
+        for (let y = center - 1; y < center; y++) {
+          const posY = room.y + y;
+          const posX = room.x + room.template.width;
 
-      for (let y = tile - 1; y < tile; y++) {
-        const posY = randomRoom.y + y;
-        const posX = randomRoom.x + randomRoom.template.width;
+          if (result[posY] && result[posY][posX] === 0) {
+            result[posY][posX] = PropType.Arrow;
+          }
+        }
+        break;
+      case 'down':
+        center = Math.round(room.width / 2);
+        for (let x = center - 1; x < center; x++) {
+          const posY = room.y + room.template.height;
+          const posX = room.x + x;
 
-        if (result[posY] && result[posY][posX] === 0) {
+          if (result[posY] && result[posY][posX] === 0) {
+            result[posY][posX] = PropType.Arrow;
+          }
+        }
+        break;
+      case 'up':
+        center = Math.round(room.width / 2);
+        for (let x = center; x < center + 1; x++) {
+          const posY = room.y - 1;
+          const posX = room.x + x;
+
+          if (result[posY] && result[posY][posX] === 0) {
+            result[posY][posX] = PropType.Arrow;
+          }
+        }
+        break;
+      case 'left':
+        center = Math.round(room.height / 2);
+        for (let y = center - 1; y < center; y++) {
+          const posY = room.y + y;
+          const posX = room.x - 1;
           result[posY][posX] = PropType.Arrow;
         }
-      }
-    } else if (direction === 'down') {
-      const randomRoom = room;
-      const tile = Math.floor(randomRoom.width / 2);
-
-      for (let x = tile - 1; x < tile; x++) {
-        const posY = randomRoom.y + randomRoom.template.height;
-        const posX = randomRoom.x + x;
-
-        if (result[posY] && result[posY][posX] === 0) {
-          result[posY][posX] = PropType.Arrow;
-        }
-      }
-    } else if (direction === 'up') {
-      const randomRoom = room;
-      const tile = Math.floor(randomRoom.width / 2);
-
-      for (let x = tile; x < tile + 1; x++) {
-        const posY = randomRoom.y - 1;
-        const posX = randomRoom.x + x + 1;
-
-        if (result[posY] && result[posY][posX] === 0) {
-          result[posY][posX] = PropType.Arrow;
-        }
-      }
-    } else if (direction === 'left') {
-      const randomRoom = room;
-      const tile = Math.floor(randomRoom.height / 2);
-
-      for (let y = tile - 1; y < tile; y++) {
-        const posY = randomRoom.y + y;
-        const posX = randomRoom.x - 1;
-        result[posY][posX] = PropType.Arrow;
-      }
+        break;
+      default:
+        break;
     }
   }
 
