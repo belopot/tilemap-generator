@@ -355,7 +355,7 @@ function addDoorsToEdgeRooms(rooms, props) {
       const randomRoom = room;
       const tile = Math.floor(randomRoom.height / 2);
 
-      for (let y = tile; y < tile + 1; y++) {
+      for (let y = tile - 1; y < tile; y++) {
         const posY = randomRoom.y + y;
         const posX = randomRoom.x + randomRoom.template.width;
 
@@ -367,7 +367,7 @@ function addDoorsToEdgeRooms(rooms, props) {
       const randomRoom = room;
       const tile = Math.floor(randomRoom.width / 2);
 
-      for (let x = tile; x < tile + 1; x++) {
+      for (let x = tile - 1; x < tile; x++) {
         const posY = randomRoom.y + randomRoom.template.height;
         const posX = randomRoom.x + x;
 
@@ -391,7 +391,7 @@ function addDoorsToEdgeRooms(rooms, props) {
       const randomRoom = room;
       const tile = Math.floor(randomRoom.height / 2);
 
-      for (let y = tile; y < tile + 1; y++) {
+      for (let y = tile - 1; y < tile; y++) {
         const posY = randomRoom.y + y;
         const posX = randomRoom.x - 1;
         result[posY][posX] = PropType.Arrow;
