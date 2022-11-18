@@ -1,4 +1,5 @@
 import create from 'zustand';
+import {nanoid} from 'nanoid';
 
 export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
@@ -9,6 +10,10 @@ export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
   // Generate
   /// ////////////////////////////////////////////////////////
+  isManualSeed: true,
+  setIsManualSeed: v => set({isManualSeed: v}),
+  seed: nanoid(),
+  setSeed: v => set({seed: v}),
   mapWidth: 50,
   setMapWidth: v => set({mapWidth: v}),
   mapHeight: 35,
@@ -27,6 +32,8 @@ export const useStore = create((set, get) => ({
   setCorridorWidth: v => set({corridorWidth: v}),
   tileWidth: 32,
   setTileWidth: v => set({tileWidth: v}),
+  isThree: true,
+  setIsThree: v => set({isThree: v}),
   debug: true,
   setDebug: v => set({debug: v}),
   //

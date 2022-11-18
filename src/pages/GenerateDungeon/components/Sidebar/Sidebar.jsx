@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import {InputNumber} from 'primereact/inputnumber';
+import {InputText} from 'primereact/inputtext';
 import {useStore} from 'state/store';
 import {Checkbox} from 'primereact/checkbox';
 import {Button} from 'primereact/button';
 import FileInput from 'components/FileInput';
 
 export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
+  const isManualSeed = useStore(state => state.isManualSeed);
+  const setIsManualSeed = useStore(state => state.setIsManualSeed);
+  const seed = useStore(state => state.seed);
+  const setSeed = useStore(state => state.setSeed);
   const mapWidth = useStore(state => state.mapWidth);
   const setMapWidth = useStore(state => state.setMapWidth);
   const mapHeight = useStore(state => state.mapHeight);
@@ -31,6 +36,8 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
   const setCorridorWidth = useStore(state => state.setCorridorWidth);
   const tileWidth = useStore(state => state.tileWidth);
   const setTileWidth = useStore(state => state.setTileWidth);
+  const isThree = useStore(state => state.isThree);
+  const setIsThree = useStore(state => state.setIsThree);
   const debug = useStore(state => state.debug);
   const setDebug = useStore(state => state.setDebug);
 
@@ -63,7 +70,25 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
           onClick={onDownload}
         />
       </div>
-      <div className="mt-4 field col-12">
+      <div className="mt-4 field-checkbox col-12">
+        <Checkbox
+          id="manualSeed"
+          checked={isManualSeed}
+          onChange={e => setIsManualSeed(e.checked)}
+        />
+        <label htmlFor="manualSeed">Manual Seed</label>
+      </div>
+      <div className="field col-12">
+        <label htmlFor="seed">Seed</label>
+        <InputText
+          id="seed"
+          className="w-full p-inputtext-sm"
+          value={seed}
+          onChange={e => setSeed(e.target.value)}
+          disabled={!isManualSeed}
+        />
+      </div>
+      <div className="field col-12">
         <label htmlFor="map_width">Map width</label>
         <InputNumber
           id="map_width"
@@ -149,9 +174,18 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
       </div>
       <div className="field-checkbox col-12">
         <Checkbox
+          id="isThree"
+          checked={isThree}
+          onChange={e => setIsThree(e.checked)}
+        />
+        <label htmlFor="isThree">3D Render</label>
+      </div>
+      <div className="field-checkbox col-12">
+        <Checkbox
           id="debug"
           checked={debug}
           onChange={e => setDebug(e.checked)}
+          disabled={isThree}
         />
         <label htmlFor="debug">Debug</label>
       </div>
