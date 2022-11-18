@@ -47,7 +47,6 @@ import {FitCameraToSelection, ShadowPlane} from './Helpers';
 import Composer from './Composer';
 import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
-import {PlayerControls} from './PlayerControls';
 
 export default class ThreeDrawer {
   /**
@@ -230,7 +229,6 @@ export default class ThreeDrawer {
       new MeshBasicMaterial({color: 0xffff00, wireframe: false}),
     );
     this.scene.add(this.player);
-    this.playerControls = new PlayerControls(this.player);
   }
 
   dispose() {
@@ -316,6 +314,18 @@ export default class ThreeDrawer {
    * @param {Object} event
    */
   onKeyDown(event) {
+    if (event.key === 'a' || event.key === 'ArrowLeft') {
+      this.player.position.x -= 0.1;
+    }
+    if (event.key === 'd' || event.key === 'ArrowRight') {
+      this.player.position.x += 0.1;
+    }
+    if (event.key === 'w' || event.key === 'ArrowUp') {
+      this.player.position.z -= 0.1;
+    }
+    if (event.key === 's' || event.key === 'ArrowDown') {
+      this.player.position.z += 0.1;
+    }
     this.requestRenderIfNotRequested();
   }
 
@@ -323,9 +333,7 @@ export default class ThreeDrawer {
    * Event handler for key up event
    * @param {Object} event
    */
-  onKeyUp(event) {
-    this.requestRenderIfNotRequested();
-  }
+  onKeyUp(event) {}
 
   resizeRendererToDisplaySize() {
     const canvasWidth = this.renderer.domElement.offsetWidth;
@@ -349,7 +357,6 @@ export default class ThreeDrawer {
     this.renderRequested = false;
     this.resizeRendererToDisplaySize();
     this.cameraController.update();
-    this.playerControls.update();
     this.stats.update();
     this.renderer.render(this.scene, this.camera);
     if (this.composer) {

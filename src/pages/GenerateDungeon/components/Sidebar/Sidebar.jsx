@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import {InputNumber} from 'primereact/inputnumber';
 import {InputText} from 'primereact/inputtext';
-import {useStore} from 'state/store';
 import {Checkbox} from 'primereact/checkbox';
 import {Button} from 'primereact/button';
+import {InputSwitch} from 'primereact/inputswitch';
+
+import {useStore} from 'state/store';
 import FileInput from 'components/FileInput';
 
 export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
@@ -172,13 +174,9 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
           onValueChange={e => setTileWidth(e.value)}
         />
       </div>
-      <div className="field-checkbox col-12">
-        <Checkbox
-          id="isThree"
-          checked={isThree}
-          onChange={e => setIsThree(e.checked)}
-        />
-        <label htmlFor="isThree">3D Render</label>
+      <div className="field col-12 flex gap-3">
+        <InputSwitch checked={isThree} onChange={e => setIsThree(e.value)} />
+        <label>{isThree ? '3D Renderer' : '2D Renderer'}</label>
       </div>
       <div className="field-checkbox col-12">
         <Checkbox
