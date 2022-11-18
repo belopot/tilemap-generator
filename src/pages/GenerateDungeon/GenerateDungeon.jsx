@@ -18,6 +18,9 @@ import Loader from 'components/Loader';
 import Sidebar from './components/Sidebar';
 
 export default function GenerateDungeon() {
+  const isManualSeed = useStore(state => state.isManualSeed);
+  const seed = useStore(state => state.seed);
+  const setSeed = useStore(state => state.setSeed);
   const mapWidth = useStore(state => state.mapWidth);
   const mapHeight = useStore(state => state.mapHeight);
   const mapGutterWidth = useStore(state => state.mapGutterWidth);
@@ -27,19 +30,19 @@ export default function GenerateDungeon() {
   const containerMinimumRatio = useStore(state => state.containerMinimumRatio);
   const corridorWidth = useStore(state => state.corridorWidth);
   const tileWidth = useStore(state => state.tileWidth);
+  const isThree = useStore(state => state.isThree);
+  const setIsThree = useStore(state => state.setIsThree);
   const debug = useStore(state => state.debug);
+  const setDebug = useStore(state => state.setDebug);
   const loaderVisible = useStore(state => state.loaderVisible);
   const setLoaderVisible = useStore(state => state.setLoaderVisible);
 
   const canvasHolderRef = useRef();
   const dungeonRef = useRef();
-  const seedRef = useRef();
   const threeDrawerRef = useRef();
   const pixiDrawerRef = useRef();
 
   const [holderRef, holderMeasure] = useMeasure();
-
-  const [isThree, setIsThree] = useState(true);
 
   //
   // Three drawer's Store Interface to only set store state
@@ -79,8 +82,11 @@ export default function GenerateDungeon() {
   };
 
   const onGenerate = () => {
-    const seed = nanoid();
-    seedRef.current = seed;
+    let newSeed = seed;
+    if (!isManualSeed) {
+      newSeed = nanoid();
+      setSeed(newSeed);
+    }
 
     const args = {
       mapWidth,
@@ -92,7 +98,7 @@ export default function GenerateDungeon() {
       containerSplitRetries,
       corridorWidth,
       tileWidth,
-      seed,
+      seed: newSeed,
       debug,
     };
 
@@ -148,7 +154,7 @@ export default function GenerateDungeon() {
         containerSplitRetries,
         corridorWidth,
         tileWidth,
-        seed: seedRef.current,
+        seed,
         debug,
       };
 
@@ -169,12 +175,17 @@ export default function GenerateDungeon() {
       pixiDrawerRef.current = new DungeonPixiDrawer(canvasHolderRef.current);
     }
 
+    onGenerate();
+
     return () => {
       if (threeDrawerRef.current) {
         threeDrawerRef.current.dispose();
       }
+      if (pixiDrawerRef.current) {
+        canvasHolderRef.current.innerHTML = '';
+      }
     };
-  }, []);
+  }, [isThree]);
 
   //
   // Resize

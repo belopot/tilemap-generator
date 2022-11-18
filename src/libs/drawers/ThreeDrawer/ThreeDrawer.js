@@ -249,7 +249,7 @@ export default class ThreeDrawer {
       'resize',
       this.requestRenderIfNotRequested.bind(this),
     );
-    this.canvasHolder.removeChild(this.renderer.domElement);
+    // this.canvasHolder.removeChild(this.renderer.domElement);
     this.canvasHolder.innerHTML = '';
   }
 
