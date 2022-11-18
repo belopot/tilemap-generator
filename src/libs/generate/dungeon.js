@@ -336,12 +336,62 @@ function createPropsLayer(tree, tiles, args) {
 
   props = carveProps(tree, props);
   props = carveTorches(tiles, props);
-
-  const rooms = findRoomsThatAreAtTheEdge(tree);
-  console.log('rooms:', rooms);
-  props = addDoorsToEdgeRooms(rooms, props);
+  props = carveDoors(tree, props);
 
   return props;
+}
+
+function carveProps(tree, props) {
+  const result = duplicateTilemap(props);
+
+  tree.leaves.forEach(container => {
+    const room = container.room;
+    if (!room) {
+      return;
+    }
+
+    const propsLayer = room.template.layers.props;
+    for (let y = 0; y < room.template.height; y++) {
+      for (let x = 0; x < room.template.width; x++) {
+        const posY = room.y + y;
+        const posX = room.x + x;
+        result[posY][posX] = propsLayer[y][x];
+      }
+    }
+  });
+
+  return result;
+}
+
+function carveTorches(tiles, props) {
+  const result = duplicateTilemap(props);
+  for (let y = 0; y < result.length; y++) {
+    for (let x = 0; x < result[y].length; x++) {
+      const tileId = tiles[y][x];
+
+      const leftCorner =
+        maskToTileIdMap[
+          TileDirection.North | TileDirection.West | TileDirection.NorthWest
+        ];
+      const rightCorner =
+        maskToTileIdMap[
+          TileDirection.North | TileDirection.East | TileDirection.NorthEast
+        ];
+
+      if (tileId === leftCorner || tileId === rightCorner) {
+        result[y][x] = PropType.Torch;
+      }
+    }
+  }
+
+  return result;
+}
+
+function carveDoors(tree, props) {
+  const rooms = findRoomsThatAreAtTheEdge(tree);
+  console.log('rooms:', rooms);
+  const result = addDoorsToEdgeRooms(rooms, props);
+  return result;
 }
 
 function addDoorsToEdgeRooms(rooms, props) {
@@ -468,127 +518,6 @@ function findRoomsThatAreAtTheEdge(tree) {
   });
 
   return rooms;
-}
-
-function carveProps(tree, props) {
-  const result = duplicateTilemap(props);
-
-  tree.leaves.forEach(container => {
-    const room = container.room;
-    if (!room) {
-      return;
-    }
-
-    const propsLayer = room.template.layers.props;
-    for (let y = 0; y < room.template.height; y++) {
-      for (let x = 0; x < room.template.width; x++) {
-        const posY = room.y + y;
-        const posX = room.x + x;
-        result[posY][posX] = propsLayer[y][x];
-      }
-    }
-  });
-
-  return result;
-}
-
-function carveTorches(tiles, props) {
-  const result = duplicateTilemap(props);
-  for (let y = 0; y < result.length; y++) {
-    for (let x = 0; x < result[y].length; x++) {
-      const tileId = tiles[y][x];
-
-      const leftCorner =
-        maskToTileIdMap[
-          TileDirection.North | TileDirection.West | TileDirection.NorthWest
-        ];
-      const rightCorner =
-        maskToTileIdMap[
-          TileDirection.North | TileDirection.East | TileDirection.NorthEast
-        ];
-
-      if (tileId === leftCorner || tileId === rightCorner) {
-        result[y][x] = PropType.Torch;
-      }
-    }
-  }
-
-  return result;
-}
-
-function getOuterRoomRandomlyRight(tree) {
-  let result = null;
-  for (let i = 0; i < tree.leaves.length; i++) {
-    const container = tree.leaves[i];
-    const room = container.room;
-    if (room) {
-      if (result) {
-        if (room.x > result.x) {
-          result = room;
-        }
-      } else {
-        result = room;
-      }
-    }
-  }
-  return result;
-}
-function getOuterRoomRandomlyTop(tree) {
-  let result = null;
-  for (let i = 0; i < tree.leaves.length; i++) {
-    const container = tree.leaves[i];
-    const room = container.room;
-    if (room) {
-      if (result) {
-        if (room.y > result.y) {
-          result = room;
-        }
-      } else {
-        result = room;
-      }
-    }
-  }
-  return result;
-}
-function getOuterRoomRandomlyBottom(tree) {
-  let result = null;
-  for (let i = 0; i < tree.leaves.length; i++) {
-    const container = tree.leaves[i];
-    const room = container.room;
-    if (room) {
-      if (result) {
-        if (room.y < result.y) {
-          result = room;
-        }
-      } else {
-        result = room;
-      }
-    }
-  }
-  return result;
-}
-
-function findLeftTopRoom(tree) {
-  let result = null;
-  for (let i = 0; i < tree.leaves.length; i++) {
-    const container = tree.leaves[i];
-    const room = container.room;
-    if (room) {
-      if (result) {
-        if (room.x < result.x) {
-          result = room;
-        }
-      } else {
-        result = room;
-      }
-    }
-  }
-  return result;
-}
-
-function findLeftTopCorridor(tree) {
-  const result = null;
-  return result;
 }
 
 //
