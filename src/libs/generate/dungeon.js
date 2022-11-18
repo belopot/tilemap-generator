@@ -6,7 +6,13 @@ import {
   TileDirection,
   TreeNode,
 } from './types';
-import {createTilemap, duplicateTilemap, random, randomChoice} from './utils';
+import {
+  createTilemap,
+  duplicateTilemap,
+  random,
+  randomChoice,
+  randomNumber,
+} from './utils';
 import seedrandom from 'seedrandom';
 
 export function generate(args) {
@@ -348,7 +354,7 @@ function addDoorsToEdgeRooms(rooms, props) {
     if (direction === 'right') {
       const randomRoom = room;
 
-      let tile = randomNumber(1, randomRoom.template.height - 2);
+      const tile = randomNumber(1, randomRoom.template.height - 2);
 
       for (let y = tile; y < tile + 1; y++) {
         const posY = randomRoom.y + y;
@@ -360,7 +366,7 @@ function addDoorsToEdgeRooms(rooms, props) {
       }
     } else if (direction === 'down') {
       const randomRoom = room;
-      let tile = randomNumber(1, randomRoom.template.width - 2);
+      const tile = randomNumber(1, randomRoom.template.width - 2);
 
       for (let x = tile; x < tile + 1; x++) {
         const posY = randomRoom.y + randomRoom.template.height;
@@ -372,7 +378,7 @@ function addDoorsToEdgeRooms(rooms, props) {
       }
     } else if (direction === 'up') {
       const randomRoom = room;
-      let tile = randomNumber(1, randomRoom.template.width - 2);
+      const tile = randomNumber(1, randomRoom.template.width - 2);
 
       for (let x = tile; x < tile + 1; x++) {
         const posY = randomRoom.y - 1;
@@ -384,7 +390,7 @@ function addDoorsToEdgeRooms(rooms, props) {
       }
     } else if (direction === 'left') {
       const randomRoom = room;
-      let tile = randomNumber(1, randomRoom.template.height - 2);
+      const tile = randomNumber(1, randomRoom.template.height - 2);
       for (let y = tile; y < tile + 1; y++) {
         const posY = randomRoom.y + y;
         const posX = randomRoom.x - 1;
@@ -394,10 +400,6 @@ function addDoorsToEdgeRooms(rooms, props) {
   }
 
   return result;
-}
-
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function findRoomsThatAreAtTheEdge(tree) {
