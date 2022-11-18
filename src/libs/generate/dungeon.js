@@ -331,6 +331,7 @@ function createPropsLayer(tree, tiles, args) {
   props = carveProps(tree, props);
   props = carveTorches(tiles, props);
   props = carveEntrance(tree, props);
+  props = curveOutdoor(tree, props);
 
   return props;
 }
@@ -381,6 +382,30 @@ function carveTorches(tiles, props) {
   return result;
 }
 
+function curveOutdoor(tree, props) {
+  const result = duplicateTilemap(props);
+
+  //get random between 1 and 2
+  const num = Math.floor(Math.random() * 2) + 1;
+
+  const randomRoom = getOuterRoomRandomly(tree);
+  console.log(randomRoom);
+  let start = randomRoom.template.height > 2 ? 2 : randomRoom.template.height;
+  let max =
+    randomRoom.template.height - 2 > 0
+      ? randomRoom.template.height - 2
+      : randomRoom.template.height;
+
+  for (let y = start; y < max; y++) {
+    const posY = randomRoom.y + y;
+    //last row
+    const posX = randomRoom.x + randomRoom.template.width;
+    result[posY][posX] = PropType.Arrow;
+  }
+
+  return result;
+}
+
 function carveEntrance(tree, props) {
   const result = duplicateTilemap(props);
 
@@ -398,6 +423,24 @@ function carveEntrance(tree, props) {
     result[posY][posX] = PropType.Arrow;
   }
 
+  return result;
+}
+
+function getOuterRoomRandomly(tree) {
+  let result = null;
+  for (let i = 0; i < tree.leaves.length; i++) {
+    const container = tree.leaves[i];
+    const room = container.room;
+    if (room) {
+      if (result) {
+        if (room.x > result.x) {
+          result = room;
+        }
+      } else {
+        result = room;
+      }
+    }
+  }
   return result;
 }
 
