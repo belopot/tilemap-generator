@@ -97,3 +97,7 @@ export function duplicateTilemap(tilemap) {
     return [...row];
   });
 }
+
+export function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

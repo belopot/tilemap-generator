@@ -6,7 +6,13 @@ import {
   TileDirection,
   TreeNode,
 } from './types';
-import {createTilemap, duplicateTilemap, random, randomChoice} from './utils';
+import {
+  createTilemap,
+  duplicateTilemap,
+  random,
+  randomChoice,
+  randomNumber,
+} from './utils';
 import seedrandom from 'seedrandom';
 
 export function generate(args) {
@@ -330,7 +336,7 @@ function createPropsLayer(tree, tiles, args) {
 
   props = carveProps(tree, props);
   props = carveTorches(tiles, props);
-  props = carveEntrance(tree, props);
+  props = carveDoors(tree, props);
 
   return props;
 }
@@ -381,47 +387,137 @@ function carveTorches(tiles, props) {
   return result;
 }
 
-function carveEntrance(tree, props) {
-  const result = duplicateTilemap(props);
-
-  //Find room on left top
-  const leftTopRoom = findLeftTopRoom(tree);
-
-  //Find corridor on left top
-  const leftTopCorridor = findLeftTopCorridor(tree);
-
-  console.log(leftTopCorridor);
-  //Add entrance on left wall
-  for (let y = 0; y < leftTopRoom.template.height; y++) {
-    const posY = leftTopRoom.y + y;
-    const posX = leftTopRoom.x - 1;
-    result[posY][posX] = PropType.Arrow;
-  }
-
+function carveDoors(tree, props) {
+  const rooms = findRoomsThatAreAtTheEdge(tree);
+  console.log('rooms:', rooms);
+  const result = addDoorsToEdgeRooms(rooms, props);
   return result;
 }
 
-function findLeftTopRoom(tree) {
-  let result = null;
-  for (let i = 0; i < tree.leaves.length; i++) {
-    const container = tree.leaves[i];
-    const room = container.room;
-    if (room) {
-      if (result) {
-        if (room.x < result.x && room.y < result.y) {
-          result = room;
+function addDoorsToEdgeRooms(rooms, props) {
+  const result = duplicateTilemap(props);
+
+  for (let i = 0; i < rooms.length; i++) {
+    const room = rooms[i].room;
+    const direction = rooms[i].direction;
+
+    if (direction === 'right') {
+      const randomRoom = room;
+      const tile = Math.floor(randomRoom.height / 2);
+
+      for (let y = tile - 1; y < tile; y++) {
+        const posY = randomRoom.y + y;
+        const posX = randomRoom.x + randomRoom.template.width;
+
+        if (result[posY] && result[posY][posX] === 0) {
+          result[posY][posX] = PropType.Arrow;
         }
-      } else {
-        result = room;
+      }
+    } else if (direction === 'down') {
+      const randomRoom = room;
+      const tile = Math.floor(randomRoom.width / 2);
+
+      for (let x = tile - 1; x < tile; x++) {
+        const posY = randomRoom.y + randomRoom.template.height;
+        const posX = randomRoom.x + x;
+
+        if (result[posY] && result[posY][posX] === 0) {
+          result[posY][posX] = PropType.Arrow;
+        }
+      }
+    } else if (direction === 'up') {
+      const randomRoom = room;
+      const tile = Math.floor(randomRoom.width / 2);
+
+      for (let x = tile; x < tile + 1; x++) {
+        const posY = randomRoom.y - 1;
+        const posX = randomRoom.x + x + 1;
+
+        if (result[posY] && result[posY][posX] === 0) {
+          result[posY][posX] = PropType.Arrow;
+        }
+      }
+    } else if (direction === 'left') {
+      const randomRoom = room;
+      const tile = Math.floor(randomRoom.height / 2);
+
+      for (let y = tile - 1; y < tile; y++) {
+        const posY = randomRoom.y + y;
+        const posX = randomRoom.x - 1;
+        result[posY][posX] = PropType.Arrow;
       }
     }
   }
+
   return result;
 }
 
-function findLeftTopCorridor(tree) {
-  const result = null;
-  return result;
+function findRoomsThatAreAtTheEdge(tree) {
+  const rooms = [];
+
+  let leastX = 500;
+  let leastY = 500;
+  let maxX = -500;
+  let maxY = -500;
+  for (let i = 0; i < tree.leaves.length; i++) {
+    const container = tree.leaves[i];
+    const r = container.room;
+
+    if (r) {
+      if (leastX > r.x) {
+        leastX = r.x;
+      }
+
+      if (leastY > r.y) {
+        leastY = r.y;
+      }
+
+      if (maxX < r.x) {
+        maxX = r.x;
+      }
+
+      if (maxY < r.y) {
+        maxY = r.y;
+      }
+    }
+  }
+
+  tree.leaves.map(container => {
+    const room = container.room;
+    if (!room) {
+      return;
+    }
+
+    const x = room.x;
+    const y = room.y;
+
+    let isInEdge = false;
+    let direction = '';
+
+    const maxDiff = 5;
+
+    if (x - leastX < maxDiff) {
+      isInEdge = true;
+      direction = 'left';
+    } else if (maxX - x < maxDiff) {
+      isInEdge = true;
+      direction = 'right';
+    } else if (y - leastY < maxDiff) {
+      isInEdge = true;
+      direction = 'up';
+    } else if (maxY - y < maxDiff) {
+      isInEdge = true;
+      direction = 'down';
+    }
+
+    if (isInEdge) {
+      if (!rooms.includes(room)) {
+        rooms.push({room: room, direction: direction});
+      }
+    }
+  });
+
+  return rooms;
 }
 
 //
