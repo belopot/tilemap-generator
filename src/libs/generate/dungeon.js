@@ -336,25 +336,6 @@ function createPropsLayer(tree, tiles, args) {
   return props;
 }
 
-function getOuterRooms(tree) {
-  const result = [];
-
-  tree.leaves.forEach(container => {
-    const room = container.room;
-    if (!room) {
-      return;
-    }
-
-    if (container.left || container.right) {
-      return;
-    }
-
-    result.push(room);
-  });
-
-  return result;
-}
-
 function carveProps(tree, props) {
   const result = duplicateTilemap(props);
 
