@@ -27,11 +27,13 @@ export function generate(args) {
   const tiles = createTilesLayer(tree, args);
   const props = createPropsLayer(tree, tiles, args);
   const monsters = createMonstersLayer(tree, args);
+  console.log(monsters);
 
   const endAt = Date.now();
   console.log(`Dungeon generated in ${endAt - startAt}ms`);
 
   return {
+    seed: args.seed,
     width: args.mapWidth,
     height: args.mapHeight,
     tree,
@@ -337,7 +339,6 @@ function createPropsLayer(tree, tiles, args) {
   props = carveProps(tree, props);
   props = carveTorches(tiles, props);
   props = carveDoors(tree, props);
-
   return props;
 }
 

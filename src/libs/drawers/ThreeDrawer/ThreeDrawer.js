@@ -30,6 +30,7 @@ import {
   BoxGeometry,
   GridHelper,
   MeshBasicMaterial,
+  Vector3,
 } from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
@@ -47,6 +48,7 @@ import {FitCameraToSelection, ShadowPlane} from './Helpers';
 import Composer from './Composer';
 import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
+import {PropType} from 'libs/generate';
 
 export default class ThreeDrawer {
   /**
@@ -512,6 +514,9 @@ export default class ThreeDrawer {
       this.cameraController,
     );
 
+    // Move player to
+    this.initPlayer(dungeon.layers.props);
+
     // Render scene
     this.requestRenderIfNotRequested();
   }
@@ -630,6 +635,22 @@ export default class ThreeDrawer {
           const sprite = new Mesh(geometry, material);
           sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
           this.monsterGroup.add(sprite);
+        }
+      }
+    }
+  };
+
+  initPlayer = tilemap => {
+    for (let y = 0; y < tilemap.length; y++) {
+      for (let x = 0; x < tilemap[y].length; x++) {
+        const id = tilemap[y][x];
+        if (id === PropType.Ladder) {
+          this.player.position.set(
+            x * this.unitInPixels,
+            0,
+            y * this.unitInPixels,
+          );
+          break;
         }
       }
     }
