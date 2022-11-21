@@ -2,12 +2,18 @@ import React from 'react';
 import GenerateDungeon from 'pages/GenerateDungeon';
 import EditRooms from 'pages/EditRooms';
 import EditDungeon from 'pages/EditDungeon';
+import ExtendDungeon from 'pages/ExtendDungeon';
 
 export const PrimaryRoutes = [
   {
     path: '/',
     title: 'Generate dungeon',
     component: <GenerateDungeon />,
+  },
+  {
+    path: '/extend-dungeon',
+    title: 'Extend dungeon',
+    component: <ExtendDungeon />,
   },
   {
     path: '/edit-dungeon',
