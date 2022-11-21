@@ -48,7 +48,7 @@ import {FitCameraToSelection, ShadowPlane} from './Helpers';
 import Composer from './Composer';
 import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
-import {PropType} from 'libs/generate';
+import {Direction, PropType} from 'libs/generate';
 
 export default class ThreeDrawer {
   /**
@@ -71,6 +71,7 @@ export default class ThreeDrawer {
     this.mouseDownPosition = new Vector2();
     this.mouseUpPosition = new Vector2();
     this.unitInPixels = 32;
+    this.dungeon = null;
 
     //Loading manager
     this.loadingManager = new LoadingManager();
@@ -328,6 +329,16 @@ export default class ThreeDrawer {
     if (event.key === 's' || event.key === 'ArrowDown') {
       this.player.position.z += this.unitInPixels;
     }
+
+    // Detect doors
+    const detectedDoor = this.arrivedPlayerAtDoor();
+    console.log(detectedDoor);
+    if (detectedDoor.arrived) {
+      this.player.material.color.set(0xff0000);
+    } else {
+      this.player.material.color.set(0xffff00);
+    }
+
     this.requestRenderIfNotRequested();
   }
 
@@ -493,6 +504,7 @@ export default class ThreeDrawer {
    */
   drawAll(dungeon, options) {
     // Params
+    this.dungeon = dungeon;
     this.unitInPixels = options.unitWidthInPixels / 64;
 
     // Clear
@@ -654,5 +666,57 @@ export default class ThreeDrawer {
         }
       }
     }
+  };
+
+  arrivedPlayerAtDoor = () => {
+    const tilemap = this.dungeon.layers.props;
+    const snapSize = 0.1;
+    let arrivedAtDoor = false;
+    let rx = 0;
+    let ry = 0;
+    for (let y = 0; y < tilemap.length; y++) {
+      for (let x = 0; x < tilemap[y].length; x++) {
+        const id = tilemap[y][x];
+        if (id === PropType.Arrow) {
+          const dx = Math.abs(this.player.position.x - x * this.unitInPixels);
+          const dy = Math.abs(this.player.position.z - y * this.unitInPixels);
+          if (dx < snapSize && dy < snapSize) {
+            arrivedAtDoor = true;
+            rx = x;
+            ry = y;
+            break;
+          }
+        }
+      }
+      if (arrivedAtDoor) {
+        break;
+      }
+    }
+
+    // detect direction of door
+    const top = Math.abs(ry - 0);
+    const right = Math.abs(rx - this.dungeon.width);
+    const bottom = Math.abs(ry - this.dungeon.height);
+    const left = Math.abs(rx - 0);
+    const min = Math.min(top, right, bottom, left);
+    let dir = Direction.top;
+    switch (min) {
+      case top:
+        dir = Direction.top;
+        break;
+      case right:
+        dir = Direction.right;
+        break;
+      case bottom:
+        dir = Direction.bottom;
+        break;
+      case left:
+        dir = Direction.left;
+        break;
+      default:
+        break;
+    }
+
+    return {arrived: arrivedAtDoor, x: rx, y: ry, direction: dir};
   };
 }

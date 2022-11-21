@@ -21,16 +21,10 @@ export function generate(args) {
     seedrandom(args.seed, {global: true});
   }
 
-  const startAt = Date.now();
-
   const tree = createTree(args);
   const tiles = createTilesLayer(tree, args);
   const props = createPropsLayer(tree, tiles, args);
   const monsters = createMonstersLayer(tree, args);
-  console.log(monsters);
-
-  const endAt = Date.now();
-  console.log(`Dungeon generated in ${endAt - startAt}ms`);
 
   return {
     seed: args.seed,
