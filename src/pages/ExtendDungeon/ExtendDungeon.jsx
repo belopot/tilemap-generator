@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {useMeasure} from 'react-use';
+import {nanoid} from 'nanoid';
 
 import {useStore} from 'state/store';
 import {generate} from 'libs/generate';
@@ -30,14 +31,6 @@ export default function ExtendDungeon() {
   const threeDrawerRef = useRef();
 
   const [holderRef, holderMeasure] = useMeasure();
-
-  //
-  // Three drawer's Store Interface to only set store state
-  //
-  const storeInterface = {
-    loaderVisible,
-    setLoaderVisible,
-  };
 
   const onDraw = args => {
     try {
@@ -73,6 +66,36 @@ export default function ExtendDungeon() {
     };
 
     onDraw(args);
+  };
+
+  const generateNextDungeon = () => {
+    const args = {
+      mapWidth,
+      mapHeight,
+      mapGutterWidth,
+      iterations,
+      containerMinimumSize,
+      containerMinimumRatio,
+      containerSplitRetries,
+      corridorWidth,
+      tileWidth,
+      seed: nanoid(),
+      debug,
+    };
+    const dungeon = generate({
+      ...args,
+      rooms: Data.loadRooms(),
+    });
+    return dungeon;
+  };
+
+  //
+  // Three drawer's Store Interface to only set store state
+  //
+  const storeInterface = {
+    loaderVisible,
+    setLoaderVisible,
+    generateNextDungeon,
   };
 
   //

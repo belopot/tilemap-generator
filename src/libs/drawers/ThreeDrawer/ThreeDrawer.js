@@ -332,9 +332,11 @@ export default class ThreeDrawer {
 
     // Detect doors
     const detectedDoor = this.arrivedPlayerAtDoor();
-    console.log(detectedDoor);
     if (detectedDoor.arrived) {
       this.player.material.color.set(0xff0000);
+      // Create next dungeon
+      const newDungeon = this.storeInterface.generateNextDungeon();
+      console.log(newDungeon);
     } else {
       this.player.material.color.set(0xffff00);
     }
@@ -528,6 +530,28 @@ export default class ThreeDrawer {
 
     // Move player to
     this.initPlayer(dungeon.layers.props);
+
+    // Render scene
+    this.requestRenderIfNotRequested();
+  }
+
+  /**
+   * @param {Object} dungeon
+   */
+  drawNextAll(dungeon) {
+    // Params
+    this.dungeon = dungeon;
+
+    // Clear
+    this.clear();
+
+    // Draw
+    this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
+    this.drawProps(dungeon.layers.props, Textures.propsTextures(TEXTURE_ASSET));
+    this.drawMonsters(
+      dungeon.layers.monsters,
+      Textures.monstersTextures(TEXTURE_ASSET),
+    );
 
     // Render scene
     this.requestRenderIfNotRequested();
