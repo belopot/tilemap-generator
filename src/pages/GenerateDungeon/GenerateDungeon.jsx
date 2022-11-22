@@ -61,7 +61,7 @@ export default function GenerateDungeon() {
       dungeonRef.current = dungeon;
 
       if (isThree) {
-        threeDrawerRef.current.drawAll(dungeon);
+        threeDrawerRef.current.drawDungeon(dungeon);
       } else {
         pixiDrawerRef.current.drawAll(dungeon, {
           debug: args.debug,
@@ -117,10 +117,7 @@ export default function GenerateDungeon() {
       const parsedJSON = JSON.parse(rawJSON);
 
       if (isThree) {
-        threeDrawerRef.current.drawAll(parsedJSON, {
-          debug: debug,
-          unitWidthInPixels: tileWidth,
-        });
+        threeDrawerRef.current.drawDungeon(parsedJSON);
       } else {
         pixiDrawerRef.current.drawAll(parsedJSON, {
           debug: debug,

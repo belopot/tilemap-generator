@@ -40,7 +40,7 @@ export default function ExtendDungeon() {
       });
       dungeonRef.current = dungeon;
 
-      threeDrawerRef.current.drawAll(dungeon);
+      threeDrawerRef.current.drawDungeon(dungeon);
     } catch (error) {
       console.error(error.message);
       threeDrawerRef.current.clear();

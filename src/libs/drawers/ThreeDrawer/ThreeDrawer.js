@@ -503,7 +503,7 @@ export default class ThreeDrawer {
   /**
    * @param {Object} dungeon
    */
-  drawAll(dungeon) {
+  drawDungeon(dungeon) {
     // Params
     this.dungeon = dungeon;
 
