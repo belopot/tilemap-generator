@@ -72,12 +72,23 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Groups
+    this.group = new THREE.Group();
+    this.scene.add(this.group);
     this.tileGroup = new THREE.Group();
-    this.scene.add(this.tileGroup);
+    this.group.add(this.tileGroup);
     this.propGroup = new THREE.Group();
-    this.scene.add(this.propGroup);
+    this.group.add(this.propGroup);
     this.monsterGroup = new THREE.Group();
-    this.scene.add(this.monsterGroup);
+    this.group.add(this.monsterGroup);
+
+    this.oldGroup = new THREE.Group();
+    this.scene.add(this.oldGroup);
+    this.oldTileGroup = new THREE.Group();
+    this.oldGroup.add(this.oldTileGroup);
+    this.oldPropGroup = new THREE.Group();
+    this.oldGroup.add(this.oldPropGroup);
+    this.oldMonsterGroup = new THREE.Group();
+    this.oldGroup.add(this.oldMonsterGroup);
 
     /////////////////////////////////////////////////////////////////////////////
     //Lights
@@ -294,9 +305,36 @@ export default class ThreeDrawer {
     const detectedDoor = this.getDoorPlayerArrived();
     if (detectedDoor.arrived) {
       this.player.material.color.set(0xff0000);
+
       // Create next dungeon
-      const newDungeon = this.storeInterface.generateNextDungeon();
-      console.log(newDungeon);
+      if (this.storeInterface.generateNextDungeon) {
+        const newDungeon = this.storeInterface.generateNextDungeon();
+        this.drawDungeon(newDungeon);
+        //
+        switch (detectedDoor.direction) {
+          case Direction.top:
+            this.group.position.z =
+              this.oldGroup.position.z - this.oldDungeon.height * this.tileSize;
+            break;
+          case Direction.right:
+            this.group.position.x =
+              this.oldGroup.position.x + this.oldDungeon.width * this.tileSize;
+            break;
+          case Direction.bottom:
+            this.group.position.z =
+              this.oldGroup.position.z + this.oldDungeon.height * this.tileSize;
+            break;
+          case Direction.left:
+            this.group.position.x =
+              this.oldGroup.position.x - this.oldDungeon.width * this.tileSize;
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      console.log(detectedDoor);
     } else {
       this.player.material.color.set(0xffff00);
     }
@@ -444,11 +482,16 @@ export default class ThreeDrawer {
    * @param {Object} dungeon
    */
   drawDungeon(dungeon) {
-    // Params
+    const isFirstDungeon = this.dungeon === null;
+    this.oldDungeon = this.dungeon;
     this.dungeon = dungeon;
+    this.oldGroup = this.group;
+    this.oldTileGroup = this.tileGroup;
+    this.oldPropGroup = this.propGroup;
+    this.oldMonsterGroup = this.monsterGroup;
 
     // Clear
-    this.clear();
+    // this.clear();
 
     // Draw
     this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
@@ -458,16 +501,18 @@ export default class ThreeDrawer {
       Textures.monstersTextures(TEXTURE_ASSET),
     );
 
-    // Fit camera
-    FitCameraToSelection(
-      this.camera,
-      [this.tileGroup],
-      0.75,
-      this.cameraController,
-    );
+    if (isFirstDungeon) {
+      // Fit camera
+      FitCameraToSelection(
+        this.camera,
+        [this.tileGroup],
+        0.75,
+        this.cameraController,
+      );
 
-    // Move player to
-    this.initPlayer(dungeon.layers.props);
+      // Move player to
+      this.initPlayer(dungeon.layers.props);
+    }
 
     // Render scene
     this.requestRenderIfNotRequested();
@@ -614,8 +659,14 @@ export default class ThreeDrawer {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
         if (id === PropType.Arrow) {
-          const dx = Math.abs(this.player.position.x - x * this.tileSize);
-          const dy = Math.abs(this.player.position.z - y * this.tileSize);
+          const dx = Math.abs(
+            this.player.position.x -
+              (this.group.position.x + x * this.tileSize),
+          );
+          const dy = Math.abs(
+            this.player.position.z -
+              (this.group.position.z + y * this.tileSize),
+          );
           if (dx < snapSize && dy < snapSize) {
             arrivedAtDoor = true;
             rx = x;
