@@ -74,21 +74,9 @@ export default class ThreeDrawer {
     //Groups
     this.group = new THREE.Group();
     this.scene.add(this.group);
-    this.tileGroup = new THREE.Group();
-    this.group.add(this.tileGroup);
-    this.propGroup = new THREE.Group();
-    this.group.add(this.propGroup);
-    this.monsterGroup = new THREE.Group();
-    this.group.add(this.monsterGroup);
 
     this.oldGroup = new THREE.Group();
     this.scene.add(this.oldGroup);
-    this.oldTileGroup = new THREE.Group();
-    this.oldGroup.add(this.oldTileGroup);
-    this.oldPropGroup = new THREE.Group();
-    this.oldGroup.add(this.oldPropGroup);
-    this.oldMonsterGroup = new THREE.Group();
-    this.oldGroup.add(this.oldMonsterGroup);
 
     /////////////////////////////////////////////////////////////////////////////
     //Lights
@@ -450,29 +438,20 @@ export default class ThreeDrawer {
   }
 
   clear() {
-    // Clear tiles
-    this.tileGroup.children.forEach(node => {
+    // Clear
+    this.group.children.forEach(node => {
       node?.geometry?.dispose();
       node?.material?.dispose();
-      this.tileGroup.remove(node);
+      this.group.remove(node);
     });
-    this.tileGroup.children = [];
+    this.group.children = [];
 
-    // Clear props
-    this.propGroup.children.forEach(node => {
+    this.oldGroup.children.forEach(node => {
       node?.geometry?.dispose();
       node?.material?.dispose();
-      this.propGroup.remove(node);
+      this.oldGroup.remove(node);
     });
-    this.propGroup.children = [];
-
-    // Clear monsters
-    this.monsterGroup.children.forEach(node => {
-      node?.geometry?.dispose();
-      node?.material?.dispose();
-      this.monsterGroup.remove(node);
-    });
-    this.monsterGroup.children = [];
+    this.oldGroup.children = [];
 
     // Render scene
     this.requestRenderIfNotRequested();
@@ -485,13 +464,20 @@ export default class ThreeDrawer {
     const isFirstDungeon = this.dungeon === null;
     this.oldDungeon = this.dungeon;
     this.dungeon = dungeon;
-    this.oldGroup = this.group;
-    this.oldTileGroup = this.tileGroup;
-    this.oldPropGroup = this.propGroup;
-    this.oldMonsterGroup = this.monsterGroup;
 
-    // Clear
-    // this.clear();
+    // Clear old group
+    this.oldGroup.children.forEach(node => {
+      node?.geometry?.dispose();
+      node?.material?.dispose();
+      this.oldGroup.remove(node);
+    });
+    this.oldGroup.children = [];
+
+    // Move group into old group
+    this.group.children.forEach(node => {
+      node.parent = this.oldGroup;
+    });
+    this.oldGroup.position.copy(this.group.position);
 
     // Draw
     this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
@@ -505,7 +491,7 @@ export default class ThreeDrawer {
       // Fit camera
       FitCameraToSelection(
         this.camera,
-        [this.tileGroup],
+        [this.group],
         0.75,
         this.cameraController,
       );
@@ -537,7 +523,7 @@ export default class ThreeDrawer {
           });
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
-          this.tileGroup.add(sprite);
+          this.group.add(sprite);
         } else {
           const geometry = new THREE.PlaneGeometry(
             this.tileSize,
@@ -549,7 +535,7 @@ export default class ThreeDrawer {
           const material = new THREE.MeshStandardMaterial({color: 0xff0000});
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
-          this.tileGroup.add(sprite);
+          this.group.add(sprite);
         }
       }
     }
@@ -578,7 +564,7 @@ export default class ThreeDrawer {
           });
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
-          this.propGroup.add(sprite);
+          this.group.add(sprite);
         } else {
           const geometry = new THREE.PlaneGeometry(
             this.tileSize,
@@ -590,7 +576,7 @@ export default class ThreeDrawer {
           const material = new THREE.MeshStandardMaterial({color: 0x00ff00});
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
-          this.propGroup.add(sprite);
+          this.group.add(sprite);
         }
       }
     }
@@ -619,7 +605,7 @@ export default class ThreeDrawer {
           });
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
-          this.monsterGroup.add(sprite);
+          this.group.add(sprite);
         } else {
           const geometry = new THREE.PlaneGeometry(
             this.tileSize,
@@ -631,7 +617,7 @@ export default class ThreeDrawer {
           const material = new THREE.MeshStandardMaterial({color: 0x0000ff});
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
-          this.monsterGroup.add(sprite);
+          this.group.add(sprite);
         }
       }
     }

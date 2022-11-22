@@ -115,6 +115,7 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
           className="w-full p-inputtext-sm"
           value={mapGutterWidth}
           onValueChange={e => setMapGutterWidth(e.value)}
+          disabled
         />
       </div>
       <div className="field col-12">
@@ -172,6 +173,7 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
           className="w-full p-inputtext-sm"
           value={tileWidth}
           onValueChange={e => setTileWidth(e.value)}
+          disabled={isThree}
         />
       </div>
       <div className="field col-12 flex gap-3">
