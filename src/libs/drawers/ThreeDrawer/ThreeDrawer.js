@@ -1,37 +1,4 @@
-import {
-  ACESFilmicToneMapping,
-  AxesHelper,
-  Clock,
-  Color,
-  Fog,
-  ImageLoader,
-  LoadingManager,
-  MathUtils,
-  Mesh,
-  MeshStandardMaterial,
-  RepeatWrapping,
-  Object3D,
-  PCFSoftShadowMap,
-  PerspectiveCamera,
-  PMREMGenerator,
-  Raycaster,
-  Scene,
-  sRGBEncoding,
-  Texture,
-  TextureLoader,
-  Vector2,
-  WebGLRenderer,
-  NoToneMapping,
-  LinearToneMapping,
-  ReinhardToneMapping,
-  CineonToneMapping,
-  PlaneGeometry,
-  Group,
-  BoxGeometry,
-  GridHelper,
-  MeshBasicMaterial,
-  Vector3,
-} from 'three';
+import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader';
@@ -62,19 +29,20 @@ export default class ThreeDrawer {
     this.canvasWidth = canvasHolder.offsetWidth;
     this.canvasHeight = canvasHolder.offsetHeight;
     this.renderRequested = false;
-    this.clock = new Clock();
-    this.rayCaster = new Raycaster();
+    this.clock = new THREE.Clock();
+    this.rayCaster = new THREE.Raycaster();
     this.envMap = null;
     this.meshes = [];
     this.candidateMesh = null;
     this.assets = {};
-    this.mouseDownPosition = new Vector2();
-    this.mouseUpPosition = new Vector2();
+    this.mouseDownPosition = new THREE.Vector2();
+    this.mouseUpPosition = new THREE.Vector2();
     this.tileSize = 0.5;
     this.dungeon = null;
+    this.oldDungeon = null;
 
     //Loading manager
-    this.loadingManager = new LoadingManager();
+    this.loadingManager = new THREE.LoadingManager();
     this.loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {
       this.storeInterface.setLoaderVisible(true);
     };
@@ -100,17 +68,17 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Scene
-    this.scene = new Scene();
-    this.scene.background = new Color(0x000000);
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0x000000);
     // this.scene.fog = new Fog(0xa0a0a0, SPACE_SIZE * 0.9, SPACE_SIZE)
 
     /////////////////////////////////////////////////////////////////////////////
     //Groups
-    this.tileGroup = new Group();
+    this.tileGroup = new THREE.Group();
     this.scene.add(this.tileGroup);
-    this.propGroup = new Group();
+    this.propGroup = new THREE.Group();
     this.scene.add(this.propGroup);
-    this.monsterGroup = new Group();
+    this.monsterGroup = new THREE.Group();
     this.scene.add(this.monsterGroup);
 
     /////////////////////////////////////////////////////////////////////////////
@@ -120,9 +88,9 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Primitives
-    this.unitBox = new Mesh(
-      new BoxGeometry(1, 1, 1),
-      new MeshStandardMaterial({color: 0xffffff}),
+    this.unitBox = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.MeshStandardMaterial({color: 0xffffff}),
     );
     this.unitBox.visible = false;
     this.scene.add(this.unitBox);
@@ -139,7 +107,7 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera
-    this.camera = new PerspectiveCamera(
+    this.camera = new THREE.PerspectiveCamera(
       45,
       this.canvasWidth / this.canvasHeight,
       0.01,
@@ -150,7 +118,7 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Renderer
-    this.renderer = new WebGLRenderer({
+    this.renderer = new THREE.WebGLRenderer({
       powerPreference: 'high-performance',
       antialias: false,
       stencil: false,
@@ -160,9 +128,9 @@ export default class ThreeDrawer {
     this.renderer.setPixelRatio(window.devicePixelRatio || 1);
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.physicallyCorrectLights = true;
-    this.renderer.toneMapping = ACESFilmicToneMapping;
-    this.renderer.outputEncoding = sRGBEncoding;
-    this.renderer.shadowMap.type = PCFSoftShadowMap;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(this.canvasWidth, this.canvasHeight, false);
     this.canvasHolder.appendChild(this.renderer.domElement);
@@ -212,13 +180,13 @@ export default class ThreeDrawer {
 
     /////////////////////////////////////////////////////////////////////////////
     //Load assets
-    this.textureLoader = new TextureLoader(this.loadingManager);
+    this.textureLoader = new THREE.TextureLoader(this.loadingManager);
     this.rgbeLoader = new RGBELoader(this.loadingManager);
     this.objLoader = new OBJLoader(this.loadingManager);
     this.mtlLoader = new MTLLoader(this.loadingManager);
     this.fbxLoader = new FBXLoader(this.loadingManager);
     this.gltfLoader = new GLTFLoader(this.loadingManager);
-    this.imageLoader = new ImageLoader(this.loadingManager);
+    this.imageLoader = new THREE.ImageLoader(this.loadingManager);
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('/draco/');
     this.gltfLoader.setDRACOLoader(dracoLoader);
@@ -227,9 +195,9 @@ export default class ThreeDrawer {
     this.loadAllTextures();
 
     // Player
-    this.player = new Mesh(
-      new BoxGeometry(0.4, 0.5, 0.4),
-      new MeshBasicMaterial({color: 0xffff00, wireframe: false}),
+    this.player = new THREE.Mesh(
+      new THREE.BoxGeometry(0.4, 0.5, 0.4),
+      new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: false}),
     );
     this.scene.add(this.player);
   }
@@ -264,7 +232,7 @@ export default class ThreeDrawer {
    * @param {Object} event
    */
   onMouseDown(event) {
-    const pickedPoint = new Vector2(
+    const pickedPoint = new THREE.Vector2(
       (event.offsetX / this.canvasWidth) * 2 - 1,
       -(event.offsetY / this.canvasHeight) * 2 + 1,
     );
@@ -276,7 +244,7 @@ export default class ThreeDrawer {
    * @param {Object} event
    */
   onMouseUp(event) {
-    const pickedPoint = new Vector2(
+    const pickedPoint = new THREE.Vector2(
       (event.offsetX / this.canvasWidth) * 2 - 1,
       -(event.offsetY / this.canvasHeight) * 2 + 1,
     );
@@ -298,7 +266,7 @@ export default class ThreeDrawer {
    * @param {Object} event
    */
   onMouseMove(event) {
-    const pickedPoint = new Vector2(
+    const pickedPoint = new THREE.Vector2(
       (event.offsetX / this.canvasWidth) * 2 - 1,
       -(event.offsetY / this.canvasHeight) * 2 + 1,
     );
@@ -392,10 +360,10 @@ export default class ThreeDrawer {
    */
   updateEnvmap(index, enabled) {
     const envTexture = ENVIRONMENT_DATA[index].hdr;
-    const pg = new PMREMGenerator(this.renderer);
+    const pg = new THREE.PMREMGenerator(this.renderer);
     this.rgbeLoader.load(envTexture, texture => {
       texture.rotation = Math.PI;
-      texture.offset = new Vector2(0.5, 0);
+      texture.offset = new THREE.Vector2(0.5, 0);
       texture.needsUpdate = true;
       texture.updateMatrix();
 
@@ -418,13 +386,14 @@ export default class ThreeDrawer {
 
   updateEnvOrientation(index, orientation) {
     const radius =
-      Math.cos(MathUtils.degToRad(ENVIRONMENT_DATA[index].zenith)) * SPACE_SIZE;
+      Math.cos(THREE.MathUtils.degToRad(ENVIRONMENT_DATA[index].zenith)) *
+      SPACE_SIZE;
 
     this.lights.sunLight.position.x =
-      Math.sin(MathUtils.degToRad(orientation)) * radius;
+      Math.sin(THREE.MathUtils.degToRad(orientation)) * radius;
 
     this.lights.sunLight.position.z =
-      Math.cos(MathUtils.degToRad(orientation)) * radius;
+      Math.cos(THREE.MathUtils.degToRad(orientation)) * radius;
 
     this.requestRenderIfNotRequested();
   }
@@ -445,13 +414,15 @@ export default class ThreeDrawer {
   setCandidateMesh(mesh) {
     //Reset color
     if (this.candidateMesh) {
-      const color = new Color(this.candidateMesh.material.userData.oldColor);
+      const color = new THREE.Color(
+        this.candidateMesh.material.userData.oldColor,
+      );
       this.candidateMesh.material.color.set(color);
     }
 
     //Set color
     if (mesh) {
-      const color = new Color(MESH_HIGHLIGHT_COLOR);
+      const color = new THREE.Color(MESH_HIGHLIGHT_COLOR);
       mesh.material.color.set(color);
     }
 
@@ -539,30 +510,30 @@ export default class ThreeDrawer {
         const id = tilemap[y][x];
         const texture = sprites[id];
         if (texture) {
-          const geometry = new PlaneGeometry(
+          const geometry = new THREE.PlaneGeometry(
             this.tileSize,
             this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({
+          const material = new THREE.MeshStandardMaterial({
             map: texture,
             transparent: true,
           });
-          const sprite = new Mesh(geometry, material);
+          const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.tileGroup.add(sprite);
         } else {
-          const geometry = new PlaneGeometry(
+          const geometry = new THREE.PlaneGeometry(
             this.tileSize,
             this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({color: 0xff0000});
-          const sprite = new Mesh(geometry, material);
+          const material = new THREE.MeshStandardMaterial({color: 0xff0000});
+          const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.tileGroup.add(sprite);
         }
@@ -580,30 +551,30 @@ export default class ThreeDrawer {
 
         const texture = sprites[id];
         if (texture) {
-          const geometry = new PlaneGeometry(
+          const geometry = new THREE.PlaneGeometry(
             this.tileSize,
             this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({
+          const material = new THREE.MeshStandardMaterial({
             map: texture,
             transparent: true,
           });
-          const sprite = new Mesh(geometry, material);
+          const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.propGroup.add(sprite);
         } else {
-          const geometry = new PlaneGeometry(
+          const geometry = new THREE.PlaneGeometry(
             this.tileSize,
             this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({color: 0x00ff00});
-          const sprite = new Mesh(geometry, material);
+          const material = new THREE.MeshStandardMaterial({color: 0x00ff00});
+          const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.propGroup.add(sprite);
         }
@@ -621,30 +592,30 @@ export default class ThreeDrawer {
 
         const texture = sprites[id];
         if (texture) {
-          const geometry = new PlaneGeometry(
+          const geometry = new THREE.PlaneGeometry(
             this.tileSize,
             this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({
+          const material = new THREE.MeshStandardMaterial({
             map: texture,
             transparent: true,
           });
-          const sprite = new Mesh(geometry, material);
+          const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.monsterGroup.add(sprite);
         } else {
-          const geometry = new PlaneGeometry(
+          const geometry = new THREE.PlaneGeometry(
             this.tileSize,
             this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
-          const material = new MeshStandardMaterial({color: 0x0000ff});
-          const sprite = new Mesh(geometry, material);
+          const material = new THREE.MeshStandardMaterial({color: 0x0000ff});
+          const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.monsterGroup.add(sprite);
         }
