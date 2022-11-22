@@ -61,10 +61,7 @@ export default function GenerateDungeon() {
       dungeonRef.current = dungeon;
 
       if (isThree) {
-        threeDrawerRef.current.drawAll(dungeon, {
-          debug: args.debug,
-          unitWidthInPixels: args.tileWidth,
-        });
+        threeDrawerRef.current.drawAll(dungeon);
       } else {
         pixiDrawerRef.current.drawAll(dungeon, {
           debug: args.debug,
@@ -180,8 +177,7 @@ export default function GenerateDungeon() {
     return () => {
       if (threeDrawerRef.current) {
         threeDrawerRef.current.dispose();
-      }
-      if (pixiDrawerRef.current) {
+      } else if (pixiDrawerRef.current) {
         canvasHolderRef.current.innerHTML = '';
       }
     };

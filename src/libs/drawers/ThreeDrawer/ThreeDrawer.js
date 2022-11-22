@@ -70,7 +70,7 @@ export default class ThreeDrawer {
     this.assets = {};
     this.mouseDownPosition = new Vector2();
     this.mouseUpPosition = new Vector2();
-    this.unitInPixels = 32;
+    this.tileSize = 0.5;
     this.dungeon = null;
 
     //Loading manager
@@ -318,20 +318,20 @@ export default class ThreeDrawer {
    */
   onKeyDown(event) {
     if (event.key === 'a' || event.key === 'ArrowLeft') {
-      this.player.position.x -= this.unitInPixels;
+      this.player.position.x -= this.tileSize;
     }
     if (event.key === 'd' || event.key === 'ArrowRight') {
-      this.player.position.x += this.unitInPixels;
+      this.player.position.x += this.tileSize;
     }
     if (event.key === 'w' || event.key === 'ArrowUp') {
-      this.player.position.z -= this.unitInPixels;
+      this.player.position.z -= this.tileSize;
     }
     if (event.key === 's' || event.key === 'ArrowDown') {
-      this.player.position.z += this.unitInPixels;
+      this.player.position.z += this.tileSize;
     }
 
-    // Detect doors
-    const detectedDoor = this.arrivedPlayerAtDoor();
+    // Detect door
+    const detectedDoor = this.getDoorPlayerArrived();
     if (detectedDoor.arrived) {
       this.player.material.color.set(0xff0000);
       // Create next dungeon
@@ -502,12 +502,10 @@ export default class ThreeDrawer {
 
   /**
    * @param {Object} dungeon
-   * @param {Object} options
    */
-  drawAll(dungeon, options) {
+  drawAll(dungeon) {
     // Params
     this.dungeon = dungeon;
-    this.unitInPixels = options.unitWidthInPixels / 64;
 
     // Clear
     this.clear();
@@ -535,28 +533,6 @@ export default class ThreeDrawer {
     this.requestRenderIfNotRequested();
   }
 
-  /**
-   * @param {Object} dungeon
-   */
-  drawNextAll(dungeon) {
-    // Params
-    this.dungeon = dungeon;
-
-    // Clear
-    this.clear();
-
-    // Draw
-    this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
-    this.drawProps(dungeon.layers.props, Textures.propsTextures(TEXTURE_ASSET));
-    this.drawMonsters(
-      dungeon.layers.monsters,
-      Textures.monstersTextures(TEXTURE_ASSET),
-    );
-
-    // Render scene
-    this.requestRenderIfNotRequested();
-  }
-
   drawTiles = (tilemap, sprites) => {
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
@@ -564,8 +540,8 @@ export default class ThreeDrawer {
         const texture = sprites[id];
         if (texture) {
           const geometry = new PlaneGeometry(
-            this.unitInPixels,
-            this.unitInPixels,
+            this.tileSize,
+            this.tileSize,
             1,
             1,
           );
@@ -575,19 +551,19 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.tileGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
-            this.unitInPixels,
-            this.unitInPixels,
+            this.tileSize,
+            this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0xff0000});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.tileGroup.add(sprite);
         }
       }
@@ -605,8 +581,8 @@ export default class ThreeDrawer {
         const texture = sprites[id];
         if (texture) {
           const geometry = new PlaneGeometry(
-            this.unitInPixels,
-            this.unitInPixels,
+            this.tileSize,
+            this.tileSize,
             1,
             1,
           );
@@ -616,19 +592,19 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.propGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
-            this.unitInPixels,
-            this.unitInPixels,
+            this.tileSize,
+            this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0x00ff00});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.propGroup.add(sprite);
         }
       }
@@ -646,8 +622,8 @@ export default class ThreeDrawer {
         const texture = sprites[id];
         if (texture) {
           const geometry = new PlaneGeometry(
-            this.unitInPixels,
-            this.unitInPixels,
+            this.tileSize,
+            this.tileSize,
             1,
             1,
           );
@@ -657,19 +633,19 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.monsterGroup.add(sprite);
         } else {
           const geometry = new PlaneGeometry(
-            this.unitInPixels,
-            this.unitInPixels,
+            this.tileSize,
+            this.tileSize,
             1,
             1,
           );
           geometry.rotateX(-Math.PI / 2);
           const material = new MeshStandardMaterial({color: 0x0000ff});
           const sprite = new Mesh(geometry, material);
-          sprite.position.set(x * this.unitInPixels, 0, y * this.unitInPixels);
+          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.monsterGroup.add(sprite);
         }
       }
@@ -681,18 +657,14 @@ export default class ThreeDrawer {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
         if (id === PropType.Ladder) {
-          this.player.position.set(
-            x * this.unitInPixels,
-            0,
-            y * this.unitInPixels,
-          );
+          this.player.position.set(x * this.tileSize, 0, y * this.tileSize);
           break;
         }
       }
     }
   };
 
-  arrivedPlayerAtDoor = () => {
+  getDoorPlayerArrived = () => {
     const tilemap = this.dungeon.layers.props;
     const snapSize = 0.1;
     let arrivedAtDoor = false;
@@ -702,8 +674,8 @@ export default class ThreeDrawer {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
         if (id === PropType.Arrow) {
-          const dx = Math.abs(this.player.position.x - x * this.unitInPixels);
-          const dy = Math.abs(this.player.position.z - y * this.unitInPixels);
+          const dx = Math.abs(this.player.position.x - x * this.tileSize);
+          const dy = Math.abs(this.player.position.z - y * this.tileSize);
           if (dx < snapSize && dy < snapSize) {
             arrivedAtDoor = true;
             rx = x;
