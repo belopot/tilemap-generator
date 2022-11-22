@@ -1,6 +1,6 @@
 # tilemap generator
 
-Tilemap procedural generator
+Tilemap procedural generator for dungeon
 
 ## Install
 
