@@ -11,9 +11,9 @@ import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 import {Textures} from 'libs/utils';
 import {ENVIRONMENT_DATA} from './Environments';
 import Lights from './Lights';
-import {FitCameraToSelection, ShadowPlane} from './Helpers';
+import {FitCameraToSelection} from './Helpers';
 import Composer from './Composer';
-import {MESH_HIGHLIGHT_COLOR, SPACE_SIZE} from './Constants';
+import {SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
 import {Direction, PropType} from 'libs/generate';
 
@@ -33,8 +33,6 @@ export default class ThreeDrawer {
     this.rayCaster = new THREE.Raycaster();
     this.envMap = null;
     this.meshes = [];
-    this.candidateMesh = null;
-    this.assets = {};
     this.mouseDownPosition = new THREE.Vector2();
     this.mouseUpPosition = new THREE.Vector2();
     this.tileSize = 0.5;
@@ -206,7 +204,6 @@ export default class ThreeDrawer {
     this.clear();
     this.renderer.dispose();
     this.cameraController.dispose();
-    this.assets = {};
 
     this.cameraController.removeEventListener(
       'change',
@@ -273,11 +270,6 @@ export default class ThreeDrawer {
 
     this.rayCaster.setFromCamera(pickedPoint, this.camera);
     const pickedObjs = this.rayCaster.intersectObjects(this.meshes);
-    if (pickedObjs.length > 0) {
-      this.setCandidateMesh(pickedObjs[0].object);
-    } else {
-      this.setCandidateMesh(null);
-    }
   }
 
   /**
@@ -406,29 +398,6 @@ export default class ThreeDrawer {
       this.renderer.toneMappingExposure = brightness;
       this.requestRenderIfNotRequested();
     }
-  }
-
-  /**
-   * @param {Mesh} mesh
-   */
-  setCandidateMesh(mesh) {
-    //Reset color
-    if (this.candidateMesh) {
-      const color = new THREE.Color(
-        this.candidateMesh.material.userData.oldColor,
-      );
-      this.candidateMesh.material.color.set(color);
-    }
-
-    //Set color
-    if (mesh) {
-      const color = new THREE.Color(MESH_HIGHLIGHT_COLOR);
-      mesh.material.color.set(color);
-    }
-
-    //Update candidate mesh
-    this.candidateMesh = mesh;
-    this.requestRenderIfNotRequested();
   }
 
   /**
