@@ -271,7 +271,7 @@ export default class ThreeDrawer {
       this.player.position.z += this.tileSize;
     }
 
-    this.drawNextDungeon();
+    this.goNextDungeon();
 
     this.requestRenderIfNotRequested();
   }
@@ -435,7 +435,7 @@ export default class ThreeDrawer {
       // Fit camera
       FitCameraToSelection(this.camera, [this.group], 0.75, this.cameraController);
 
-      // Move player to
+      // Move player to ladder position
       this.initPlayer(dungeon.layers.props);
     }
 
@@ -533,6 +533,7 @@ export default class ThreeDrawer {
   };
 
   initPlayer = tilemap => {
+    // Move player into Ladder position
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
@@ -596,43 +597,27 @@ export default class ThreeDrawer {
     return {arrived: arrivedAtDoor, x: rx, y: ry, direction: dir};
   };
 
-  drawNextDungeon() {
-    // Detect in dungeon
+  goNextDungeon() {
+    // Detect door in current dungeon
     let detectedDoor = this.getDoorPlayerArrived(this.dungeon, this.group);
     if (detectedDoor.arrived) {
       this.player.material.color.set(0xff0000);
 
       // Create next dungeon
       if (this.storeInterface.generateNextDungeon) {
-        // Generate dungeon
+        // Generate new dungeon
         const newDungeon = this.storeInterface.generateNextDungeon();
 
         // Draw next dungeon
         this.drawDungeon(newDungeon);
 
-        // Move
-        switch (detectedDoor.direction) {
-          case Direction.top:
-            this.group.position.z = this.oldGroup.position.z - this.dungeon.height * this.tileSize;
-            break;
-          case Direction.right:
-            this.group.position.x = this.oldGroup.position.x + this.dungeon.width * this.tileSize;
-            break;
-          case Direction.bottom:
-            this.group.position.z = this.oldGroup.position.z + this.dungeon.height * this.tileSize;
-            break;
-          case Direction.left:
-            this.group.position.x = this.oldGroup.position.x - this.dungeon.width * this.tileSize;
-            break;
-
-          default:
-            break;
-        }
+        // Move group
+        this.moveGroupByDoorDirection(detectedDoor.direction);
       }
     } else {
       this.player.material.color.set(0xffff00);
 
-      // Detect in old dungeon
+      // Detect door in old dungeon
       if (this.oldDungeon) {
         detectedDoor = this.getDoorPlayerArrived(this.oldDungeon, this.oldGroup);
 
@@ -659,37 +644,39 @@ export default class ThreeDrawer {
             });
             this.tempGroup.children = [];
 
-            // Draw next dungeon
+            // Generate new dungeon
             const newDungeon = this.storeInterface.generateNextDungeon();
+
+            // Draw next dungeon
             this.drawDungeon(newDungeon);
 
-            // Move
-            switch (detectedDoor.direction) {
-              case Direction.top:
-                this.group.position.z =
-                  this.oldGroup.position.z - this.dungeon.height * this.tileSize;
-                break;
-              case Direction.right:
-                this.group.position.x =
-                  this.oldGroup.position.x + this.dungeon.width * this.tileSize;
-                break;
-              case Direction.bottom:
-                this.group.position.z =
-                  this.oldGroup.position.z + this.dungeon.height * this.tileSize;
-                break;
-              case Direction.left:
-                this.group.position.x =
-                  this.oldGroup.position.x - this.dungeon.width * this.tileSize;
-                break;
-
-              default:
-                break;
-            }
+            // Move group
+            this.moveGroupByDoorDirection(detectedDoor.direction);
           }
         } else {
           this.player.material.color.set(0xffff00);
         }
       }
+    }
+  }
+
+  moveGroupByDoorDirection(direction) {
+    switch (direction) {
+      case Direction.top:
+        this.group.position.z = this.oldGroup.position.z - this.dungeon.height * this.tileSize;
+        break;
+      case Direction.right:
+        this.group.position.x = this.oldGroup.position.x + this.dungeon.width * this.tileSize;
+        break;
+      case Direction.bottom:
+        this.group.position.z = this.oldGroup.position.z + this.dungeon.height * this.tileSize;
+        break;
+      case Direction.left:
+        this.group.position.x = this.oldGroup.position.x - this.dungeon.width * this.tileSize;
+        break;
+
+      default:
+        break;
     }
   }
 }
