@@ -6,13 +6,7 @@ import {Checkbox} from 'primereact/checkbox';
 import {Divider} from 'primereact/divider';
 import {Dropdown} from 'primereact/dropdown';
 
-import {
-  MonsterTypes,
-  PropTypes,
-  RoomTypes,
-  TileLayers,
-  TileTypes,
-} from 'libs/generate/types';
+import {MonsterTypes, PropTypes, RoomTypes, TileLayers, TileTypes} from 'libs/generate/types';
 import {useRooms} from 'hooks/rooms';
 
 /**
@@ -25,14 +19,7 @@ export function RoomSidebar(props) {
   const [type, setType] = useState(room.type);
   const [width, setWidth] = useState(room.width);
   const [height, setHeight] = useState(room.height);
-  const {
-    selectedLayer,
-    selectedTile,
-    debug,
-    selectLayer,
-    selectTile,
-    setDebug,
-  } = useRooms();
+  const {selectedLayer, selectedTile, debug, selectLayer, selectTile, setDebug} = useRooms();
 
   /** When the room is updated we reset all the fields */
   useEffect(() => {
@@ -44,12 +31,7 @@ export function RoomSidebar(props) {
   }, [room.id]);
 
   useEffect(() => {
-    if (
-      room.id !== id ||
-      room.type !== type ||
-      room.width !== width ||
-      room.height !== height
-    ) {
+    if (room.id !== id || room.type !== type || room.width !== width || room.height !== height) {
       onUpdate(
         {
           id,
@@ -68,11 +50,7 @@ export function RoomSidebar(props) {
         {/* Id */}
         <div className="field col-12">
           <label htmlFor="">Id:</label>
-          <InputText
-            className="w-full"
-            value={id}
-            onChange={e => setId(e.target.value)}
-          />
+          <InputText className="w-full" value={id} onChange={e => setId(e.target.value)} />
         </div>
         {/* Type */}
         <div className="field col-12">
@@ -90,20 +68,12 @@ export function RoomSidebar(props) {
         {/* Width */}
         <div className="field col-12">
           <label htmlFor="">Width</label>
-          <InputNumber
-            className="w-full"
-            value={width}
-            onValueChange={e => setWidth(e.value)}
-          />
+          <InputNumber className="w-full" value={width} onValueChange={e => setWidth(e.value)} />
         </div>
         {/* Height */}
         <div className="field col-12">
           <label htmlFor="">Height</label>
-          <InputNumber
-            className="w-full"
-            value={height}
-            onValueChange={e => setHeight(e.value)}
-          />
+          <InputNumber className="w-full" value={height} onValueChange={e => setHeight(e.value)} />
         </div>
         <Divider />
         {/* Layer */}
@@ -135,11 +105,7 @@ export function RoomSidebar(props) {
         <Divider />
         {/* Debug */}
         <div className="field-checkbox col-12">
-          <Checkbox
-            id="debug"
-            checked={debug}
-            onChange={e => setDebug(e.checked)}
-          />
+          <Checkbox id="debug" checked={debug} onChange={e => setDebug(e.checked)} />
           <label htmlFor="debug">Debug</label>
         </div>
       </div>

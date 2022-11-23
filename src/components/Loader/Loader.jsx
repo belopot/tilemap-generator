@@ -2,13 +2,7 @@ import {AnimatePresence, motion} from 'framer-motion';
 import styled from 'styled-components';
 import Spiner from 'components/Spiner';
 
-export default function Loader({
-  visible,
-  className,
-  size = 60,
-  label = '',
-  ...props
-}) {
+export default function Loader({visible, className, size = 60, label = '', ...props}) {
   return (
     <AnimatePresence>
       {visible && (

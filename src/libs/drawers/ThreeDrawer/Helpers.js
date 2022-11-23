@@ -32,8 +32,7 @@ function FitCameraToSelection(camera, objects, offset, controls) {
   box.getSize(size);
 
   const maxSize = Math.max(size.x, size.y, size.z);
-  const fitHeightDistance =
-    maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360));
+  const fitHeightDistance = maxSize / (2 * Math.atan((Math.PI * camera.fov) / 360));
   const fitWidthDistance = fitHeightDistance / camera.aspect;
   const distance = offset * Math.max(fitHeightDistance, fitWidthDistance);
 

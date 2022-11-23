@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  useMemo,
-  useContext,
-  useEffect,
-} from 'react';
+import React, {createContext, useState, useMemo, useContext, useEffect} from 'react';
 import {RoomTypes} from 'libs/generate/types';
 import {createTilemap} from 'libs/generate/utils';
 import {Data, Download} from 'libs/utils';
@@ -152,9 +146,7 @@ export function CollectionsProvider(props) {
   // Filter and sort rooms
   const filtered = useMemo(() => {
     const sorted = rooms.sort((a, b) => a.id.localeCompare(b.id));
-    const filtered = sorted.filter(
-      item => roomsFilter === 'all' || item.type === roomsFilter,
-    );
+    const filtered = sorted.filter(item => roomsFilter === 'all' || item.type === roomsFilter);
 
     return filtered;
   }, [rooms, roomsFilter]);
@@ -180,9 +172,7 @@ export function CollectionsProvider(props) {
     };
   }, [rooms, roomsFilter, selectedRoomId, selectedLayer, selectedTile, debug]);
 
-  return (
-    <RoomsContext.Provider value={value}>{children}</RoomsContext.Provider>
-  );
+  return <RoomsContext.Provider value={value}>{children}</RoomsContext.Provider>;
 }
 
 export function useRooms() {

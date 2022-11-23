@@ -5,7 +5,7 @@
   "insertPragma": false,
   "jsxSingleQuote": false,
   "parser": "babel-flow",
-  "printWidth": 80,
+  "printWidth": 100,
   "proseWrap": "always",
   "requirePragma": false,
   "semi": true,

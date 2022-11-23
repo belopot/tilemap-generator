@@ -22,12 +22,7 @@ export function RoomContent(props) {
 
     const tileId = layer[y][x];
     const newTileId = getTileIdFromName(selectedLayer, selectedTile);
-    onUpdate(
-      selectedLayer,
-      x,
-      y,
-      tileId !== 0 && tileId === newTileId ? 0 : newTileId,
-    );
+    onUpdate(selectedLayer, x, y, tileId !== 0 && tileId === newTileId ? 0 : newTileId);
   };
 
   // Initialize the canvas drawer

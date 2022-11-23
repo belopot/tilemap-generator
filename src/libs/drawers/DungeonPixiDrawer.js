@@ -44,11 +44,7 @@ export class DungeonPixiDrawer {
 
     this.drawTiles(dungeon.layers.tiles, Sprites.tilesSprites, options);
     this.drawProps(dungeon.layers.props, Sprites.propsSprites, options);
-    this.drawMonsters(
-      dungeon.layers.monsters,
-      Sprites.monstersSprites,
-      options,
-    );
+    this.drawMonsters(dungeon.layers.monsters, Sprites.monstersSprites, options);
 
     if (options.debug) {
       this.drawGrid(dungeon);
@@ -173,10 +169,7 @@ export class DungeonPixiDrawer {
         container.width * this.unitInPixels,
         container.height * this.unitInPixels,
       );
-      rectangle.position.set(
-        container.x * this.unitInPixels,
-        container.y * this.unitInPixels,
-      );
+      rectangle.position.set(container.x * this.unitInPixels, container.y * this.unitInPixels);
       this.shapesContainer.addChild(rectangle);
     });
   };
@@ -190,16 +183,8 @@ export class DungeonPixiDrawer {
 
       const rectangle = new PIXI.Graphics();
       rectangle.lineStyle(1, 0x00ff00, 0.8);
-      rectangle.drawRect(
-        0,
-        0,
-        room.width * this.unitInPixels,
-        room.height * this.unitInPixels,
-      );
-      rectangle.position.set(
-        room.x * this.unitInPixels,
-        room.y * this.unitInPixels,
-      );
+      rectangle.drawRect(0, 0, room.width * this.unitInPixels, room.height * this.unitInPixels);
+      rectangle.position.set(room.x * this.unitInPixels, room.y * this.unitInPixels);
 
       // Room id
       const text = new PIXI.Text(`${room.id}`, {
@@ -231,10 +216,7 @@ export class DungeonPixiDrawer {
       corridor.width * this.unitInPixels,
       corridor.height * this.unitInPixels,
     );
-    rectangle.position.set(
-      corridor.x * this.unitInPixels,
-      corridor.y * this.unitInPixels,
-    );
+    rectangle.position.set(corridor.x * this.unitInPixels, corridor.y * this.unitInPixels);
     this.shapesContainer.addChild(rectangle);
 
     this.drawCorridors(container.left);

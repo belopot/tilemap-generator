@@ -134,31 +134,16 @@ export default class ThreeDrawer {
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(this.canvasWidth, this.canvasHeight, false);
     this.canvasHolder.appendChild(this.renderer.domElement);
-    this.renderer.domElement.addEventListener(
-      'mousedown',
-      this.onMouseDown.bind(this),
-    );
-    this.renderer.domElement.addEventListener(
-      'mouseup',
-      this.onMouseUp.bind(this),
-    );
-    this.renderer.domElement.addEventListener(
-      'mousemove',
-      this.onMouseMove.bind(this),
-    );
+    this.renderer.domElement.addEventListener('mousedown', this.onMouseDown.bind(this));
+    this.renderer.domElement.addEventListener('mouseup', this.onMouseUp.bind(this));
+    this.renderer.domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
     window.addEventListener('keydown', this.onKeyDown.bind(this));
     window.addEventListener('keyup', this.onKeyUp.bind(this));
-    window.addEventListener(
-      'resize',
-      this.requestRenderIfNotRequested.bind(this),
-    );
+    window.addEventListener('resize', this.requestRenderIfNotRequested.bind(this));
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera Controller
-    this.cameraController = new OrbitControls(
-      this.camera,
-      this.renderer.domElement,
-    );
+    this.cameraController = new OrbitControls(this.camera, this.renderer.domElement);
     // this.cameraController.minAzimuthAngle = -180;
     // this.cameraController.maxAzimuthAngle = 180;
     this.cameraController.dampingFactor = 0.05;
@@ -173,10 +158,7 @@ export default class ThreeDrawer {
     this.cameraController.enableZoom = true;
     this.cameraController.enableRotate = false;
     // this.cameraController.enablePan = false
-    this.cameraController.addEventListener(
-      'change',
-      this.requestRenderIfNotRequested.bind(this),
-    );
+    this.cameraController.addEventListener('change', this.requestRenderIfNotRequested.bind(this));
 
     /////////////////////////////////////////////////////////////////////////////
     //Load assets
@@ -213,10 +195,7 @@ export default class ThreeDrawer {
     );
     window.removeEventListener('keydown', this.onKeyDown.bind(this));
     window.removeEventListener('keyup', this.onKeyUp.bind(this));
-    window.removeEventListener(
-      'resize',
-      this.requestRenderIfNotRequested.bind(this),
-    );
+    window.removeEventListener('resize', this.requestRenderIfNotRequested.bind(this));
     // this.canvasHolder.removeChild(this.renderer.domElement);
     this.canvasHolder.innerHTML = '';
   }
@@ -306,8 +285,7 @@ export default class ThreeDrawer {
   resizeRendererToDisplaySize() {
     const canvasWidth = this.renderer.domElement.offsetWidth;
     const canvasHeight = this.renderer.domElement.offsetHeight;
-    const needResize =
-      canvasWidth !== this.canvasWidth || canvasHeight !== this.canvasHeight;
+    const needResize = canvasWidth !== this.canvasWidth || canvasHeight !== this.canvasHeight;
     if (needResize) {
       this.canvasWidth = canvasWidth;
       this.canvasHeight = canvasHeight;
@@ -370,15 +348,11 @@ export default class ThreeDrawer {
   }
 
   updateEnvOrientation(index, orientation) {
-    const radius =
-      Math.cos(THREE.MathUtils.degToRad(ENVIRONMENT_DATA[index].zenith)) *
-      SPACE_SIZE;
+    const radius = Math.cos(THREE.MathUtils.degToRad(ENVIRONMENT_DATA[index].zenith)) * SPACE_SIZE;
 
-    this.lights.sunLight.position.x =
-      Math.sin(THREE.MathUtils.degToRad(orientation)) * radius;
+    this.lights.sunLight.position.x = Math.sin(THREE.MathUtils.degToRad(orientation)) * radius;
 
-    this.lights.sunLight.position.z =
-      Math.cos(THREE.MathUtils.degToRad(orientation)) * radius;
+    this.lights.sunLight.position.z = Math.cos(THREE.MathUtils.degToRad(orientation)) * radius;
 
     this.requestRenderIfNotRequested();
   }
@@ -455,19 +429,11 @@ export default class ThreeDrawer {
     // Draw
     this.drawTiles(dungeon.layers.tiles, Textures.tilesTextures(TEXTURE_ASSET));
     this.drawProps(dungeon.layers.props, Textures.propsTextures(TEXTURE_ASSET));
-    this.drawMonsters(
-      dungeon.layers.monsters,
-      Textures.monstersTextures(TEXTURE_ASSET),
-    );
+    this.drawMonsters(dungeon.layers.monsters, Textures.monstersTextures(TEXTURE_ASSET));
 
     if (isFirstDungeon) {
       // Fit camera
-      FitCameraToSelection(
-        this.camera,
-        [this.group],
-        0.75,
-        this.cameraController,
-      );
+      FitCameraToSelection(this.camera, [this.group], 0.75, this.cameraController);
 
       // Move player to
       this.initPlayer(dungeon.layers.props);
@@ -483,12 +449,7 @@ export default class ThreeDrawer {
         const id = tilemap[y][x];
         const texture = sprites[id];
         if (texture) {
-          const geometry = new THREE.PlaneGeometry(
-            this.tileSize,
-            this.tileSize,
-            1,
-            1,
-          );
+          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({
             map: texture,
@@ -498,12 +459,7 @@ export default class ThreeDrawer {
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.group.add(sprite);
         } else {
-          const geometry = new THREE.PlaneGeometry(
-            this.tileSize,
-            this.tileSize,
-            1,
-            1,
-          );
+          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({color: 0xff0000});
           const sprite = new THREE.Mesh(geometry, material);
@@ -524,12 +480,7 @@ export default class ThreeDrawer {
 
         const texture = sprites[id];
         if (texture) {
-          const geometry = new THREE.PlaneGeometry(
-            this.tileSize,
-            this.tileSize,
-            1,
-            1,
-          );
+          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({
             map: texture,
@@ -539,12 +490,7 @@ export default class ThreeDrawer {
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.group.add(sprite);
         } else {
-          const geometry = new THREE.PlaneGeometry(
-            this.tileSize,
-            this.tileSize,
-            1,
-            1,
-          );
+          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({color: 0x00ff00});
           const sprite = new THREE.Mesh(geometry, material);
@@ -565,12 +511,7 @@ export default class ThreeDrawer {
 
         const texture = sprites[id];
         if (texture) {
-          const geometry = new THREE.PlaneGeometry(
-            this.tileSize,
-            this.tileSize,
-            1,
-            1,
-          );
+          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({
             map: texture,
@@ -580,12 +521,7 @@ export default class ThreeDrawer {
           sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
           this.group.add(sprite);
         } else {
-          const geometry = new THREE.PlaneGeometry(
-            this.tileSize,
-            this.tileSize,
-            1,
-            1,
-          );
+          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({color: 0x0000ff});
           const sprite = new THREE.Mesh(geometry, material);
@@ -618,12 +554,8 @@ export default class ThreeDrawer {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
         if (id === PropType.Arrow) {
-          const dx = Math.abs(
-            this.player.position.x - (group.position.x + x * this.tileSize),
-          );
-          const dy = Math.abs(
-            this.player.position.z - (group.position.z + y * this.tileSize),
-          );
+          const dx = Math.abs(this.player.position.x - (group.position.x + x * this.tileSize));
+          const dy = Math.abs(this.player.position.z - (group.position.z + y * this.tileSize));
           if (dx < snapSize && dy < snapSize) {
             arrivedAtDoor = true;
             rx = x;
@@ -681,20 +613,16 @@ export default class ThreeDrawer {
         // Move
         switch (detectedDoor.direction) {
           case Direction.top:
-            this.group.position.z =
-              this.oldGroup.position.z - this.dungeon.height * this.tileSize;
+            this.group.position.z = this.oldGroup.position.z - this.dungeon.height * this.tileSize;
             break;
           case Direction.right:
-            this.group.position.x =
-              this.oldGroup.position.x + this.dungeon.width * this.tileSize;
+            this.group.position.x = this.oldGroup.position.x + this.dungeon.width * this.tileSize;
             break;
           case Direction.bottom:
-            this.group.position.z =
-              this.oldGroup.position.z + this.dungeon.height * this.tileSize;
+            this.group.position.z = this.oldGroup.position.z + this.dungeon.height * this.tileSize;
             break;
           case Direction.left:
-            this.group.position.x =
-              this.oldGroup.position.x - this.dungeon.width * this.tileSize;
+            this.group.position.x = this.oldGroup.position.x - this.dungeon.width * this.tileSize;
             break;
 
           default:
@@ -706,10 +634,7 @@ export default class ThreeDrawer {
 
       // Detect in old dungeon
       if (this.oldDungeon) {
-        detectedDoor = this.getDoorPlayerArrived(
-          this.oldDungeon,
-          this.oldGroup,
-        );
+        detectedDoor = this.getDoorPlayerArrived(this.oldDungeon, this.oldGroup);
 
         if (detectedDoor.arrived) {
           this.player.material.color.set(0xff0000);
@@ -742,8 +667,7 @@ export default class ThreeDrawer {
             switch (detectedDoor.direction) {
               case Direction.top:
                 this.group.position.z =
-                  this.oldGroup.position.z -
-                  this.dungeon.height * this.tileSize;
+                  this.oldGroup.position.z - this.dungeon.height * this.tileSize;
                 break;
               case Direction.right:
                 this.group.position.x =
@@ -751,8 +675,7 @@ export default class ThreeDrawer {
                 break;
               case Direction.bottom:
                 this.group.position.z =
-                  this.oldGroup.position.z +
-                  this.dungeon.height * this.tileSize;
+                  this.oldGroup.position.z + this.dungeon.height * this.tileSize;
                 break;
               case Direction.left:
                 this.group.position.x =

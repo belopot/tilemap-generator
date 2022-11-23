@@ -24,21 +24,9 @@ export default function Room() {
 
     // If size of the map was changed, we want to update the corresponding layers
     if (params.width !== room.width || params.height !== room.height) {
-      updated.layers.tiles = resizeTileMap(
-        updated.layers.tiles,
-        params.width,
-        params.height,
-      );
-      updated.layers.props = resizeTileMap(
-        updated.layers.props,
-        params.width,
-        params.height,
-      );
-      updated.layers.monsters = resizeTileMap(
-        updated.layers.monsters,
-        params.width,
-        params.height,
-      );
+      updated.layers.tiles = resizeTileMap(updated.layers.tiles, params.width, params.height);
+      updated.layers.props = resizeTileMap(updated.layers.props, params.width, params.height);
+      updated.layers.monsters = resizeTileMap(updated.layers.monsters, params.width, params.height);
     }
 
     updateRoom(updated, oldRoomId);

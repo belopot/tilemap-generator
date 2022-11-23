@@ -1,18 +1,5 @@
-import {
-  Container,
-  Corridor,
-  PropType,
-  Room,
-  TileDirection,
-  TreeNode,
-} from './types';
-import {
-  createTilemap,
-  duplicateTilemap,
-  random,
-  randomChoice,
-  randomNumber,
-} from './utils';
+import {Container, Corridor, PropType, Room, TileDirection, TreeNode} from './types';
+import {createTilemap, duplicateTilemap, random, randomChoice, randomNumber} from './utils';
 import seedrandom from 'seedrandom';
 
 export function generate(args) {
@@ -68,21 +55,13 @@ function generateTree(container, iterations, args) {
     node.leaf.height > args.containerMinimumSize * 2
   ) {
     // We still need to divide the container
-    const [left, right] = splitContainer(
-      container,
-      args,
-      args.containerSplitRetries,
-    );
+    const [left, right] = splitContainer(container, args, args.containerSplitRetries);
     if (left && right) {
       node.left = generateTree(left, iterations - 1, args);
       node.right = generateTree(right, iterations - 1, args);
 
       // Once divided, we create a corridor between the two containers
-      node.leaf.corridor = generateCorridor(
-        node.left.leaf,
-        node.right.leaf,
-        args,
-      );
+      node.leaf.corridor = generateCorridor(node.left.leaf, node.right.leaf, args);
     }
   }
 
@@ -102,12 +81,7 @@ function splitContainer(container, args, iterations) {
   const direction = randomChoice(['vertical', 'horizontal']);
   if (direction === 'vertical') {
     // Vertical
-    left = new Container(
-      container.x,
-      container.y,
-      random(1, container.width),
-      container.height,
-    );
+    left = new Container(container.x, container.y, random(1, container.width), container.height);
     right = new Container(
       container.x + left.width,
       container.y,
@@ -126,12 +100,7 @@ function splitContainer(container, args, iterations) {
     }
   } else {
     // Horizontal
-    left = new Container(
-      container.x,
-      container.y,
-      container.width,
-      random(1, container.height),
-    );
+    left = new Container(container.x, container.y, container.width, random(1, container.height));
     right = new Container(
       container.x,
       container.y + left.height,
@@ -201,9 +170,7 @@ function fillByType(tree, args, type, count) {
   const containers = getEmptyContainers(tree.leaves);
 
   if (containers.length === 0) {
-    throw new Error(
-      `Couldn't find containers to fit ${count} templates of type "${type}"`,
-    );
+    throw new Error(`Couldn't find containers to fit ${count} templates of type "${type}"`);
   }
 
   // "-1" means "fill rest"
@@ -220,11 +187,7 @@ function fillByType(tree, args, type, count) {
       break;
     }
 
-    const template = findFittingTemplate(
-      templates,
-      container,
-      usedTemplatesIds,
-    );
+    const template = findFittingTemplate(templates, container, usedTemplatesIds);
 
     if (template) {
       const x = Math.floor(container.center.x - template.width / 2);
@@ -365,13 +328,9 @@ function carveTorches(tiles, props) {
       const tileId = tiles[y][x];
 
       const leftCorner =
-        maskToTileIdMap[
-          TileDirection.North | TileDirection.West | TileDirection.NorthWest
-        ];
+        maskToTileIdMap[TileDirection.North | TileDirection.West | TileDirection.NorthWest];
       const rightCorner =
-        maskToTileIdMap[
-          TileDirection.North | TileDirection.East | TileDirection.NorthEast
-        ];
+        maskToTileIdMap[TileDirection.North | TileDirection.East | TileDirection.NorthEast];
 
       if (tileId === leftCorner || tileId === rightCorner) {
         result[y][x] = PropType.Torch;
@@ -708,9 +667,7 @@ function findFittingTemplate(templates, container, usedIds) {
 
   if (!result) {
     result = sorted.find(
-      template =>
-        template.width <= container.width &&
-        template.height <= container.height,
+      template => template.width <= container.width && template.height <= container.height,
     );
   }
 
@@ -726,9 +683,7 @@ function getEmptyContainers(containers) {
 }
 
 function getRandomContainer(containers, usedIds) {
-  const filtered = containers.filter(
-    container => !usedIds.includes(container.id),
-  );
+  const filtered = containers.filter(container => !usedIds.includes(container.id));
   if (!filtered.length) {
     return null;
   }

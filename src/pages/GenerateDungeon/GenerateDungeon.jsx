@@ -9,11 +9,7 @@ import {Data, Download} from 'libs/utils';
 import ThreeDrawer from 'libs/drawers/ThreeDrawer';
 import {DungeonPixiDrawer} from 'libs/drawers/DungeonPixiDrawer';
 import PageTransition from 'components/PageTransition';
-import {
-  ContentContainer,
-  PageContainer,
-  SidebarContainer,
-} from 'components/Containers';
+import {ContentContainer, PageContainer, SidebarContainer} from 'components/Containers';
 import Loader from 'components/Loader';
 import Sidebar from './components/Sidebar';
 
@@ -161,10 +157,7 @@ export default function GenerateDungeon() {
   //
   useEffect(() => {
     if (isThree) {
-      threeDrawerRef.current = new ThreeDrawer(
-        canvasHolderRef.current,
-        storeInterface,
-      );
+      threeDrawerRef.current = new ThreeDrawer(canvasHolderRef.current, storeInterface);
     } else {
       pixiDrawerRef.current = new DungeonPixiDrawer(canvasHolderRef.current);
     }

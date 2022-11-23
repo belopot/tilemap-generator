@@ -23,17 +23,11 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
   const iterations = useStore(state => state.iterations);
   const setIterations = useStore(state => state.setIterations);
   const containerMinimumSize = useStore(state => state.containerMinimumSize);
-  const setContainerMinimumSize = useStore(
-    state => state.setContainerMinimumSize,
-  );
+  const setContainerMinimumSize = useStore(state => state.setContainerMinimumSize);
   const containerSplitRetries = useStore(state => state.containerSplitRetries);
-  const setContainerSplitRetries = useStore(
-    state => state.setContainerSplitRetries,
-  );
+  const setContainerSplitRetries = useStore(state => state.setContainerSplitRetries);
   const containerMinimumRatio = useStore(state => state.containerMinimumRatio);
-  const setContainerMinimumRatio = useStore(
-    state => state.setContainerMinimumRatio,
-  );
+  const setContainerMinimumRatio = useStore(state => state.setContainerMinimumRatio);
   const corridorWidth = useStore(state => state.corridorWidth);
   const setCorridorWidth = useStore(state => state.setCorridorWidth);
   const tileWidth = useStore(state => state.tileWidth);
@@ -46,23 +40,13 @@ export default function Sidebar({onGenerate, onDownload, onLoad, onClear}) {
   return (
     <Holder className="formgrid grid">
       <div className="field col-12">
-        <Button
-          className="w-full"
-          label="Generate"
-          aria-label="Generate"
-          onClick={onGenerate}
-        />
+        <Button className="w-full" label="Generate" aria-label="Generate" onClick={onGenerate} />
       </div>
       <div className="field col-12">
         <FileInput className="w-full" onChange={onLoad} placeholder="Load" />
       </div>
       <div className="field col-12">
-        <Button
-          className="w-full"
-          label="Clear"
-          aria-label="Clear"
-          onClick={onClear}
-        />
+        <Button className="w-full" label="Clear" aria-label="Clear" onClick={onClear} />
       </div>
       <div className="field col-12">
         <Button

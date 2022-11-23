@@ -99,10 +99,7 @@ export default function ExtendDungeon() {
   // Create and dispose three drawer
   //
   useEffect(() => {
-    threeDrawerRef.current = new ThreeDrawer(
-      canvasHolderRef.current,
-      storeInterface,
-    );
+    threeDrawerRef.current = new ThreeDrawer(canvasHolderRef.current, storeInterface);
 
     onGenerate();
 

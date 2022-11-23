@@ -87,9 +87,7 @@ class Composer extends EffectComposer {
       normalBuffer: normalPass.texture,
       resolutionScale: 0.5,
     });
-    const normalDepthBuffer = renderer.capabilities.isWebGL2
-      ? depthDownsamplingPass.texture
-      : null;
+    const normalDepthBuffer = renderer.capabilities.isWebGL2 ? depthDownsamplingPass.texture : null;
 
     //SSAO Effect
     // Note: Thresholds and falloff correspond to camera near/far.
@@ -135,9 +133,7 @@ class Composer extends EffectComposer {
     if (renderer.capabilities.isWebGL2) {
       this.addPass(depthDownsamplingPass);
     } else {
-      console.log(
-        'WebGL 2 not supported, falling back to naive depth downsampling',
-      );
+      console.log('WebGL 2 not supported, falling back to naive depth downsampling');
     }
 
     copyPass.enabled = false;

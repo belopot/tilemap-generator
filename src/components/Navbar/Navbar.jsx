@@ -161,8 +161,7 @@ const NavItemMobile = styled.div`
   width: 100%;
   padding: 0.5em 1em;
   text-align: left;
-  border-left: ${({selected}) =>
-    selected ? '5px solid #f43f53' : '5px solid #ffffff00'};
+  border-left: ${({selected}) => (selected ? '5px solid #f43f53' : '5px solid #ffffff00')};
   transition: all 300ms ease-out;
   cursor: pointer;
   @media ${device.mobileL} {

@@ -5,14 +5,7 @@ export default function Spiner({size = 50, color = theme.colors.primary}) {
   return (
     <Holder size={size}>
       <Spin viewBox="0 0 50 50">
-        <Path
-          cx="25"
-          cy="25"
-          r="20"
-          fill="none"
-          strokeWidth="5"
-          color={color}
-        ></Path>
+        <Path cx="25" cy="25" r="20" fill="none" strokeWidth="5" color={color}></Path>
       </Spin>
     </Holder>
   );
