@@ -704,6 +704,35 @@ export default class ThreeDrawer {
       return;
     }
 
+    // Connected two dungeon's tiles
+    let entireTiles = [];
+    switch (detectedDoor.direction) {
+      case Direction.up:
+        entireTiles = [...this.dungeon.layers.tiles];
+        entireTiles = entireTiles.concat(this.oldDungeon.layers.tiles);
+        break;
+      case Direction.right:
+        entireTiles = [...this.oldDungeon.layers.tiles];
+        for (let i = 0; i < entireTiles.length; i++) {
+          entireTiles[i] = entireTiles[i].concat(this.dungeon.layers.tiles[i]);
+        }
+        break;
+      case Direction.down:
+        entireTiles = [...this.oldDungeon.layers.tiles];
+        entireTiles = entireTiles.concat(this.dungeon.layers.tiles);
+        break;
+      case Direction.left:
+        entireTiles = [...this.dungeon.layers.tiles];
+        for (let i = 0; i < entireTiles.length; i++) {
+          entireTiles[i] = entireTiles[i].concat(this.oldDungeon.layers.tiles[i]);
+        }
+        break;
+      default:
+        break;
+    }
+    console.log('entireTiles');
+    console.log(entireTiles);
+
     // Find nearest door in dungeon
   }
 }
