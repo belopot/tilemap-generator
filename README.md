@@ -28,8 +28,11 @@ Install all dependencies for node
 
     yarn format
 
-## Algorithm
+## Algorithm for generating dungeon
     http://www.roguebasin.com/index.php?title=Basic_BSP_Dungeon_generation
 
 ## Assets
     https://pixel-poem.itch.io/dungeon-assetpuck
+
+## Algorithm for path-finding
+    https://github.com/qiao/PathFinding.js
