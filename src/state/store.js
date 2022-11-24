@@ -11,7 +11,7 @@ export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
   isManualSeed: true,
   setIsManualSeed: v => set({isManualSeed: v}),
-  seed: 'vmx30ssdewqa',
+  seed: 'IRQKIJRx1aTTgDnnvsI5y',
   setSeed: v => set({seed: v}),
   mapWidth: 40,
   setMapWidth: v => set({mapWidth: v}),
