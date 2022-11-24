@@ -693,8 +693,8 @@ export default class ThreeDrawer {
     // console.log(this.oldDungeon);
     // console.log('dungeon');
     // console.log(this.dungeon);
-    console.log('detected door');
-    console.log(detectedDoor);
+    // console.log('detected door');
+    // console.log(detectedDoor);
 
     // Connected two dungeon's tiles
     let entireTiles = [];
@@ -770,6 +770,9 @@ export default class ThreeDrawer {
         }
       }
     }
+
+    console.log('touchedDoorPosition');
+    console.log(doorPosition);
 
     console.log('nearestDoorPosition');
     console.log(nearestDoorPosition);
