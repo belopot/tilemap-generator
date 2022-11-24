@@ -12,7 +12,7 @@ export const useStore = create((set, get) => ({
   /// ////////////////////////////////////////////////////////
   isManualSeed: true,
   setIsManualSeed: v => set({isManualSeed: v}),
-  seed: nanoid(),
+  seed: 'lvmx30ssdewqa',
   setSeed: v => set({seed: v}),
   mapWidth: 50,
   setMapWidth: v => set({mapWidth: v}),
