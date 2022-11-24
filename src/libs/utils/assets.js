@@ -91,6 +91,13 @@ export const TEXTURE_ASSET = {
     texture: null,
     sprite: null,
   },
+  door: {
+    name: 'door',
+    path: 'assets/tiles/',
+    ext: '.png',
+    texture: null,
+    sprite: null,
+  },
   // Props
   bone: {
     name: 'bone',
@@ -234,13 +241,6 @@ export const TEXTURE_ASSET = {
   },
   web_right: {
     name: 'web_right',
-    path: 'assets/props/',
-    ext: '.png',
-    texture: null,
-    sprite: null,
-  },
-  arrow: {
-    name: 'arrow',
     path: 'assets/props/',
     ext: '.png',
     texture: null,

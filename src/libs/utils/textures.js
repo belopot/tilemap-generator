@@ -52,6 +52,7 @@ export const tilesTextures = texture_asset => {
     45: texture_asset.nw.texture,
     46: texture_asset.all.texture,
     47: texture_asset.s.texture,
+    48: texture_asset.door.texture,
   };
 };
 
@@ -82,7 +83,6 @@ export const propsTextures = texture_asset => {
     [`${PropType.ManaSmall}`]: texture_asset.mana_small.texture,
     // Spawns
     [`${PropType.Ladder}`]: texture_asset.ladder.texture,
-    [`${PropType.Arrow}`]: texture_asset.arrow.texture,
   };
 };
 

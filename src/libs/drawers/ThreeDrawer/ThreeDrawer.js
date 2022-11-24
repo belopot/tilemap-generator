@@ -15,7 +15,7 @@ import {FitCameraToSelection} from './Helpers';
 import Composer from './Composer';
 import {SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
-import {Direction, PropType} from 'libs/generate';
+import {Direction, PropType, TileType} from 'libs/generate';
 
 export default class ThreeDrawer {
   /**
@@ -38,8 +38,9 @@ export default class ThreeDrawer {
     this.tileSize = 0.5;
     this.dungeon = null;
     this.oldDungeon = null;
+    this.tempDungeon = null;
 
-    //Loading manager
+    // Loading manager
     this.loadingManager = new THREE.LoadingManager();
     this.loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {
       this.storeInterface.setLoaderVisible(true);
@@ -271,7 +272,8 @@ export default class ThreeDrawer {
       this.player.position.z += this.tileSize;
     }
 
-    this.goNextDungeon();
+    // Detect out door and create next chunk
+    this.createNextDungeon();
 
     this.requestRenderIfNotRequested();
   }
@@ -546,7 +548,7 @@ export default class ThreeDrawer {
   };
 
   getDoorPlayerArrived = (dungeon, group) => {
-    const tilemap = dungeon.layers.props;
+    const tilemap = dungeon.layers.tiles;
     const snapSize = 0.1;
     let arrivedAtDoor = false;
     let rx = 0;
@@ -554,7 +556,7 @@ export default class ThreeDrawer {
     for (let y = 0; y < tilemap.length; y++) {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
-        if (id === PropType.Arrow) {
+        if (id === TileType.Door) {
           const dx = Math.abs(this.player.position.x - (group.position.x + x * this.tileSize));
           const dy = Math.abs(this.player.position.z - (group.position.z + y * this.tileSize));
           if (dx < snapSize && dy < snapSize) {
@@ -576,16 +578,16 @@ export default class ThreeDrawer {
     const bottom = Math.abs(ry - dungeon.height);
     const left = Math.abs(rx - 0);
     const min = Math.min(top, right, bottom, left);
-    let dir = Direction.top;
+    let dir = Direction.up;
     switch (min) {
       case top:
-        dir = Direction.top;
+        dir = Direction.up;
         break;
       case right:
         dir = Direction.right;
         break;
       case bottom:
-        dir = Direction.bottom;
+        dir = Direction.down;
         break;
       case left:
         dir = Direction.left;
@@ -597,22 +599,25 @@ export default class ThreeDrawer {
     return {arrived: arrivedAtDoor, x: rx, y: ry, direction: dir};
   };
 
-  goNextDungeon() {
+  createNextDungeon() {
     // Detect door in current dungeon
     let detectedDoor = this.getDoorPlayerArrived(this.dungeon, this.group);
     if (detectedDoor.arrived) {
       this.player.material.color.set(0xff0000);
 
       // Create next dungeon
-      if (this.storeInterface.generateNextDungeon) {
+      if (this.storeInterface.generateDungeon) {
         // Generate new dungeon
-        const newDungeon = this.storeInterface.generateNextDungeon();
+        const newDungeon = this.storeInterface.generateDungeon();
 
         // Draw next dungeon
         this.drawDungeon(newDungeon);
 
         // Move group
         this.moveGroupByDoorDirection(detectedDoor.direction);
+
+        // Create corridor to connect two dungeons
+        this.createCorridorToConnectDungeons(detectedDoor);
       }
     } else {
       this.player.material.color.set(0xffff00);
@@ -625,11 +630,11 @@ export default class ThreeDrawer {
           this.player.material.color.set(0xff0000);
 
           // Create next dungeon
-          if (this.storeInterface.generateNextDungeon) {
+          if (this.storeInterface.generateDungeon) {
             //Exchange dungeon
-            const d = JSON.parse(JSON.stringify(this.dungeon));
+            this.tempDungeon = JSON.parse(JSON.stringify(this.dungeon));
             this.dungeon = JSON.parse(JSON.stringify(this.oldDungeon));
-            this.oldDungeon = d;
+            this.oldDungeon = this.tempDungeon;
 
             //Exchange group
             this.tempGroup.copy(this.group, true);
@@ -645,13 +650,16 @@ export default class ThreeDrawer {
             this.tempGroup.children = [];
 
             // Generate new dungeon
-            const newDungeon = this.storeInterface.generateNextDungeon();
+            const newDungeon = this.storeInterface.generateDungeon();
 
             // Draw next dungeon
             this.drawDungeon(newDungeon);
 
             // Move group
             this.moveGroupByDoorDirection(detectedDoor.direction);
+
+            // Create corridor to connect two dungeons
+            this.createCorridorToConnectDungeons(detectedDoor);
           }
         } else {
           this.player.material.color.set(0xffff00);
@@ -662,13 +670,13 @@ export default class ThreeDrawer {
 
   moveGroupByDoorDirection(direction) {
     switch (direction) {
-      case Direction.top:
+      case Direction.up:
         this.group.position.z = this.oldGroup.position.z - this.dungeon.height * this.tileSize;
         break;
       case Direction.right:
         this.group.position.x = this.oldGroup.position.x + this.dungeon.width * this.tileSize;
         break;
-      case Direction.bottom:
+      case Direction.down:
         this.group.position.z = this.oldGroup.position.z + this.dungeon.height * this.tileSize;
         break;
       case Direction.left:
@@ -678,5 +686,24 @@ export default class ThreeDrawer {
       default:
         break;
     }
+  }
+
+  createCorridorToConnectDungeons(detectedDoor) {
+    console.log('old dungeon');
+    console.log(this.oldDungeon);
+    console.log('dungeon');
+    console.log(this.dungeon);
+    console.log('detected door');
+    console.log(detectedDoor);
+
+    if (!this.oldDungeon) {
+      return;
+    }
+
+    if (!this.dungeon) {
+      return;
+    }
+
+    // Find nearest door in dungeon
   }
 }

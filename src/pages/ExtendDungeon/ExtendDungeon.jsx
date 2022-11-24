@@ -65,7 +65,7 @@ export default function ExtendDungeon() {
     onDraw(args);
   };
 
-  const generateNextDungeon = () => {
+  const generateDungeon = () => {
     const args = {
       mapWidth,
       mapHeight,
@@ -92,7 +92,7 @@ export default function ExtendDungeon() {
   const storeInterface = {
     loaderVisible,
     setLoaderVisible,
-    generateNextDungeon,
+    generateDungeon,
   };
 
   //

@@ -1,4 +1,13 @@
-import {Container, Corridor, PropType, Room, TileDirection, TreeNode} from './types';
+import {
+  Container,
+  Corridor,
+  Direction,
+  PropType,
+  Room,
+  TileDirection,
+  TileType,
+  TreeNode,
+} from './types';
 import {createTilemap, duplicateTilemap, random, randomChoice, randomNumber} from './utils';
 import seedrandom from 'seedrandom';
 
@@ -214,6 +223,7 @@ function createTilesLayer(tree, args) {
   tiles = carveCorridors(tree, duplicateTilemap(tiles));
   tiles = carveRooms(tree, duplicateTilemap(tiles));
   tiles = computeTilesMask(duplicateTilemap(tiles));
+  tiles = carveDoors(tree, tiles);
 
   return tiles;
 }
@@ -287,60 +297,6 @@ export function computeTilesMask(tiles) {
   return result;
 }
 
-//
-// Props
-//
-function createPropsLayer(tree, tiles, args) {
-  let props = createTilemap(args.mapWidth, args.mapHeight, 0);
-
-  props = carveProps(tree, props);
-  props = carveTorches(tiles, props);
-  props = carveDoors(tree, props);
-  return props;
-}
-
-function carveProps(tree, props) {
-  const result = duplicateTilemap(props);
-
-  tree.leaves.forEach(container => {
-    const room = container.room;
-    if (!room) {
-      return;
-    }
-
-    const propsLayer = room.template.layers.props;
-    for (let y = 0; y < room.template.height; y++) {
-      for (let x = 0; x < room.template.width; x++) {
-        const posY = room.y + y;
-        const posX = room.x + x;
-        result[posY][posX] = propsLayer[y][x];
-      }
-    }
-  });
-
-  return result;
-}
-
-function carveTorches(tiles, props) {
-  const result = duplicateTilemap(props);
-  for (let y = 0; y < result.length; y++) {
-    for (let x = 0; x < result[y].length; x++) {
-      const tileId = tiles[y][x];
-
-      const leftCorner =
-        maskToTileIdMap[TileDirection.North | TileDirection.West | TileDirection.NorthWest];
-      const rightCorner =
-        maskToTileIdMap[TileDirection.North | TileDirection.East | TileDirection.NorthEast];
-
-      if (tileId === leftCorner || tileId === rightCorner) {
-        result[y][x] = PropType.Torch;
-      }
-    }
-  }
-
-  return result;
-}
-
 function carveDoors(tree, props) {
   const rooms = findRoomsThatAreAtTheEdge(tree);
   const result = addDoorsToEdgeRooms(rooms, props);
@@ -356,45 +312,36 @@ function addDoorsToEdgeRooms(rooms, props) {
     let center = 0;
 
     switch (direction) {
-      case 'right':
+      case Direction.right:
         center = Math.round(room.height / 2);
         for (let y = center - 1; y < center; y++) {
           const posY = room.y + y;
           const posX = room.x + room.template.width;
-
-          if (result[posY] && result[posY][posX] === 0) {
-            result[posY][posX] = PropType.Arrow;
-          }
+          result[posY][posX] = TileType.Door;
         }
         break;
-      case 'down':
+      case Direction.down:
         center = Math.round(room.width / 2);
         for (let x = center - 1; x < center; x++) {
           const posY = room.y + room.template.height;
           const posX = room.x + x;
-
-          if (result[posY] && result[posY][posX] === 0) {
-            result[posY][posX] = PropType.Arrow;
-          }
+          result[posY][posX] = TileType.Door;
         }
         break;
-      case 'up':
+      case Direction.up:
         center = Math.round(room.width / 2);
         for (let x = center; x < center + 1; x++) {
           const posY = room.y - 1;
           const posX = room.x + x;
-
-          if (result[posY] && result[posY][posX] === 0) {
-            result[posY][posX] = PropType.Arrow;
-          }
+          result[posY][posX] = TileType.Door;
         }
         break;
-      case 'left':
+      case Direction.left:
         center = Math.round(room.height / 2);
         for (let y = center - 1; y < center; y++) {
           const posY = room.y + y;
           const posX = room.x - 1;
-          result[posY][posX] = PropType.Arrow;
+          result[posY][posX] = TileType.Door;
         }
         break;
       default:
@@ -451,16 +398,16 @@ function findRoomsThatAreAtTheEdge(tree) {
 
     if (x - leastX < maxDiff) {
       isInEdge = true;
-      direction = 'left';
+      direction = Direction.left;
     } else if (maxX - x < maxDiff) {
       isInEdge = true;
-      direction = 'right';
+      direction = Direction.right;
     } else if (y - leastY < maxDiff) {
       isInEdge = true;
-      direction = 'up';
+      direction = Direction.up;
     } else if (maxY - y < maxDiff) {
       isInEdge = true;
-      direction = 'down';
+      direction = Direction.down;
     }
 
     if (isInEdge) {
@@ -471,6 +418,59 @@ function findRoomsThatAreAtTheEdge(tree) {
   });
 
   return rooms;
+}
+
+//
+// Props
+//
+function createPropsLayer(tree, tiles, args) {
+  let props = createTilemap(args.mapWidth, args.mapHeight, 0);
+
+  props = carveProps(tree, props);
+  props = carveTorches(tiles, props);
+  return props;
+}
+
+function carveProps(tree, props) {
+  const result = duplicateTilemap(props);
+
+  tree.leaves.forEach(container => {
+    const room = container.room;
+    if (!room) {
+      return;
+    }
+
+    const propsLayer = room.template.layers.props;
+    for (let y = 0; y < room.template.height; y++) {
+      for (let x = 0; x < room.template.width; x++) {
+        const posY = room.y + y;
+        const posX = room.x + x;
+        result[posY][posX] = propsLayer[y][x];
+      }
+    }
+  });
+
+  return result;
+}
+
+function carveTorches(tiles, props) {
+  const result = duplicateTilemap(props);
+  for (let y = 0; y < result.length; y++) {
+    for (let x = 0; x < result[y].length; x++) {
+      const tileId = tiles[y][x];
+
+      const leftCorner =
+        maskToTileIdMap[TileDirection.North | TileDirection.West | TileDirection.NorthWest];
+      const rightCorner =
+        maskToTileIdMap[TileDirection.North | TileDirection.East | TileDirection.NorthEast];
+
+      if (tileId === leftCorner || tileId === rightCorner) {
+        result[y][x] = PropType.Torch;
+      }
+    }
+  }
+
+  return result;
 }
 
 //
