@@ -689,50 +689,89 @@ export default class ThreeDrawer {
   }
 
   createCorridorToConnectDungeons(detectedDoor) {
-    console.log('old dungeon');
-    console.log(this.oldDungeon);
-    console.log('dungeon');
-    console.log(this.dungeon);
+    // console.log('old dungeon');
+    // console.log(this.oldDungeon);
+    // console.log('dungeon');
+    // console.log(this.dungeon);
     console.log('detected door');
     console.log(detectedDoor);
 
-    if (!this.oldDungeon) {
-      return;
-    }
-
-    if (!this.dungeon) {
-      return;
-    }
-
     // Connected two dungeon's tiles
     let entireTiles = [];
+    const doorPosition = {
+      x: detectedDoor.x,
+      y: detectedDoor.y,
+    };
+    const dungeonRect = {
+      min_x: 0,
+      min_y: 0,
+      max_x: this.dungeon.width - 1,
+      max_y: this.dungeon.height - 1,
+    };
+    const oldDungeonRect = {
+      min_x: 0,
+      min_y: 0,
+      max_x: this.dungeon.width - 1,
+      max_y: this.dungeon.height - 1,
+    };
     switch (detectedDoor.direction) {
       case Direction.up:
         entireTiles = [...this.dungeon.layers.tiles];
         entireTiles = entireTiles.concat(this.oldDungeon.layers.tiles);
+        doorPosition.y = doorPosition.y + this.dungeon.height;
+        oldDungeonRect.min_y = this.dungeon.height;
+        oldDungeonRect.max_y = this.dungeon.height * 2 - 1;
         break;
       case Direction.right:
         entireTiles = [...this.oldDungeon.layers.tiles];
         for (let i = 0; i < entireTiles.length; i++) {
           entireTiles[i] = entireTiles[i].concat(this.dungeon.layers.tiles[i]);
         }
+        dungeonRect.min_x = this.oldDungeon.width;
+        dungeonRect.max_x = this.oldDungeon.width * 2 - 1;
         break;
       case Direction.down:
         entireTiles = [...this.oldDungeon.layers.tiles];
         entireTiles = entireTiles.concat(this.dungeon.layers.tiles);
+        dungeonRect.min_y = this.oldDungeon.height;
+        dungeonRect.max_y = this.oldDungeon.height * 2 - 1;
         break;
       case Direction.left:
         entireTiles = [...this.dungeon.layers.tiles];
         for (let i = 0; i < entireTiles.length; i++) {
           entireTiles[i] = entireTiles[i].concat(this.oldDungeon.layers.tiles[i]);
         }
+        doorPosition.x = doorPosition.x + this.dungeon.width;
+        oldDungeonRect.min_x = this.dungeon.width;
+        oldDungeonRect.max_x = this.dungeon.width * 2 - 1;
         break;
       default:
         break;
     }
-    console.log('entireTiles');
-    console.log(entireTiles);
 
     // Find nearest door in dungeon
+    let distance = Number.MAX_SAFE_INTEGER;
+    const nearestDoorPosition = {
+      x: 0,
+      y: 0,
+    };
+    for (let _y = dungeonRect.min_y; _y <= dungeonRect.max_y; _y++) {
+      for (let _x = dungeonRect.min_x; _x <= dungeonRect.max_x; _x++) {
+        if (entireTiles[_y][_x] === TileType.Door) {
+          const minDistance = Math.sqrt(
+            (doorPosition.x - _x) * (doorPosition.x - _x) +
+              (doorPosition.y - _y) * (doorPosition.y - _y),
+          );
+          if (distance > minDistance) {
+            distance = minDistance;
+            nearestDoorPosition.x = _x;
+            nearestDoorPosition.y = _y;
+          }
+        }
+      }
+    }
+
+    console.log('nearestDoorPosition');
+    console.log(nearestDoorPosition);
   }
 }
