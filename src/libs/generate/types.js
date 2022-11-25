@@ -125,6 +125,7 @@ export const TileType = {
   Wall: 1,
   All: 46,
   Door: 48,
+  Ground: 0,
 };
 export const TileTypes = ['Hole', 'Wall'];
 

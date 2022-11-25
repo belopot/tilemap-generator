@@ -795,8 +795,50 @@ export default class ThreeDrawer {
       grid,
     );
 
+    console.log('path');
+    console.log(path);
+
     //
-    // Update tiles layer in dungeon according to path
+    // Update tiles according to path
+    //
+    // for (let i = 0; i < path.length; i++) {
+    //   const nodeX = path[i][0];
+    //   const nodeY = path[i][1];
+
+    //   // Update mergedTiles
+    //   mergedTiles[nodeY][nodeX] = TileType.Ground;
+
+    //   // Update tiles of dungeon
+    //   if (
+    //     nodeY >= dungeonRect.min_y &&
+    //     nodeY <= dungeonRect.max_y &&
+    //     nodeX >= dungeonRect.min_x &&
+    //     nodeX <= dungeonRect.max_x
+    //   ) {
+    //     console.log('dungeon');
+    //     console.log(nodeX, nodeY);
+    //     const x = nodeX - dungeonRect.min_x;
+    //     const y = nodeY - dungeonRect.min_y;
+    //     this.dungeon.layers.tiles[y][x] = TileType.Ground;
+    //   }
+
+    //   // Update tiles of old dungeon
+    //   if (
+    //     nodeY >= oldDungeonRect.min_y &&
+    //     nodeY <= oldDungeonRect.max_y &&
+    //     nodeX >= oldDungeonRect.min_x &&
+    //     nodeX <= oldDungeonRect.max_x
+    //   ) {
+    //     console.log('old dungeon');
+    //     console.log(nodeX, nodeY);
+    //     const x = nodeX - oldDungeonRect.min_x;
+    //     const y = nodeY - oldDungeonRect.min_y;
+    //     this.oldDungeonRect.layers.tiles[y][x] = TileType.Ground;
+    //   }
+    // }
+
+    //
+    // Draw updated dungeons
     //
   }
 }
