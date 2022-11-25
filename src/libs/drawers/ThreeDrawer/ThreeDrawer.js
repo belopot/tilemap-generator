@@ -9,14 +9,15 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 
 import {Textures} from 'libs/utils';
+import {TEXTURE_ASSET} from 'libs/utils/assets';
+import {Direction, PropType, TileType} from 'libs/generate';
+import {Grid, IDAStarFinder} from 'libs/pathfinder';
+
 import {ENVIRONMENT_DATA} from './Environments';
 import Lights from './Lights';
 import {FitCameraToSelection} from './Helpers';
 import Composer from './Composer';
-import {SPACE_SIZE} from './Constants';
-import {TEXTURE_ASSET} from 'libs/utils/assets';
-import {Direction, PropType, TileType} from 'libs/generate';
-import {Grid, IDAStarFinder} from 'libs/pathfinder';
+import {SPACE_SIZE, TILE_SIZE} from './Constants';
 
 export default class ThreeDrawer {
   /**
@@ -36,7 +37,6 @@ export default class ThreeDrawer {
     this.meshes = [];
     this.mouseDownPosition = new THREE.Vector2();
     this.mouseUpPosition = new THREE.Vector2();
-    this.tileSize = 0.5;
     this.dungeon = null;
     this.oldDungeon = null;
     this.tempDungeon = null;
@@ -261,16 +261,16 @@ export default class ThreeDrawer {
    */
   onKeyDown(event) {
     if (event.key === 'a' || event.key === 'ArrowLeft') {
-      this.player.position.x -= this.tileSize;
+      this.player.position.x -= TILE_SIZE;
     }
     if (event.key === 'd' || event.key === 'ArrowRight') {
-      this.player.position.x += this.tileSize;
+      this.player.position.x += TILE_SIZE;
     }
     if (event.key === 'w' || event.key === 'ArrowUp') {
-      this.player.position.z -= this.tileSize;
+      this.player.position.z -= TILE_SIZE;
     }
     if (event.key === 's' || event.key === 'ArrowDown') {
-      this.player.position.z += this.tileSize;
+      this.player.position.z += TILE_SIZE;
     }
 
     // Detect out door and create next chunk
@@ -452,21 +452,21 @@ export default class ThreeDrawer {
         const id = tilemap[y][x];
         const texture = sprites[id];
         if (texture) {
-          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
+          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({
             map: texture,
             transparent: true,
           });
           const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
+          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         } else {
-          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
+          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({color: 0xff0000});
           const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
+          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         }
       }
@@ -483,21 +483,21 @@ export default class ThreeDrawer {
 
         const texture = sprites[id];
         if (texture) {
-          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
+          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({
             map: texture,
             transparent: true,
           });
           const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
+          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         } else {
-          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
+          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({color: 0x00ff00});
           const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
+          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         }
       }
@@ -514,21 +514,21 @@ export default class ThreeDrawer {
 
         const texture = sprites[id];
         if (texture) {
-          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
+          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({
             map: texture,
             transparent: true,
           });
           const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
+          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         } else {
-          const geometry = new THREE.PlaneGeometry(this.tileSize, this.tileSize, 1, 1);
+          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
           geometry.rotateX(-Math.PI / 2);
           const material = new THREE.MeshStandardMaterial({color: 0x0000ff});
           const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * this.tileSize, 0, y * this.tileSize);
+          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         }
       }
@@ -541,7 +541,7 @@ export default class ThreeDrawer {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
         if (id === PropType.Ladder) {
-          this.player.position.set(x * this.tileSize, 0, y * this.tileSize);
+          this.player.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           break;
         }
       }
@@ -558,8 +558,8 @@ export default class ThreeDrawer {
       for (let x = 0; x < tilemap[y].length; x++) {
         const id = tilemap[y][x];
         if (id === TileType.Door) {
-          const dx = Math.abs(this.player.position.x - (group.position.x + x * this.tileSize));
-          const dy = Math.abs(this.player.position.z - (group.position.z + y * this.tileSize));
+          const dx = Math.abs(this.player.position.x - (group.position.x + x * TILE_SIZE));
+          const dy = Math.abs(this.player.position.z - (group.position.z + y * TILE_SIZE));
           if (dx < snapSize && dy < snapSize) {
             arrivedAtDoor = true;
             rx = x;
@@ -672,16 +672,16 @@ export default class ThreeDrawer {
   moveGroupByDoorDirection(direction) {
     switch (direction) {
       case Direction.up:
-        this.group.position.z = this.oldGroup.position.z - this.dungeon.height * this.tileSize;
+        this.group.position.z = this.oldGroup.position.z - this.dungeon.height * TILE_SIZE;
         break;
       case Direction.right:
-        this.group.position.x = this.oldGroup.position.x + this.dungeon.width * this.tileSize;
+        this.group.position.x = this.oldGroup.position.x + this.dungeon.width * TILE_SIZE;
         break;
       case Direction.down:
-        this.group.position.z = this.oldGroup.position.z + this.dungeon.height * this.tileSize;
+        this.group.position.z = this.oldGroup.position.z + this.dungeon.height * TILE_SIZE;
         break;
       case Direction.left:
-        this.group.position.x = this.oldGroup.position.x - this.dungeon.width * this.tileSize;
+        this.group.position.x = this.oldGroup.position.x - this.dungeon.width * TILE_SIZE;
         break;
 
       default:
@@ -690,13 +690,6 @@ export default class ThreeDrawer {
   }
 
   createCorridorToConnectDungeons(detectedDoor) {
-    // console.log('old dungeon');
-    // console.log(this.oldDungeon);
-    // console.log('dungeon');
-    // console.log(this.dungeon);
-    // console.log('detected door');
-    // console.log(detectedDoor);
-
     //
     // Connected two dungeon's tiles
     //
@@ -801,6 +794,9 @@ export default class ThreeDrawer {
       nearestDoorPosition.y,
       grid,
     );
-    console.log(path);
+
+    //
+    // Update tiles layer in dungeon according to path
+    //
   }
 }
