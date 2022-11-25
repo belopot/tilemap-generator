@@ -16,6 +16,7 @@ import Composer from './Composer';
 import {SPACE_SIZE} from './Constants';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
 import {Direction, PropType, TileType} from 'libs/generate';
+import {Grid, IDAStarFinder} from 'libs/pathfinder';
 
 export default class ThreeDrawer {
   /**
@@ -696,8 +697,10 @@ export default class ThreeDrawer {
     // console.log('detected door');
     // console.log(detectedDoor);
 
+    //
     // Connected two dungeon's tiles
-    let entireTiles = [];
+    //
+    let mergedTiles = [];
     const doorPosition = {
       x: detectedDoor.x,
       y: detectedDoor.y,
@@ -716,30 +719,30 @@ export default class ThreeDrawer {
     };
     switch (detectedDoor.direction) {
       case Direction.up:
-        entireTiles = [...this.dungeon.layers.tiles];
-        entireTiles = entireTiles.concat(this.oldDungeon.layers.tiles);
+        mergedTiles = [...this.dungeon.layers.tiles];
+        mergedTiles = mergedTiles.concat(this.oldDungeon.layers.tiles);
         doorPosition.y = doorPosition.y + this.dungeon.height;
         oldDungeonRect.min_y = this.dungeon.height;
         oldDungeonRect.max_y = this.dungeon.height * 2 - 1;
         break;
       case Direction.right:
-        entireTiles = [...this.oldDungeon.layers.tiles];
-        for (let i = 0; i < entireTiles.length; i++) {
-          entireTiles[i] = entireTiles[i].concat(this.dungeon.layers.tiles[i]);
+        mergedTiles = [...this.oldDungeon.layers.tiles];
+        for (let i = 0; i < mergedTiles.length; i++) {
+          mergedTiles[i] = mergedTiles[i].concat(this.dungeon.layers.tiles[i]);
         }
         dungeonRect.min_x = this.oldDungeon.width;
         dungeonRect.max_x = this.oldDungeon.width * 2 - 1;
         break;
       case Direction.down:
-        entireTiles = [...this.oldDungeon.layers.tiles];
-        entireTiles = entireTiles.concat(this.dungeon.layers.tiles);
+        mergedTiles = [...this.oldDungeon.layers.tiles];
+        mergedTiles = mergedTiles.concat(this.dungeon.layers.tiles);
         dungeonRect.min_y = this.oldDungeon.height;
         dungeonRect.max_y = this.oldDungeon.height * 2 - 1;
         break;
       case Direction.left:
-        entireTiles = [...this.dungeon.layers.tiles];
-        for (let i = 0; i < entireTiles.length; i++) {
-          entireTiles[i] = entireTiles[i].concat(this.oldDungeon.layers.tiles[i]);
+        mergedTiles = [...this.dungeon.layers.tiles];
+        for (let i = 0; i < mergedTiles.length; i++) {
+          mergedTiles[i] = mergedTiles[i].concat(this.oldDungeon.layers.tiles[i]);
         }
         doorPosition.x = doorPosition.x + this.dungeon.width;
         oldDungeonRect.min_x = this.dungeon.width;
@@ -749,7 +752,9 @@ export default class ThreeDrawer {
         break;
     }
 
+    //
     // Find nearest door in dungeon
+    //
     let minDistance = Number.MAX_SAFE_INTEGER;
     const nearestDoorPosition = {
       x: 0,
@@ -757,7 +762,7 @@ export default class ThreeDrawer {
     };
     for (let _y = dungeonRect.min_y; _y <= dungeonRect.max_y; _y++) {
       for (let _x = dungeonRect.min_x; _x <= dungeonRect.max_x; _x++) {
-        if (entireTiles[_y][_x] === TileType.Door) {
+        if (mergedTiles[_y][_x] === TileType.Door) {
           const distance = Math.sqrt(
             (doorPosition.x - _x) * (doorPosition.x - _x) +
               (doorPosition.y - _y) * (doorPosition.y - _y),
@@ -772,6 +777,30 @@ export default class ThreeDrawer {
     }
 
     //
-    console.log(entireTiles);
+    // Find path
+    //
+    const gridWidth = mergedTiles[0].length;
+    const gridHeight = mergedTiles.length;
+    const grid = new Grid(gridWidth, gridHeight);
+
+    for (let y = 0; y < grid.height; y++) {
+      for (let x = 0; x < grid.width; x++) {
+        if (mergedTiles[y][x] === TileType.All || mergedTiles[y][x] === TileType.Door) {
+          grid.setWalkableAt(x, y, true);
+        } else {
+          grid.setWalkableAt(x, y, false);
+        }
+      }
+    }
+
+    const finder = new IDAStarFinder();
+    const path = finder.findPath(
+      doorPosition.x,
+      doorPosition.y,
+      nearestDoorPosition.x,
+      nearestDoorPosition.y,
+      grid,
+    );
+    console.log(path);
   }
 }
