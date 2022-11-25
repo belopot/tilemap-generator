@@ -750,7 +750,7 @@ export default class ThreeDrawer {
     }
 
     // Find nearest door in dungeon
-    let distance = Number.MAX_SAFE_INTEGER;
+    let minDistance = Number.MAX_SAFE_INTEGER;
     const nearestDoorPosition = {
       x: 0,
       y: 0,
@@ -758,12 +758,12 @@ export default class ThreeDrawer {
     for (let _y = dungeonRect.min_y; _y <= dungeonRect.max_y; _y++) {
       for (let _x = dungeonRect.min_x; _x <= dungeonRect.max_x; _x++) {
         if (entireTiles[_y][_x] === TileType.Door) {
-          const minDistance = Math.sqrt(
+          const distance = Math.sqrt(
             (doorPosition.x - _x) * (doorPosition.x - _x) +
               (doorPosition.y - _y) * (doorPosition.y - _y),
           );
-          if (distance > minDistance) {
-            distance = minDistance;
+          if (minDistance > distance) {
+            minDistance = distance;
             nearestDoorPosition.x = _x;
             nearestDoorPosition.y = _y;
           }
@@ -771,10 +771,7 @@ export default class ThreeDrawer {
       }
     }
 
-    console.log('touchedDoorPosition');
-    console.log(doorPosition);
-
-    console.log('nearestDoorPosition');
-    console.log(nearestDoorPosition);
+    //
+    console.log(entireTiles);
   }
 }
