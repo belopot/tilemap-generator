@@ -123,9 +123,10 @@ export const TileDirection = {
 export const TileType = {
   Hole: -1,
   Wall: 1,
+  All: 46,
   Door: 48,
 };
-export const TileTypes = ['Hole', 'Wall', 'Door'];
+export const TileTypes = ['Hole', 'Wall'];
 
 //
 // Props
