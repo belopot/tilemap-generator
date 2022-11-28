@@ -569,10 +569,10 @@ export default class ThreeDrawer {
     }
 
     // detect direction of door
-    const top = Math.abs(ry - 0);
-    const right = Math.abs(rx - dungeon.width);
-    const bottom = Math.abs(ry - dungeon.height);
-    const left = Math.abs(rx - 0);
+    const top = ry + 1;
+    const right = dungeon.width - rx;
+    const bottom = dungeon.height - ry;
+    const left = rx + 1;
     const min = Math.min(top, right, bottom, left);
     let dir = Direction.up;
     switch (min) {
