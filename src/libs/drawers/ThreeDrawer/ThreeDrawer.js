@@ -10,7 +10,7 @@ import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 
 import {Textures} from 'libs/utils';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
-import {Direction, PropType, TileType} from 'libs/generate';
+import {Direction, PropType, TileLayer, TileType} from 'libs/generate';
 import {Grid, IDAStarFinder} from 'libs/pathfinder';
 
 import {ENVIRONMENT_DATA} from './Environments';
@@ -459,6 +459,12 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new THREE.Mesh(geometry, material);
+          sprite.userData = {
+            x: x,
+            y: y,
+            type: id,
+            layer: TileLayer.tiles,
+          };
           sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         }
@@ -482,6 +488,12 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new THREE.Mesh(geometry, material);
+          sprite.userData = {
+            x: x,
+            y: y,
+            type: id,
+            layer: TileLayer.props,
+          };
           sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         }
@@ -505,6 +517,12 @@ export default class ThreeDrawer {
             transparent: true,
           });
           const sprite = new THREE.Mesh(geometry, material);
+          sprite.userData = {
+            x: x,
+            y: y,
+            type: id,
+            layer: TileLayer.monsters,
+          };
           sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
         }
@@ -772,8 +790,6 @@ export default class ThreeDrawer {
       grid,
     );
 
-    console.log('path');
-    console.log(path);
     //
     // Update tiles according to path
     //
@@ -784,27 +800,89 @@ export default class ThreeDrawer {
       // Update mergedTiles
       mergedTiles[nodeY][nodeX] = TileType.Ground;
 
-      // Update tiles of dungeons
+      // Update tiles
       if (
         nodeY >= dungeonRect.min_y &&
         nodeY <= dungeonRect.max_y &&
         nodeX >= dungeonRect.min_x &&
         nodeX <= dungeonRect.max_x
       ) {
-        // for dungeon
         const x = nodeX - dungeonRect.min_x;
         const y = nodeY - dungeonRect.min_y;
+
+        // Update dungeon
         this.dungeon.layers.tiles[y][x] = TileType.Ground;
+
+        // Remove old node
+        for (let c = 0; c < this.group.children.length; c++) {
+          const node = this.group.children[c];
+          if (
+            node.userData.layer === TileLayer.tiles &&
+            x === node.userData.x &&
+            y === node.userData.y
+          ) {
+            node?.geometry?.dispose();
+            node?.material?.dispose();
+            this.group.remove(node);
+            break;
+          }
+        }
+
+        // Add new node
+        const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
+        geometry.rotateX(-Math.PI / 2);
+        const material = new THREE.MeshStandardMaterial({
+          map: Textures.tilesTextures(TEXTURE_ASSET)[TileType.Ground],
+          transparent: true,
+        });
+        const sprite = new THREE.Mesh(geometry, material);
+        sprite.userData = {
+          x: x,
+          y: y,
+          type: TileType.Ground,
+          layer: TileLayer.tiles,
+        };
+        sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
+        this.group.add(sprite);
       } else {
-        // for old dungeon
         const x = nodeX - oldDungeonRect.min_x;
         const y = nodeY - oldDungeonRect.min_y;
+
+        // Update old dungeon
         this.oldDungeon.layers.tiles[y][x] = TileType.Ground;
+
+        // Remove old node
+        for (let c = 0; c < this.oldGroup.children.length; c++) {
+          const node = this.oldGroup.children[c];
+          if (
+            node.userData.layer === TileLayer.tiles &&
+            x === node.userData.x &&
+            y === node.userData.y
+          ) {
+            node?.geometry?.dispose();
+            node?.material?.dispose();
+            this.oldGroup.remove(node);
+            break;
+          }
+        }
+
+        // Add new node
+        const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
+        geometry.rotateX(-Math.PI / 2);
+        const material = new THREE.MeshStandardMaterial({
+          map: Textures.tilesTextures(TEXTURE_ASSET)[TileType.Ground],
+          transparent: true,
+        });
+        const sprite = new THREE.Mesh(geometry, material);
+        sprite.userData = {
+          x: x,
+          y: y,
+          type: TileType.Ground,
+          layer: TileLayer.tiles,
+        };
+        sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
+        this.oldGroup.add(sprite);
       }
     }
-
-    //
-    // Draw updated dungeons
-    //
   }
 }

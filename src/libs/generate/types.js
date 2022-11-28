@@ -209,6 +209,11 @@ export const MonsterTypes = [
 //
 // Tilemap
 //
+export const TileLayer = {
+  tiles: 0,
+  props: 1,
+  monsters: 2,
+};
 export const TileLayers = ['tiles', 'props', 'monsters'];
 
 export const Direction = {
