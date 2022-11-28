@@ -10,6 +10,7 @@ import ThreeDrawer from 'libs/drawers/ThreeDrawer';
 import PageTransition from 'components/PageTransition';
 import {ContentContainer, PageContainer} from 'components/Containers';
 import Loader from 'components/Loader';
+import Caption from 'components/Caption';
 
 export default function ExtendDungeon() {
   const seed = useStore(state => state.seed);
@@ -124,6 +125,7 @@ export default function ExtendDungeon() {
         <ContentContainer>
           <Loader visible={loaderVisible} label="Loading assets" />
           <CanvasHolder ref={canvasHolderRef} />
+          <Caption />
         </ContentContainer>
       </PageContainer>
     </PageTransition>
