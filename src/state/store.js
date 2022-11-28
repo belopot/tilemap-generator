@@ -15,7 +15,7 @@ export const useStore = create((set, get) => ({
   setSeed: v => set({seed: v}),
   mapWidth: 40,
   setMapWidth: v => set({mapWidth: v}),
-  mapHeight: 20,
+  mapHeight: 25,
   setMapHeight: v => set({mapHeight: v}),
   mapGutterWidth: 2,
   setMapGutterWidth: v => set({mapGutterWidth: v}),

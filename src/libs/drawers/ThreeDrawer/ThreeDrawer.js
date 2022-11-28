@@ -461,13 +461,6 @@ export default class ThreeDrawer {
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
-        } else {
-          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
-          geometry.rotateX(-Math.PI / 2);
-          const material = new THREE.MeshStandardMaterial({color: 0xff0000});
-          const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
-          this.group.add(sprite);
         }
       }
     }
@@ -480,7 +473,6 @@ export default class ThreeDrawer {
         if (id === 0) {
           continue;
         }
-
         const texture = sprites[id];
         if (texture) {
           const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
@@ -489,13 +481,6 @@ export default class ThreeDrawer {
             map: texture,
             transparent: true,
           });
-          const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
-          this.group.add(sprite);
-        } else {
-          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
-          geometry.rotateX(-Math.PI / 2);
-          const material = new THREE.MeshStandardMaterial({color: 0x00ff00});
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
@@ -511,7 +496,6 @@ export default class ThreeDrawer {
         if (id === 0) {
           continue;
         }
-
         const texture = sprites[id];
         if (texture) {
           const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
@@ -520,13 +504,6 @@ export default class ThreeDrawer {
             map: texture,
             transparent: true,
           });
-          const sprite = new THREE.Mesh(geometry, material);
-          sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
-          this.group.add(sprite);
-        } else {
-          const geometry = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE, 1, 1);
-          geometry.rotateX(-Math.PI / 2);
-          const material = new THREE.MeshStandardMaterial({color: 0x0000ff});
           const sprite = new THREE.Mesh(geometry, material);
           sprite.position.set(x * TILE_SIZE, 0, y * TILE_SIZE);
           this.group.add(sprite);
@@ -797,45 +774,34 @@ export default class ThreeDrawer {
 
     console.log('path');
     console.log(path);
-
     //
     // Update tiles according to path
     //
-    // for (let i = 0; i < path.length; i++) {
-    //   const nodeX = path[i][0];
-    //   const nodeY = path[i][1];
+    for (let i = 0; i < path.length; i++) {
+      const nodeX = path[i][0];
+      const nodeY = path[i][1];
 
-    //   // Update mergedTiles
-    //   mergedTiles[nodeY][nodeX] = TileType.Ground;
+      // Update mergedTiles
+      mergedTiles[nodeY][nodeX] = TileType.Ground;
 
-    //   // Update tiles of dungeon
-    //   if (
-    //     nodeY >= dungeonRect.min_y &&
-    //     nodeY <= dungeonRect.max_y &&
-    //     nodeX >= dungeonRect.min_x &&
-    //     nodeX <= dungeonRect.max_x
-    //   ) {
-    //     console.log('dungeon');
-    //     console.log(nodeX, nodeY);
-    //     const x = nodeX - dungeonRect.min_x;
-    //     const y = nodeY - dungeonRect.min_y;
-    //     this.dungeon.layers.tiles[y][x] = TileType.Ground;
-    //   }
-
-    //   // Update tiles of old dungeon
-    //   if (
-    //     nodeY >= oldDungeonRect.min_y &&
-    //     nodeY <= oldDungeonRect.max_y &&
-    //     nodeX >= oldDungeonRect.min_x &&
-    //     nodeX <= oldDungeonRect.max_x
-    //   ) {
-    //     console.log('old dungeon');
-    //     console.log(nodeX, nodeY);
-    //     const x = nodeX - oldDungeonRect.min_x;
-    //     const y = nodeY - oldDungeonRect.min_y;
-    //     this.oldDungeonRect.layers.tiles[y][x] = TileType.Ground;
-    //   }
-    // }
+      // Update tiles of dungeons
+      if (
+        nodeY >= dungeonRect.min_y &&
+        nodeY <= dungeonRect.max_y &&
+        nodeX >= dungeonRect.min_x &&
+        nodeX <= dungeonRect.max_x
+      ) {
+        // for dungeon
+        const x = nodeX - dungeonRect.min_x;
+        const y = nodeY - dungeonRect.min_y;
+        this.dungeon.layers.tiles[y][x] = TileType.Ground;
+      } else {
+        // for old dungeon
+        const x = nodeX - oldDungeonRect.min_x;
+        const y = nodeY - oldDungeonRect.min_y;
+        this.oldDungeon.layers.tiles[y][x] = TileType.Ground;
+      }
+    }
 
     //
     // Draw updated dungeons
