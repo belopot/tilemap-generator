@@ -6,9 +6,9 @@ export default function Caption() {
     <Holder>
       <h3>Character Controls</h3>
       <h3>Up : W</h3>
-      <h3>Left : D</h3>
+      <h3>Right : D</h3>
       <h3>Bottom : S</h3>
-      <h3>Right : A</h3>
+      <h3>Left : A</h3>
     </Holder>
   );
 }
