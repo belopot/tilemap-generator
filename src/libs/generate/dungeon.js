@@ -310,39 +310,33 @@ function addDoorsToEdgeRooms(rooms, props) {
     const room = rooms[i].room;
     const direction = rooms[i].direction;
     let center = 0;
+    let posY = 0;
+    let posX = 0;
 
     switch (direction) {
       case Direction.right:
         center = Math.round(room.height / 2);
-        for (let y = center - 1; y < center; y++) {
-          const posY = room.y + y;
-          const posX = room.x + room.template.width;
-          result[posY][posX] = TileType.Door;
-        }
+        posY = room.y + center - 1;
+        posX = room.x + room.template.width;
+        result[posY][posX] = TileType.Door;
         break;
       case Direction.down:
         center = Math.round(room.width / 2);
-        for (let x = center - 1; x < center; x++) {
-          const posY = room.y + room.template.height;
-          const posX = room.x + x;
-          result[posY][posX] = TileType.Door;
-        }
+        posY = room.y + room.template.height;
+        posX = room.x + center - 1;
+        result[posY][posX] = TileType.Door;
         break;
       case Direction.up:
         center = Math.round(room.width / 2);
-        for (let x = center; x < center + 1; x++) {
-          const posY = room.y - 1;
-          const posX = room.x + x;
-          result[posY][posX] = TileType.Door;
-        }
+        posY = room.y - 1;
+        posX = room.x + center;
+        result[posY][posX] = TileType.Door;
         break;
       case Direction.left:
         center = Math.round(room.height / 2);
-        for (let y = center - 1; y < center; y++) {
-          const posY = room.y + y;
-          const posX = room.x - 1;
-          result[posY][posX] = TileType.Door;
-        }
+        posY = room.y + center - 1;
+        posX = room.x - 1;
+        result[posY][posX] = TileType.Door;
         break;
       default:
         break;
