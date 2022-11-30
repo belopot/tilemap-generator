@@ -18,6 +18,7 @@ import Lights from './Lights';
 import {FitCameraToSelection} from './Helpers';
 import Composer from './Composer';
 import {SPACE_SIZE, TILE_SIZE} from './Constants';
+import Avatar from './avatar/avatar.js';
 
 export default class ThreeDrawer {
   /**
@@ -40,6 +41,11 @@ export default class ThreeDrawer {
     this.dungeon = null;
     this.oldDungeon = null;
     this.tempDungeon = null;
+
+    //avatar shit
+    this.avatarManager = new Avatar();
+    this.spriteAvatar = null;
+    this.velocity = new THREE.Vector3(0, 0, 0);
 
     // Loading manager
     this.loadingManager = new THREE.LoadingManager();
@@ -69,7 +75,7 @@ export default class ThreeDrawer {
     /////////////////////////////////////////////////////////////////////////////
     //Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
+    this.scene.background = new THREE.Color(0x00);
     // this.scene.fog = new Fog(0xa0a0a0, SPACE_SIZE * 0.9, SPACE_SIZE)
 
     /////////////////////////////////////////////////////////////////////////////
@@ -183,6 +189,7 @@ export default class ThreeDrawer {
       new THREE.BoxGeometry(0.4, 0.5, 0.4),
       new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: false}),
     );
+    this.player.visible = false;
     this.scene.add(this.player);
   }
 
@@ -261,29 +268,57 @@ export default class ThreeDrawer {
    */
   onKeyDown(event) {
     if (event.key === 'a' || event.key === 'ArrowLeft') {
-      this.player.position.x -= TILE_SIZE;
+      this.velocity.x = -1;
+      //this.player.position.x -= TILE_SIZE;
     }
     if (event.key === 'd' || event.key === 'ArrowRight') {
-      this.player.position.x += TILE_SIZE;
+      this.velocity.x = 1;
+      //this.player.position.x += TILE_SIZE;
     }
     if (event.key === 'w' || event.key === 'ArrowUp') {
-      this.player.position.z -= TILE_SIZE;
+      this.velocity.z = -1;
+      //this.player.position.z -= TILE_SIZE;
     }
     if (event.key === 's' || event.key === 'ArrowDown') {
-      this.player.position.z += TILE_SIZE;
+      this.velocity.z = 1;
+      //this.player.position.z += TILE_SIZE;
     }
 
     // Detect out door and create next chunk
     this.createNextDungeon();
 
     this.requestRenderIfNotRequested();
+
+    // hack, will change later
+    if (!this.spriteAvatar) {
+      this.spriteAvatar = this.avatarManager.makeSpriteAvatar();
+      console.log(this.spriteAvatar);
+      this.scene.add(this.spriteAvatar);
+    }
   }
 
   /**
    * Event handler for key up event
    * @param {Object} event
    */
-  onKeyUp(event) {}
+  onKeyUp(event) {
+    if (event.key === 'a' || event.key === 'ArrowLeft') {
+      this.velocity.x = 0;
+      //this.player.position.x -= TILE_SIZE;
+    }
+    if (event.key === 'd' || event.key === 'ArrowRight') {
+      this.velocity.x = 0;
+      //this.player.position.x += TILE_SIZE;
+    }
+    if (event.key === 'w' || event.key === 'ArrowUp') {
+      this.velocity.z = 0;
+      //this.player.position.z -= TILE_SIZE;
+    }
+    if (event.key === 's' || event.key === 'ArrowDown') {
+      this.velocity.z = 0;
+      //this.player.position.z += TILE_SIZE;
+    }
+  }
 
   resizeRendererToDisplaySize() {
     const canvasWidth = this.renderer.domElement.offsetWidth;
@@ -303,7 +338,9 @@ export default class ThreeDrawer {
   }
 
   render() {
-    this.renderRequested = false;
+    requestAnimationFrame(this.render.bind(this));
+    //this.renderRequested = false;
+    this.updateSpriteHack();
     this.resizeRendererToDisplaySize();
     this.cameraController.update();
     this.stats.update();
@@ -316,6 +353,7 @@ export default class ThreeDrawer {
   requestRenderIfNotRequested() {
     if (!this.renderRequested) {
       this.renderRequested = true;
+      //this.animate();
       requestAnimationFrame(this.render.bind(this));
     }
   }
@@ -367,6 +405,24 @@ export default class ThreeDrawer {
     if (this.renderer && this.composer) {
       this.renderer.toneMappingExposure = brightness;
       this.requestRenderIfNotRequested();
+    }
+  }
+
+  updateSpriteHack() {
+    if (this.avatarManager && this.spriteAvatar) {
+      const velocity = this.velocity.clone();
+      this.player.position.add(velocity.multiplyScalar(0.035));
+      this.avatarManager.update(this.player, this.velocity);
+
+      this.cameraController.target.copy(this.player.position);
+
+      this.camera.position.set(
+        this.player.position.x,
+        this.camera.position.y,
+        this.player.position.z,
+      );
+
+      this.camera.updateMatrixWorld();
     }
   }
 
@@ -545,7 +601,7 @@ export default class ThreeDrawer {
 
   getDoorPlayerArrived = (dungeon, group) => {
     const tilemap = dungeon.layers.tiles;
-    const snapSize = 0.1;
+    const snapSize = 0.5; // 0.1
     let arrivedAtDoor = false;
     let rx = 0;
     let ry = 0;

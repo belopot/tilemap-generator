@@ -6,14 +6,14 @@ import ExtendDungeon from 'pages/ExtendDungeon';
 
 export const PrimaryRoutes = [
   {
+    path: '/extend-dungeon',
+    title: 'Play',
+    component: <ExtendDungeon />,
+  },
+  {
     path: '/',
     title: 'Generate dungeon',
     component: <GenerateDungeon />,
-  },
-  {
-    path: '/extend-dungeon',
-    title: 'Extend dungeon',
-    component: <ExtendDungeon />,
   },
   {
     path: '/edit-dungeon',
