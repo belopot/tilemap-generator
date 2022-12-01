@@ -139,7 +139,7 @@ const CanvasHolder = styled.div`
   > canvas {
     width: 100% !important;
     height: 100% !important;
-    background-color: #2d2d2d;
+    background-color: #412934;
   }
   > div {
     position: absolute !important;

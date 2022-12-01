@@ -17,7 +17,7 @@ import {ENVIRONMENT_DATA} from './Environments';
 import Lights from './Lights';
 import {FitCameraToSelection} from './Helpers';
 import Composer from './Composer';
-import {SPACE_SIZE, TILE_SIZE} from './Constants';
+import {SNAP_SIZE, SPACE_SIZE, TILE_SIZE} from './Constants';
 
 export default class ThreeDrawer {
   /**
@@ -69,7 +69,7 @@ export default class ThreeDrawer {
     /////////////////////////////////////////////////////////////////////////////
     //Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x000000);
+    // this.scene.background = new THREE.Color(0x000000);
     // this.scene.fog = new Fog(0xa0a0a0, SPACE_SIZE * 0.9, SPACE_SIZE)
 
     /////////////////////////////////////////////////////////////////////////////
@@ -545,7 +545,6 @@ export default class ThreeDrawer {
 
   getDoorPlayerArrived = (dungeon, group) => {
     const tilemap = dungeon.layers.tiles;
-    const snapSize = 0.1;
     let arrivedAtDoor = false;
     let rx = 0;
     let ry = 0;
@@ -555,7 +554,7 @@ export default class ThreeDrawer {
         if (id === TileType.Door) {
           const dx = Math.abs(this.player.position.x - (group.position.x + x * TILE_SIZE));
           const dy = Math.abs(this.player.position.z - (group.position.z + y * TILE_SIZE));
-          if (dx < snapSize && dy < snapSize) {
+          if (dx < SNAP_SIZE && dy < SNAP_SIZE) {
             arrivedAtDoor = true;
             rx = x;
             ry = y;
