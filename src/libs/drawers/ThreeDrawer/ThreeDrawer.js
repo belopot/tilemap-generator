@@ -141,7 +141,7 @@ export default class ThreeDrawer {
     this.renderer.domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
     window.addEventListener('keydown', this.onKeyDown.bind(this));
     window.addEventListener('keyup', this.onKeyUp.bind(this));
-    window.addEventListener('resize', this.requestRenderIfNotRequested.bind(this));
+    window.addEventListener('resize', this.onResizeWindow.bind(this));
 
     /////////////////////////////////////////////////////////////////////////////
     //Camera Controller
@@ -180,7 +180,7 @@ export default class ThreeDrawer {
 
     // Player
     this.player = new THREE.Mesh(
-      new THREE.BoxGeometry(0.4, 0.5, 0.4),
+      new THREE.BoxGeometry(0.5, 0.1, 0.5),
       new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: false}),
     );
     this.scene.add(this.player);
@@ -197,8 +197,8 @@ export default class ThreeDrawer {
     );
     window.removeEventListener('keydown', this.onKeyDown.bind(this));
     window.removeEventListener('keyup', this.onKeyUp.bind(this));
-    window.removeEventListener('resize', this.requestRenderIfNotRequested.bind(this));
-    // this.canvasHolder.removeChild(this.renderer.domElement);
+    window.removeEventListener('resize', this.onResizeWindow.bind(this));
+
     this.canvasHolder.innerHTML = '';
   }
 
@@ -285,7 +285,7 @@ export default class ThreeDrawer {
    */
   onKeyUp(event) {}
 
-  resizeRendererToDisplaySize() {
+  onResizeWindow() {
     const canvasWidth = this.renderer.domElement.offsetWidth;
     const canvasHeight = this.renderer.domElement.offsetHeight;
     const needResize = canvasWidth !== this.canvasWidth || canvasHeight !== this.canvasHeight;
@@ -304,7 +304,6 @@ export default class ThreeDrawer {
 
   render() {
     this.renderRequested = false;
-    this.resizeRendererToDisplaySize();
     this.cameraController.update();
     this.stats.update();
     this.renderer.render(this.scene, this.camera);
