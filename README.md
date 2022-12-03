@@ -1,9 +1,10 @@
-# tilemap generator
-
+## tilemap generator
 Tilemap procedural generator for dungeon
 
-## Install
+## Screenshot
+![](public/preview.jpg)
 
+## Install
 Assumes you already have `node` installed. If you already have `yarn` installed you can skip the next command.
 
     npm install --global yarn
