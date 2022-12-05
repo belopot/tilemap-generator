@@ -27,7 +27,6 @@ export default function ExtendDungeon() {
   const setLoaderVisible = useStore(state => state.setLoaderVisible);
 
   const canvasHolderRef = useRef();
-  const dungeonRef = useRef();
   const threeDrawerRef = useRef();
 
   const onDraw = args => {
@@ -36,8 +35,6 @@ export default function ExtendDungeon() {
         ...args,
         rooms: Data.loadRooms(),
       });
-      dungeonRef.current = dungeon;
-
       threeDrawerRef.current.drawDungeon(dungeon);
     } catch (error) {
       console.error(error.message);
