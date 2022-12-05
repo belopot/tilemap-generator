@@ -11,7 +11,7 @@ import {ContentContainer, PageContainer} from 'components/Containers';
 import Loader from 'components/Loader';
 import Caption from 'components/Caption';
 
-export default function ExtendDungeon() {
+export default function Playground() {
   const seed = useStore(state => state.seed);
   const mapWidth = useStore(state => state.mapWidth);
   const mapHeight = useStore(state => state.mapHeight);
@@ -99,6 +99,8 @@ export default function ExtendDungeon() {
   useEffect(() => {
     threeDrawerRef.current = new ThreeDrawer(canvasHolderRef.current, storeInterface);
     threeDrawerRef.current.setActivePlayer(true);
+    threeDrawerRef.current.setFreeCamera(false);
+
     onGenerate();
 
     return () => {

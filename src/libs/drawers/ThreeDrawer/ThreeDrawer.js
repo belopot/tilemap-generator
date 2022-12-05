@@ -17,7 +17,8 @@ import {ENVIRONMENT_DATA} from './Environments';
 import Lights from './Lights';
 import {FitCameraToSelection} from './Helpers';
 import Composer from './Composer';
-import {SNAP_SIZE, SPACE_SIZE, TILE_SIZE} from './Constants';
+import {PLAYER_MOVEMENT_SPEED, SNAP_SIZE, SPACE_SIZE, TILE_SIZE} from './Constants';
+import Avatar from './avatar/avatar.js';
 
 export default class ThreeDrawer {
   /**
@@ -30,7 +31,6 @@ export default class ThreeDrawer {
 
     this.canvasWidth = canvasHolder.offsetWidth;
     this.canvasHeight = canvasHolder.offsetHeight;
-    this.renderRequested = false;
     this.clock = new THREE.Clock();
     this.rayCaster = new THREE.Raycaster();
     this.envMap = null;
@@ -40,25 +40,13 @@ export default class ThreeDrawer {
     this.dungeon = null;
     this.oldDungeon = null;
     this.tempDungeon = null;
+    this.activePlayer = false;
+    this.isFreeCamera = true;
 
-    // Loading manager
-    this.loadingManager = new THREE.LoadingManager();
-    this.loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {
-      this.storeInterface.setLoaderVisible(true);
-    };
-    this.loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      if (!this.storeInterface.loaderVisible) {
-        this.storeInterface.setLoaderVisible(true);
-      }
-    };
-    this.loadingManager.onLoad = () => {
-      this.setupComposer();
-
-      setTimeout(() => {
-        this.requestRenderIfNotRequested();
-        this.storeInterface.setLoaderVisible(false);
-      }, [1500]);
-    };
+    //avatar shit
+    this.avatarManager = new Avatar();
+    this.spriteAvatar = null;
+    this.velocity = new THREE.Vector3(0, 0, 0);
 
     //
     // Stats
@@ -66,14 +54,16 @@ export default class ThreeDrawer {
     this.stats = new Stats();
     canvasHolder.appendChild(this.stats.dom);
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Scene
+    //
+    // Scene
+    //
     this.scene = new THREE.Scene();
-    // this.scene.background = new THREE.Color(0x000000);
+    // this.scene.background = new THREE.Color(0x422a34);
     // this.scene.fog = new Fog(0xa0a0a0, SPACE_SIZE * 0.9, SPACE_SIZE)
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Groups
+    //
+    // Groups
+    //
     this.group = new THREE.Group();
     this.scene.add(this.group);
 
@@ -83,13 +73,15 @@ export default class ThreeDrawer {
     this.tempGroup = new THREE.Group();
     this.scene.add(this.tempGroup);
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Lights
+    //
+    // Lights
+    //
     this.lights = new Lights();
     this.scene.add(this.lights);
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Primitives
+    //
+    // Primitives
+    //
     this.unitBox = new THREE.Mesh(
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshStandardMaterial({color: 0xffffff}),
@@ -97,8 +89,9 @@ export default class ThreeDrawer {
     this.unitBox.visible = false;
     this.scene.add(this.unitBox);
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Helpers
+    //
+    // Helpers
+    //
     // this.axesHelper = new AxesHelper(1);
     // this.axesHelper.position.y = 0.01;
     // this.scene.add(this.axesHelper);
@@ -107,8 +100,9 @@ export default class ThreeDrawer {
     // this.gridHelper.position.y = -0.5;
     // this.scene.add(this.gridHelper);
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Camera
+    //
+    // Camera
+    //
     this.camera = new THREE.PerspectiveCamera(
       45,
       this.canvasWidth / this.canvasHeight,
@@ -118,8 +112,9 @@ export default class ThreeDrawer {
     this.camera.position.set(0, SPACE_SIZE, 0);
     this.camera.lookAt(0, 0, 0);
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Renderer
+    //
+    // Renderer
+    //
     this.renderer = new THREE.WebGLRenderer({
       powerPreference: 'high-performance',
       antialias: false,
@@ -141,10 +136,11 @@ export default class ThreeDrawer {
     this.renderer.domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
     window.addEventListener('keydown', this.onKeyDown.bind(this));
     window.addEventListener('keyup', this.onKeyUp.bind(this));
-    window.addEventListener('resize', this.onResizeWindow.bind(this));
+    window.addEventListener('resize', this.onResizeRenderer.bind(this));
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Camera Controller
+    //
+    // Camera Controller
+    //
     this.cameraController = new OrbitControls(this.camera, this.renderer.domElement);
     // this.cameraController.minAzimuthAngle = -180;
     // this.cameraController.maxAzimuthAngle = 180;
@@ -160,10 +156,36 @@ export default class ThreeDrawer {
     this.cameraController.enableZoom = true;
     this.cameraController.enableRotate = false;
     // this.cameraController.enablePan = false
-    this.cameraController.addEventListener('change', this.requestRenderIfNotRequested.bind(this));
 
-    /////////////////////////////////////////////////////////////////////////////
-    //Load assets
+    //
+    // Composer
+    //
+    this.composer = new Composer(this.renderer, this.scene, this.camera);
+
+    //
+    // Loading manager
+    //
+    this.loadingManager = new THREE.LoadingManager();
+    this.loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {
+      this.storeInterface.setLoaderVisible(true);
+    };
+    this.loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+      if (!this.storeInterface.loaderVisible) {
+        this.storeInterface.setLoaderVisible(true);
+      }
+    };
+    this.loadingManager.onLoad = () => {
+      setTimeout(() => {
+        // Start rendering the scene
+        this.render();
+
+        this.storeInterface.setLoaderVisible(false);
+      }, [1500]);
+    };
+
+    //
+    // Asset loaders
+    //
     this.textureLoader = new THREE.TextureLoader(this.loadingManager);
     this.rgbeLoader = new RGBELoader(this.loadingManager);
     this.objLoader = new OBJLoader(this.loadingManager);
@@ -176,13 +198,18 @@ export default class ThreeDrawer {
     this.gltfLoader.setDRACOLoader(dracoLoader);
 
     //
+    // Load assets
+    //
     this.loadAllTextures();
 
+    //
     // Player
+    //
     this.player = new THREE.Mesh(
-      new THREE.BoxGeometry(0.5, 0.1, 0.5),
+      new THREE.BoxGeometry(0.4, 0.5, 0.4),
       new THREE.MeshBasicMaterial({color: 0xffff00, wireframe: false}),
     );
+    this.player.visible = false;
     this.scene.add(this.player);
   }
 
@@ -191,20 +218,11 @@ export default class ThreeDrawer {
     this.renderer.dispose();
     this.cameraController.dispose();
 
-    this.cameraController.removeEventListener(
-      'change',
-      this.requestRenderIfNotRequested.bind(this),
-    );
     window.removeEventListener('keydown', this.onKeyDown.bind(this));
     window.removeEventListener('keyup', this.onKeyUp.bind(this));
-    window.removeEventListener('resize', this.onResizeWindow.bind(this));
+    window.removeEventListener('resize', this.onResizeRenderer.bind(this));
 
     this.canvasHolder.innerHTML = '';
-  }
-
-  //Install composer
-  setupComposer() {
-    this.composer = new Composer(this.renderer, this.scene, this.camera);
   }
 
   /**
@@ -261,31 +279,56 @@ export default class ThreeDrawer {
    */
   onKeyDown(event) {
     if (event.key === 'a' || event.key === 'ArrowLeft') {
-      this.player.position.x -= TILE_SIZE;
+      this.velocity.x = -1;
+      //this.player.position.x -= TILE_SIZE;
     }
     if (event.key === 'd' || event.key === 'ArrowRight') {
-      this.player.position.x += TILE_SIZE;
+      this.velocity.x = 1;
+      //this.player.position.x += TILE_SIZE;
     }
     if (event.key === 'w' || event.key === 'ArrowUp') {
-      this.player.position.z -= TILE_SIZE;
+      this.velocity.z = -1;
+      //this.player.position.z -= TILE_SIZE;
     }
     if (event.key === 's' || event.key === 'ArrowDown') {
-      this.player.position.z += TILE_SIZE;
+      this.velocity.z = 1;
+      //this.player.position.z += TILE_SIZE;
     }
 
     // Detect out door and create next chunk
     this.createNextDungeon();
 
-    this.requestRenderIfNotRequested();
+    // hack, will change later
+    if (!this.spriteAvatar) {
+      this.spriteAvatar = this.avatarManager.makeSpriteAvatar();
+      this.scene.add(this.spriteAvatar);
+    }
   }
 
   /**
    * Event handler for key up event
    * @param {Object} event
    */
-  onKeyUp(event) {}
+  onKeyUp(event) {
+    if (event.key === 'a' || event.key === 'ArrowLeft') {
+      this.velocity.x = 0;
+      //this.player.position.x -= TILE_SIZE;
+    }
+    if (event.key === 'd' || event.key === 'ArrowRight') {
+      this.velocity.x = 0;
+      //this.player.position.x += TILE_SIZE;
+    }
+    if (event.key === 'w' || event.key === 'ArrowUp') {
+      this.velocity.z = 0;
+      //this.player.position.z -= TILE_SIZE;
+    }
+    if (event.key === 's' || event.key === 'ArrowDown') {
+      this.velocity.z = 0;
+      //this.player.position.z += TILE_SIZE;
+    }
+  }
 
-  onResizeWindow() {
+  onResizeRenderer() {
     const canvasWidth = this.renderer.domElement.offsetWidth;
     const canvasHeight = this.renderer.domElement.offsetHeight;
     const needResize = canvasWidth !== this.canvasWidth || canvasHeight !== this.canvasHeight;
@@ -298,24 +341,17 @@ export default class ThreeDrawer {
       if (this.composer) {
         this.composer.setSize(this.canvasWidth, this.canvasHeight);
       }
-      this.requestRenderIfNotRequested();
     }
   }
 
   render() {
-    this.renderRequested = false;
+    requestAnimationFrame(this.render.bind(this));
+    this.updateSpriteHack();
     this.cameraController.update();
     this.stats.update();
     this.renderer.render(this.scene, this.camera);
     if (this.composer) {
       this.composer.render(this.clock.getDelta());
-    }
-  }
-
-  requestRenderIfNotRequested() {
-    if (!this.renderRequested) {
-      this.renderRequested = true;
-      requestAnimationFrame(this.render.bind(this));
     }
   }
 
@@ -346,7 +382,6 @@ export default class ThreeDrawer {
    */
   enableEnvmap(enabled) {
     this.scene.background = enabled ? this.envMap : null;
-    this.requestRenderIfNotRequested();
   }
 
   updateEnvOrientation(index, orientation) {
@@ -355,8 +390,6 @@ export default class ThreeDrawer {
     this.lights.sunLight.position.x = Math.sin(THREE.MathUtils.degToRad(orientation)) * radius;
 
     this.lights.sunLight.position.z = Math.cos(THREE.MathUtils.degToRad(orientation)) * radius;
-
-    this.requestRenderIfNotRequested();
   }
 
   /**
@@ -365,7 +398,40 @@ export default class ThreeDrawer {
   updateEnvExposure(brightness) {
     if (this.renderer && this.composer) {
       this.renderer.toneMappingExposure = brightness;
-      this.requestRenderIfNotRequested();
+    }
+  }
+
+  /**
+   * @param {Boolean} active
+   */
+  setActivePlayer(active) {
+    this.activePlayer = active;
+  }
+
+  /**
+   * @param {Boolean} active
+   */
+  setFreeCamera(active) {
+    this.isFreeCamera = active;
+  }
+
+  updateSpriteHack() {
+    if (this.activePlayer && this.avatarManager && this.spriteAvatar) {
+      const velocity = this.velocity
+        .clone()
+        .multiplyScalar(this.isFreeCamera ? 0.15 : PLAYER_MOVEMENT_SPEED);
+      this.player.position.add(velocity);
+      this.avatarManager.update(this.player, this.velocity);
+
+      if (!this.isFreeCamera) {
+        this.cameraController.target.copy(this.player.position);
+        this.camera.position.set(
+          this.player.position.x,
+          this.camera.position.y,
+          this.player.position.z,
+        );
+        this.camera.updateMatrixWorld();
+      }
     }
   }
 
@@ -395,9 +461,6 @@ export default class ThreeDrawer {
       this.oldGroup.remove(node);
     });
     this.oldGroup.children = [];
-
-    // Render scene
-    this.requestRenderIfNotRequested();
   }
 
   /**
@@ -440,9 +503,6 @@ export default class ThreeDrawer {
       // Move player to ladder position
       this.initPlayer(dungeon.layers.props);
     }
-
-    // Render scene
-    this.requestRenderIfNotRequested();
   }
 
   drawTiles = (tilemap, sprites) => {

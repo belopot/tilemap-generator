@@ -1,7 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {nanoid} from 'nanoid';
-import {useMeasure} from 'react-use';
 
 import {useStore} from 'state/store';
 import {generate} from 'libs/generate';
@@ -37,8 +36,6 @@ export default function GenerateDungeon() {
   const dungeonRef = useRef();
   const threeDrawerRef = useRef();
   const pixiDrawerRef = useRef();
-
-  const [holderRef, holderMeasure] = useMeasure();
 
   //
   // Three drawer's Store Interface to only set store state
@@ -174,16 +171,6 @@ export default function GenerateDungeon() {
   }, [isThree]);
 
   //
-  // Resize
-  //
-  useEffect(() => {
-    if (!threeDrawerRef.current) {
-      return;
-    }
-    threeDrawerRef.current.requestRenderIfNotRequested();
-  }, [holderMeasure]);
-
-  //
   // Debug
   //
   useEffect(() => {
@@ -192,7 +179,7 @@ export default function GenerateDungeon() {
 
   return (
     <PageTransition>
-      <PageContainer ref={holderRef}>
+      <PageContainer>
         <SidebarContainer>
           <Sidebar
             onGenerate={onGenerate}
