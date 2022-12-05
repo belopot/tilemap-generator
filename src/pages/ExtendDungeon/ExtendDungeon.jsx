@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {nanoid} from 'nanoid';
 
 import {useStore} from 'state/store';
-import {generate} from 'libs/generate';
+import {Direction, generate} from 'libs/generate';
 import {Data} from 'libs/utils';
 import ThreeDrawer from 'libs/drawers/ThreeDrawer';
 import PageTransition from 'components/PageTransition';
@@ -60,7 +60,7 @@ export default function ExtendDungeon() {
     onDraw(args);
   };
 
-  const generateDungeon = () => {
+  const generateDungeon = (seed, direction, parentSeed) => {
     const args = {
       mapWidth,
       mapHeight,
@@ -71,13 +71,30 @@ export default function ExtendDungeon() {
       containerSplitRetries,
       corridorWidth,
       tileWidth,
-      seed: nanoid(),
+      seed,
       debug,
-    };
-    const dungeon = generate({
-      ...args,
       rooms: Data.loadRooms(),
-    });
+    };
+    const dungeon = generate(args);
+
+    //Update parent seed
+    switch (direction) {
+      case Direction.up:
+        dungeon.nearSeeds[Direction.down] = parentSeed;
+        break;
+      case Direction.right:
+        dungeon.nearSeeds[Direction.left] = parentSeed;
+        break;
+      case Direction.down:
+        dungeon.nearSeeds[Direction.up] = parentSeed;
+        break;
+      case Direction.left:
+        dungeon.nearSeeds[Direction.right] = parentSeed;
+        break;
+      default:
+        break;
+    }
+
     return dungeon;
   };
 

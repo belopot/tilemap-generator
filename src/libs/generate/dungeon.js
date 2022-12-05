@@ -8,8 +8,9 @@ import {
   TileType,
   TreeNode,
 } from './types';
-import {createTilemap, duplicateTilemap, random, randomChoice, randomNumber} from './utils';
+import {createTilemap, duplicateTilemap, random, randomChoice} from './utils';
 import seedrandom from 'seedrandom';
+import {nanoid} from 'nanoid';
 
 export function generate(args) {
   // If a seed is provided, use it to generate dungeon.
@@ -32,6 +33,7 @@ export function generate(args) {
       props,
       monsters,
     },
+    nearSeeds: [nanoid(), nanoid(), nanoid(), nanoid()], // Up left down right seed for nearest dungeon
   };
 }
 

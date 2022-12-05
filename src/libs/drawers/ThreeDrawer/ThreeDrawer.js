@@ -661,8 +661,15 @@ export default class ThreeDrawer {
 
       // Create next dungeon
       if (this.storeInterface.generateDungeon) {
+        // Get seed
+        const seed = this.dungeon.nearSeeds[detectedDoor.direction];
+
         // Generate new dungeon
-        const newDungeon = this.storeInterface.generateDungeon();
+        const newDungeon = this.storeInterface.generateDungeon(
+          seed,
+          detectedDoor.direction,
+          this.dungeon.seed,
+        );
 
         // Draw next dungeon
         this.drawDungeon(newDungeon);
@@ -703,8 +710,15 @@ export default class ThreeDrawer {
             });
             this.tempGroup.children = [];
 
+            // Get seed
+            const seed = this.dungeon.nearSeeds[detectedDoor.direction];
+
             // Generate new dungeon
-            const newDungeon = this.storeInterface.generateDungeon();
+            const newDungeon = this.storeInterface.generateDungeon(
+              seed,
+              detectedDoor.direction,
+              this.dungeon.seed,
+            );
 
             // Draw next dungeon
             this.drawDungeon(newDungeon);
