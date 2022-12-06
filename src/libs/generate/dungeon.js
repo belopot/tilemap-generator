@@ -24,6 +24,7 @@ export function generate(args) {
   const monsters = createMonstersLayer(tree, args);
 
   return {
+    args: args,
     seed: args.seed,
     width: args.mapWidth,
     height: args.mapHeight,
@@ -35,6 +36,34 @@ export function generate(args) {
     },
     nearSeeds: [nanoid(), nanoid(), nanoid(), nanoid()], // Up left down right seed for nearest dungeon
   };
+}
+
+export function generateNext(dungeon, direction) {
+  const args = {
+    ...dungeon.args,
+    seed: dungeon.nearSeeds[direction],
+  };
+  const newDungeon = generate(args);
+
+  //Update parent seed
+  switch (direction) {
+    case Direction.up:
+      newDungeon.nearSeeds[Direction.down] = dungeon.seed;
+      break;
+    case Direction.right:
+      newDungeon.nearSeeds[Direction.left] = dungeon.seed;
+      break;
+    case Direction.down:
+      newDungeon.nearSeeds[Direction.up] = dungeon.seed;
+      break;
+    case Direction.left:
+      newDungeon.nearSeeds[Direction.right] = dungeon.seed;
+      break;
+    default:
+      break;
+  }
+
+  return newDungeon;
 }
 
 //

@@ -26,9 +26,7 @@ export default function GenerateDungeon() {
   const corridorWidth = useStore(state => state.corridorWidth);
   const tileWidth = useStore(state => state.tileWidth);
   const isThree = useStore(state => state.isThree);
-  const setIsThree = useStore(state => state.setIsThree);
   const debug = useStore(state => state.debug);
-  const setDebug = useStore(state => state.setDebug);
   const loaderVisible = useStore(state => state.loaderVisible);
   const setLoaderVisible = useStore(state => state.setLoaderVisible);
 

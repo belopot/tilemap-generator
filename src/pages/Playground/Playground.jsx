@@ -1,9 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
-import {nanoid} from 'nanoid';
 
 import {useStore} from 'state/store';
-import {Direction, generate} from 'libs/generate';
+import {generate} from 'libs/generate';
 import {Data} from 'libs/utils';
 import ThreeDrawer from 'libs/drawers/ThreeDrawer';
 import PageTransition from 'components/PageTransition';
@@ -29,73 +28,28 @@ export default function Playground() {
   const canvasHolderRef = useRef();
   const threeDrawerRef = useRef();
 
-  const onDraw = args => {
+  const onGenerate = () => {
     try {
-      const dungeon = generate({
-        ...args,
+      const args = {
+        mapWidth,
+        mapHeight,
+        mapGutterWidth,
+        iterations,
+        containerMinimumSize,
+        containerMinimumRatio,
+        containerSplitRetries,
+        corridorWidth,
+        tileWidth,
+        seed,
+        debug,
         rooms: Data.loadRooms(),
-      });
+      };
+      const dungeon = generate(args);
       threeDrawerRef.current.drawDungeon(dungeon);
     } catch (error) {
       console.error(error.message);
       threeDrawerRef.current.clear();
     }
-  };
-
-  const onGenerate = () => {
-    const args = {
-      mapWidth,
-      mapHeight,
-      mapGutterWidth,
-      iterations,
-      containerMinimumSize,
-      containerMinimumRatio,
-      containerSplitRetries,
-      corridorWidth,
-      tileWidth,
-      seed,
-      debug,
-    };
-
-    onDraw(args);
-  };
-
-  const generateDungeon = (seed, direction, parentSeed) => {
-    const args = {
-      mapWidth,
-      mapHeight,
-      mapGutterWidth,
-      iterations,
-      containerMinimumSize,
-      containerMinimumRatio,
-      containerSplitRetries,
-      corridorWidth,
-      tileWidth,
-      seed,
-      debug,
-      rooms: Data.loadRooms(),
-    };
-    const dungeon = generate(args);
-
-    //Update parent seed
-    switch (direction) {
-      case Direction.up:
-        dungeon.nearSeeds[Direction.down] = parentSeed;
-        break;
-      case Direction.right:
-        dungeon.nearSeeds[Direction.left] = parentSeed;
-        break;
-      case Direction.down:
-        dungeon.nearSeeds[Direction.up] = parentSeed;
-        break;
-      case Direction.left:
-        dungeon.nearSeeds[Direction.right] = parentSeed;
-        break;
-      default:
-        break;
-    }
-
-    return dungeon;
   };
 
   //
@@ -104,7 +58,6 @@ export default function Playground() {
   const storeInterface = {
     loaderVisible,
     setLoaderVisible,
-    generateDungeon,
   };
 
   //

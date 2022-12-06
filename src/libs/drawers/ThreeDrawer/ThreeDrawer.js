@@ -10,7 +10,7 @@ import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader';
 
 import {Textures} from 'libs/utils';
 import {TEXTURE_ASSET} from 'libs/utils/assets';
-import {Direction, PropType, TileLayer, TileType} from 'libs/generate';
+import {Direction, generateNext, PropType, TileLayer, TileType} from 'libs/generate';
 import {Grid, IDAStarFinder} from 'libs/pathfinder';
 
 import {ENVIRONMENT_DATA} from './Environments';
@@ -659,27 +659,17 @@ export default class ThreeDrawer {
     if (detectedDoor.arrived) {
       this.player.material.color.set(0xff0000);
 
-      // Create next dungeon
-      if (this.storeInterface.generateDungeon) {
-        // Get seed
-        const seed = this.dungeon.nearSeeds[detectedDoor.direction];
+      // Generate new dungeon
+      const newDungeon = generateNext(this.dungeon, detectedDoor.direction);
 
-        // Generate new dungeon
-        const newDungeon = this.storeInterface.generateDungeon(
-          seed,
-          detectedDoor.direction,
-          this.dungeon.seed,
-        );
+      // Draw next dungeon
+      this.drawDungeon(newDungeon);
 
-        // Draw next dungeon
-        this.drawDungeon(newDungeon);
+      // Move group
+      this.moveGroupByDoorDirection(detectedDoor.direction);
 
-        // Move group
-        this.moveGroupByDoorDirection(detectedDoor.direction);
-
-        // Create corridor to connect two dungeons
-        this.createCorridorToConnectDungeons(detectedDoor);
-      }
+      // Create corridor to connect two dungeons
+      this.createCorridorToConnectDungeons(detectedDoor);
     } else {
       this.player.material.color.set(0xffff00);
 
@@ -690,45 +680,35 @@ export default class ThreeDrawer {
         if (detectedDoor.arrived) {
           this.player.material.color.set(0xff0000);
 
-          // Create next dungeon
-          if (this.storeInterface.generateDungeon) {
-            //Exchange dungeon
-            this.tempDungeon = JSON.parse(JSON.stringify(this.dungeon));
-            this.dungeon = JSON.parse(JSON.stringify(this.oldDungeon));
-            this.oldDungeon = this.tempDungeon;
+          // Exchange dungeon
+          this.tempDungeon = JSON.parse(JSON.stringify(this.dungeon));
+          this.dungeon = JSON.parse(JSON.stringify(this.oldDungeon));
+          this.oldDungeon = this.tempDungeon;
 
-            //Exchange group
-            this.tempGroup.copy(this.group, true);
-            this.group.copy(this.oldGroup, true);
-            this.oldGroup.copy(this.tempGroup, true);
+          //Exchange group
+          this.tempGroup.copy(this.group, true);
+          this.group.copy(this.oldGroup, true);
+          this.oldGroup.copy(this.tempGroup, true);
 
-            //Clear temp group
-            this.tempGroup.children.forEach(node => {
-              node?.geometry?.dispose();
-              node?.material?.dispose();
-              this.tempGroup.remove(node);
-            });
-            this.tempGroup.children = [];
+          //Clear temp group
+          this.tempGroup.children.forEach(node => {
+            node?.geometry?.dispose();
+            node?.material?.dispose();
+            this.tempGroup.remove(node);
+          });
+          this.tempGroup.children = [];
 
-            // Get seed
-            const seed = this.dungeon.nearSeeds[detectedDoor.direction];
+          // Generate new dungeon
+          const newDungeon = generateNext(this.dungeon, detectedDoor.direction);
 
-            // Generate new dungeon
-            const newDungeon = this.storeInterface.generateDungeon(
-              seed,
-              detectedDoor.direction,
-              this.dungeon.seed,
-            );
+          // Draw next dungeon
+          this.drawDungeon(newDungeon);
 
-            // Draw next dungeon
-            this.drawDungeon(newDungeon);
+          // Move group
+          this.moveGroupByDoorDirection(detectedDoor.direction);
 
-            // Move group
-            this.moveGroupByDoorDirection(detectedDoor.direction);
-
-            // Create corridor to connect two dungeons
-            this.createCorridorToConnectDungeons(detectedDoor);
-          }
+          // Create corridor to connect two dungeons
+          this.createCorridorToConnectDungeons(detectedDoor);
         } else {
           this.player.material.color.set(0xffff00);
         }
