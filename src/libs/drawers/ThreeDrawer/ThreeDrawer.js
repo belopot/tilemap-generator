@@ -825,7 +825,7 @@ export default class ThreeDrawer {
 
     for (let y = 0; y < grid.height; y++) {
       for (let x = 0; x < grid.width; x++) {
-        if (mergedTiles[y][x] === TileType.All || mergedTiles[y][x] === TileType.Door) {
+        if (mergedTiles[y][x] === TileType.Wall || mergedTiles[y][x] === TileType.Door) {
           grid.setWalkableAt(x, y, true);
         } else {
           grid.setWalkableAt(x, y, false);
